@@ -68,15 +68,25 @@ namespace RayTracer
 
     public class Point : RayTuple
     {
+        public double x,y,z;
+
         public Point(double x, double y, double z) : base(x, y, z, 1.0)
         {
+            this.x = Item1;
+            this.y = Item2;
+            this.z = Item3;
         }
     }
 
     public class Vector : RayTuple
     {
+        public double x,y,z;
+
         public Vector(double x, double y, double z) : base(x, y, z, 0.0)
         {
+            this.x = Item1;
+            this.y = Item2;
+            this.z = Item3;
         }
 
         public double Magnitude()
@@ -101,4 +111,22 @@ namespace RayTracer
                               Item1 * other.Item2 - Item2 * other.Item1);
         }
     }
+
+    public class Color : RayTuple
+    {
+        public double red, green, blue;
+
+        public Color(double red, double green, double blue) : base(red, green, blue, 0.0)
+        {
+            this.red = Item1;
+            this.green = Item2;
+            this.blue = Item3;
+        }
+
+        public static Color operator*(Color a, Color b)
+        {
+            return new Color(a.red * b.red, a.green * b.green, a.blue * b.blue);
+        }
+    }
+
 }
