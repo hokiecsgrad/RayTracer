@@ -237,9 +237,9 @@ namespace RayTracer.Tests
         public void ImplementingColorClassWithTuple_ShouldWork()
         {
             var myColor = new Color(-0.5, 0.4, 1.7);
-            Assert.True(myColor.red == -0.5);
-            Assert.True(myColor.green == 0.4);
-            Assert.True(myColor.blue == 1.7);
+            Assert.True(myColor.Red == -0.5);
+            Assert.True(myColor.Green == 0.4);
+            Assert.True(myColor.Blue == 1.7);
         }
 
         [Fact]

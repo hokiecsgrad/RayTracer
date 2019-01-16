@@ -114,18 +114,18 @@ namespace RayTracer
 
     public class Color : RayTuple
     {
-        public double red, green, blue;
+        public double Red, Green, Blue;
 
         public Color(double red, double green, double blue) : base(red, green, blue, 0.0)
         {
-            this.red = Item1;
-            this.green = Item2;
-            this.blue = Item3;
+            this.Red = Item1;
+            this.Green = Item2;
+            this.Blue = Item3;
         }
 
         public static Color operator*(Color a, Color b)
         {
-            return new Color(a.red * b.red, a.green * b.green, a.blue * b.blue);
+            return new Color(a.Red * b.Red, a.Green * b.Green, a.Blue * b.Blue);
         }
     }
 
