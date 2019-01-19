@@ -60,6 +60,73 @@ namespace RayTracer
             return result;
         }
 
+        public double Determinant()
+        {
+            double determinant = 0.0;
+
+            if ( Rows == 2 && Cols == 2 )
+                determinant = Data[0,0] * Data[1,1] - Data[0,1] * Data[1, 0];
+            else
+                for (int col = 0; col < Cols; col++)
+                    determinant = determinant + Data[0, col] * Cofactor(0, col);
+                
+            return determinant;
+        }
+
+        public Matrix Submatrix(int row, int col)
+        {
+            var result = new Matrix(Rows - 1, Cols - 1);
+            int currRow = 0, currCol = 0;
+            for (int i = 0; i < Rows; i++)
+            {
+                if ( i == row ) continue;
+                currCol = 0;
+                for (int j = 0; j < Cols; j++)
+                {
+                    if ( j == col ) continue;
+                    result[currRow, currCol] = Data[i, j];
+                    currCol++;
+                }
+                currRow++;
+            }
+            return result;
+        }
+
+        public double Minor(int row, int col)
+        {
+            return this.Submatrix(row, col).Determinant();
+        }
+
+        public double Cofactor(int row, int col)
+        {
+            int modifier = 1;
+            if ((row + col) % 2 != 0)
+                modifier = -1;
+            return Minor(row, col) * modifier;
+        }
+
+        public bool CanBeInversed()
+        {
+            if ( Determinant() == 0 )
+                return false;
+            else 
+                return true;
+        }
+
+        public Matrix Inverse()
+        {
+            if ( !CanBeInversed() ) throw new ArgumentException("Matrix cannot be inverted.");
+
+            Matrix inverted = new Matrix(Rows, Cols);
+            for (int row = 0; row < Rows; row++)
+                for (int col = 0; col < Cols; col++)
+                {
+                    double cofactor = Cofactor(row, col);
+                    inverted[col, row] = cofactor / Determinant();
+                }
+
+            return inverted;
+        }
 
         public bool Equals(Matrix other)
         {
