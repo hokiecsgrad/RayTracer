@@ -6,14 +6,14 @@ namespace RayTracer.Tests.Smoke
 {
     public class Projectile
     {
-        public RayTuple Position { get; set; }
-        public RayTuple Velocity { get; set; }
+        public Point Position { get; set; }
+        public Vector Velocity { get; set; }
     }
 
     public class Environment
     {
-        public RayTuple Gravity { get; set; }
-        public RayTuple Wind { get; set; }
+        public Vector Gravity { get; set; }
+        public Vector Wind { get; set; }
     }
 
     public class ProjectileTests
@@ -33,13 +33,13 @@ namespace RayTracer.Tests.Smoke
             var earth = new Environment { Gravity = new Vector(0, -0.1, 0), 
                                           Wind = new Vector(-0.01, 0, 0) };
             
-            while (cannonBall.Position.Item2 > 0)
+            while (cannonBall.Position.y > 0)
             {
                 cannonBall = Tick(cannonBall, earth);
                 Console.WriteLine(cannonBall.Position);
             }
 
-            Console.WriteLine($"CannonBall traveled to position {cannonBall.Position.Item1}");
+            Console.WriteLine($"CannonBall traveled to position {cannonBall.Position.x}");
         }
 
         [Fact]
@@ -57,16 +57,16 @@ namespace RayTracer.Tests.Smoke
             FileStream stream = File.OpenWrite(filename);
             StreamWriter writer = new StreamWriter(stream);
 
-            while (cannonBall.Position.Item2 > 0)
+            while (cannonBall.Position.y > 0)
             {
-                canvas.SetPixel((int)Math.Round(cannonBall.Position.Item1), 
-                                canvas.Height - (int)Math.Round(cannonBall.Position.Item2), 
+                canvas.SetPixel((int)Math.Round(cannonBall.Position.x), 
+                                canvas.Height - (int)Math.Round(cannonBall.Position.y), 
                                 new Color(1,0,0));
                 cannonBall = Tick(cannonBall, earth);
                 Console.WriteLine(cannonBall.Position);
             }
 
-            Console.WriteLine($"CannonBall traveled to position {cannonBall.Position.Item1}");
+            Console.WriteLine($"CannonBall traveled to position {cannonBall.Position.x}");
             
             PpmWriter.WriteCanvasToPpm(writer, canvas);
             writer.Close();

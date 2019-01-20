@@ -39,16 +39,28 @@ namespace RayTracer
             return result;
         }
 
-        public static RayTuple operator*(Matrix a, RayTuple b)
+        public static Point operator*(Matrix a, Point b)
         {
             if ( a.Rows != 4 )
                 throw new ArgumentException("Matrix must have same number of Rows as a Tuple.");
 
             var result = new double[4];
             for (int i = 0; i < a.Rows; i++)
-                result[i] = a[i, 0] * b.Item1 + a[i, 1] * b.Item2 + a[i, 2] * b.Item3 + a[i, 3] * b.Item4;
+                result[i] = a[i, 0] * b.x + a[i, 1] * b.y + a[i, 2] * b.z + a[i, 3] * b.w;
 
-            return new RayTuple(result[0], result[1], result[2], result[3]);
+            return new Point(result[0], result[1], result[2]);
+        }
+
+        public static Vector operator*(Matrix a, Vector b)
+        {
+            if ( a.Rows != 4 )
+                throw new ArgumentException("Matrix must have same number of Rows as a Tuple.");
+
+            var result = new double[4];
+            for (int i = 0; i < a.Rows; i++)
+                result[i] = a[i, 0] * b.x + a[i, 1] * b.y + a[i, 2] * b.z + a[i, 3] * b.w;
+
+            return new Vector(result[0], result[1], result[2]);
         }
 
         public Matrix Transpose()

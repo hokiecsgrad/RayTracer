@@ -66,9 +66,9 @@ namespace RayTracer.Tests
         public void MultiplyingMatrixByTuple_ShouldWork()
         {
             var matrix = new Matrix(new double[,] { {1, 2, 3, 4}, {2, 4, 4, 2}, {8, 6, 4, 1}, {0, 0, 0, 1} });
-            var tuple = new RayTuple(1, 2, 3, 1);
-            RayTuple result = matrix * tuple;
-            Assert.True(result.Equals(new RayTuple(18, 24, 33, 1)));
+            var tuple = new Point(1, 2, 3);
+            Point result = matrix * tuple;
+            Assert.True(result.Equals(new Point(18, 24, 33)));
         }
 
         [Fact]
@@ -84,9 +84,9 @@ namespace RayTracer.Tests
         public void MultiplyIdentityMatrixByTuple_ShouldReturnOriginalTuple()
         {
             var identity = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
-            var tuple = new RayTuple(1, 2, 3, 4);
-            RayTuple result = identity * tuple;
-            Assert.True(result.Equals(new RayTuple(1, 2, 3, 4)));
+            var point = new Point(1, 2, 3);
+            Point result = identity * point;
+            Assert.True(result.Equals(new Point(1, 2, 3)));
         }
 
         [Fact]
