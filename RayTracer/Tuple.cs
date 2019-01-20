@@ -68,13 +68,14 @@ namespace RayTracer
 
     public class Point : RayTuple
     {
-        public double x,y,z;
+        public double x,y,z,w;
 
         public Point(double x, double y, double z) : base(x, y, z, 1.0)
         {
             this.x = Item1;
             this.y = Item2;
             this.z = Item3;
+            this.w = Item4;
         }
     }
 
