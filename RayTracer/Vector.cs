@@ -104,5 +104,10 @@ namespace RayTracer
                               z * other.x - x * other.z,
                               x * other.y - y * other.x);
         }
+
+        public Vector Reflect(Vector normal)
+        {
+            return this - normal * 2 * this.Dot(normal);
+        }
     }
 }

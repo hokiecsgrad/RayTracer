@@ -267,5 +267,23 @@ namespace RayTracer.Tests
             var result = myColor1 * myColor2;
             Assert.True(result.Equals(new Color(0.9, 0.2, 0.04)));
         }
+
+        [Fact]
+        public void ReflectingVectorAt45Degrees_ShouldReturn45DegreeVector()
+        {
+            var vector = new Vector(1, -1, 0);
+            var normal = new Vector(0, 1, 0);
+            var reflected = vector.Reflect(normal);
+            Assert.True(reflected.Equals(new Vector(1, 1, 0)));
+        }
+
+        [Fact]
+        public void ReflectingOffSlantedSurface_ShouldWork()
+        {
+            var vector = new Vector(0, -1, 0);
+            var normal = new Vector(Math.Sqrt(2)/2, Math.Sqrt(2)/2, 0);
+            var reflected = vector.Reflect(normal);
+            Assert.True(reflected.Equals(new Vector(1, 0, 0)));
+        }
     }
 }
