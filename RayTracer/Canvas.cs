@@ -25,7 +25,8 @@ namespace RayTracer
 
         public void SetPixel(int x, int y, Color color)
         {
-            this._pixels[x, y] = color;
+            if (x > 0 && x < Width && y > 0 && y < Height)
+                this._pixels[x, y] = color;
         }
     }
 }
