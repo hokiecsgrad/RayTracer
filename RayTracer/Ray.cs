@@ -21,9 +21,10 @@ namespace RayTracer
 
         public Intersection[] Intersect(Sphere s)
         {
-            var sphereToRay = Origin - s.Origin;
-            double a = Direction.Dot(Direction);
-            double b = 2 * Direction.Dot(sphereToRay);
+            Ray transformedRay = Transform(s.Transform.Inverse());
+            var sphereToRay = transformedRay.Origin - s.Origin;
+            double a = transformedRay.Direction.Dot(transformedRay.Direction);
+            double b = 2 * transformedRay.Direction.Dot(sphereToRay);
             double c = sphereToRay.Dot(sphereToRay) - 1;
             double discriminant = b*b - 4 * a * c;
             if ( discriminant < 0 )
@@ -41,6 +42,13 @@ namespace RayTracer
             for (int i = 0; i < intersections.Length; i++)
                 if (intersections[i].Time >= 0.0) return intersections[i];
             return null;
+        }
+
+        public Ray Transform(Matrix transform)
+        {
+            var newLocation = transform * Origin;
+            var newDirection = transform * Direction;
+            return new Ray(newLocation, newDirection);
         }
     }
 }

@@ -117,5 +117,63 @@ namespace RayTracer.Tests
             Intersection hit = ray.Hit(xs);
             Assert.Equal(new Intersection(2, sphere), hit);
         }
+
+        [Fact]
+        public void TranslatingARay_ShouldWork()
+        {
+            Ray ray = new Ray(new Point(1, 2, 3), new Vector(0, 1, 0));
+            var transform = Transformation.Translation(3, 4, 5);
+            var ray2 = ray.Transform(transform);
+            Assert.Equal(new Point(4, 6, 8), ray2.Origin);
+            Assert.Equal(new Vector(0, 1, 0), ray2.Direction);
+        }
+
+        [Fact]
+        public void ScalingARay_ShouldWork()
+        {
+            Ray ray = new Ray(new Point(1, 2, 3), new Vector(0, 1, 0));
+            var transform = Transformation.Scaling(2, 3, 4);
+            var ray2 = ray.Transform(transform);
+            Assert.Equal(new Point(2, 6, 12), ray2.Origin);
+            Assert.Equal(new Vector(0, 3, 0), ray2.Direction);
+        }
+
+        [Fact]
+        public void SphereDefaultTransformation_ShouldBeIdentityMatrix()
+        {
+            Sphere s = new Sphere();
+            Assert.True(s.Transform.Equals(new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} })));
+        }
+
+        [Fact]
+        public void ChangingSphereDefaultTransformation_ShouldWork()
+        {
+            Sphere s = new Sphere();
+            var transform = Transformation.Translation(2, 3, 4);
+            s.Transform = transform;
+            Assert.True(s.Transform.Equals(transform));
+        }
+
+        [Fact]
+        public void IntersectingScaledSphereWithRay_ShouldWork()
+        {
+            Ray ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+            Sphere s = new Sphere();
+            s.Transform = Transformation.Scaling(2, 2, 2);
+            Intersection[] xs = ray.Intersect(s);
+            Assert.Equal(2, xs.Length);
+            Assert.Equal(3, xs[0].Time);
+            Assert.Equal(7, xs[1].Time);
+        }
+
+        [Fact]
+        public void IntersectingTranslatedSphereWithRay_ShouldWork()
+        {
+            Ray ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+            Sphere s = new Sphere();
+            s.Transform = Transformation.Translation(5, 0, 0);
+            Intersection[] xs = ray.Intersect(s);
+            Assert.Equal(0, xs.Length);
+        }
     }
 }
