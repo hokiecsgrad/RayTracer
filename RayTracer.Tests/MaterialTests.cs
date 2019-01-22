@@ -9,7 +9,7 @@ namespace RayTracer.Tests
         public void Material_ShouldHaveColorAmbientDiffuseSpecularShininess()
         {
             Material m = new Material();
-            Assert.True(m.MatColor.Equals(new Color(1, 1, 1)));
+            Assert.True(m.Color.Equals(new Color(1, 1, 1)));
             Assert.Equal(0.1, m.Ambient);
             Assert.Equal(0.9, m.Diffuse);
             Assert.Equal(0.9, m.Specular);

@@ -16,7 +16,7 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = new Canvas(canvas_pixels, canvas_pixels);
             Sphere shape = new Sphere();
-            shape.Material.MatColor = new Color(1, 0.2, 1);
+            shape.Material.Color = new Color(1, 0.2, 1);
             //shape.Material.Specular = 0.1;
             //shape.Material.Diffuse = 0.1;
             //shape.Material.Ambient = 0.5;

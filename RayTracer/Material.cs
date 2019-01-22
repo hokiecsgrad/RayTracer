@@ -5,7 +5,7 @@ namespace RayTracer
     public class Material
     {
         private const double EPSILON = 0.00001;
-        public Color MatColor { get; set; }
+        public Color Color { get; set; }
         public double Ambient { get; set; }
         public double Diffuse { get; set; }
         public double Specular { get; set; }
@@ -13,11 +13,20 @@ namespace RayTracer
 
         public Material()
         {
-            MatColor = new Color(1, 1, 1);
+            Color = new Color(1, 1, 1);
             Ambient = 0.1;
             Diffuse = 0.9;
             Specular = 0.9;
             Shininess = 200.0;
+        }
+
+        public Material(Color color, double ambient, double diffuse, double specular, double shininess)
+        {
+            Color = color;
+            Ambient = ambient;
+            Diffuse = diffuse;
+            Specular = specular;
+            Shininess = shininess;
         }
 
         public Color Lighting(PointLight light, Point point, Vector eye, Vector normal)
@@ -27,7 +36,7 @@ namespace RayTracer
             Color specular;
 
             // combine the surface color with the light's color/intensity
-            var effective_color = this.MatColor * light.Intensity;
+            var effective_color = this.Color * light.Intensity;
             // find the direction to the light source
             var lightv = (light.Position - point).Normalize();
             // compute the ambient contribution
@@ -71,7 +80,7 @@ namespace RayTracer
                 return false;
             }
  
-            return (objMat.MatColor.Equals(this.MatColor) &&
+            return (objMat.Color.Equals(this.Color) &&
                     (Math.Abs(objMat.Ambient - this.Ambient) < EPSILON) && 
                     (Math.Abs(objMat.Diffuse - this.Diffuse) < EPSILON) && 
                     (Math.Abs(objMat.Specular - this.Specular) < EPSILON) && 
