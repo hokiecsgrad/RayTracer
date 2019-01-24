@@ -40,7 +40,11 @@ namespace RayTracer
 
         public Color ColorAt(Ray ray)
         {
-            return null;
+            var intersections = this.Intersect(ray);
+            if (intersections.Count == 0) return new Color(0,0,0);
+            var hit = ray.Hit(intersections);
+            var comps = hit.PrepareComputations(ray);
+            return ShadeHit(comps);
         }
     }
 }

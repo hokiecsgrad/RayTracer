@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 using Xunit;
 
 namespace RayTracer.Tests.Smoke
@@ -34,7 +36,7 @@ namespace RayTracer.Tests.Smoke
                     double world_x = -half + pixel_size * x;
                     Point position = new Point(world_x, world_y, wall_z);
                     Ray r = new Ray(ray_origin, (position - ray_origin).Normalize());
-                    Intersection[] xs = r.Intersect(shape);
+                    List<Intersection> xs = r.Intersect(shape);
                     if (r.Hit(xs) != null)
                         canvas.SetPixel(x, canvas.Height - y, color);
                 }

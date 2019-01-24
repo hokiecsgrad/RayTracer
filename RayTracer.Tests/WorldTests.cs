@@ -94,7 +94,7 @@ namespace RayTracer.Tests
             inner.Material.Ambient = 1;
             var r = new Ray(new Point(0, 0, 0.75), new Vector(0, 0, -1));
             var c = w.ColorAt(r);
-            Assert.True(c.Equals(inner.Material.Color));
+            Assert.Equal(inner.Material.Color, c);
         }
     }
 }
