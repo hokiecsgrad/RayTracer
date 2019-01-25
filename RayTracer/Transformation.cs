@@ -64,6 +64,21 @@ namespace RayTracer
             transform[2, 1] = zy;
             return transform;
         }
+
+        public static Matrix ViewTransform(Point from, Point to, Vector up)
+        {
+            var forward = (to - from).Normalize();
+            var upn = up.Normalize();
+            var left = forward.Cross(upn);
+            var true_up = left.Cross(forward);
+            var orientation = new Matrix(new double[,] { 
+                {left.x, left.y, left.z, 0},
+                {true_up.x, true_up.y, true_up.z, 0},
+                {-forward.x, -forward.y, -forward.z, 0},
+                {0, 0, 0, 1}
+            });
+            return orientation * Transformation.Translation(-from.x, -from.y, -from.z);
+        }
     }
 }
 
