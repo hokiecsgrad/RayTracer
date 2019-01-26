@@ -29,7 +29,7 @@ namespace RayTracer
             Shininess = shininess;
         }
 
-        public Color Lighting(PointLight light, Point point, Vector eye, Vector normal)
+        public Color Lighting(PointLight light, Point point, Vector eye, Vector normal, bool in_shadow = false)
         {
             Color ambient;
             Color diffuse;
@@ -69,7 +69,10 @@ namespace RayTracer
                 }
             }
             // Add the three contributions together to get the final shading
-            return ambient + diffuse + specular;
+            if (in_shadow)
+                return ambient;
+            else
+                return ambient + diffuse + specular;
         }
 
         public override bool Equals(Object other)

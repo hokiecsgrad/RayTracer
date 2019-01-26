@@ -41,6 +41,8 @@ namespace RayTracer
 
         public Intersection Hit(List<Intersection> intersections)
         {
+            // Todo: Is this in the right place?  It doesn't use anything
+            // from Ray class.
             intersections = intersections.OrderBy(i => i.Time).ToList();
             for (int i = 0; i < intersections.Count; i++)
                 if (intersections[i].Time >= 0.0) return intersections[i];

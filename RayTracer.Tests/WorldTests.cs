@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Xunit;
 
 namespace RayTracer.Tests
@@ -95,6 +97,58 @@ namespace RayTracer.Tests
             var r = new Ray(new Point(0, 0, 0.75), new Vector(0, 0, -1));
             var c = w.ColorAt(r);
             Assert.Equal(inner.Material.Color, c);
+        }
+
+        [Fact]
+        public void WhenNothingIsCollinearWithPointAndLight_ShouldBeNoShadow()
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            var p = new Point(0, 10, 0);
+            Assert.False(w.IsShadowed(p));
+        }
+
+        [Fact]
+        public void WhenAnObjectIsBetweenThePointAndTheLight_ShouldBeInShadow()
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            var p = new Point(10, -10, 10);
+            Assert.True(w.IsShadowed(p));
+        }
+
+        [Fact]
+        public void WhenAnObjectIsBehindTheLight_ShouldBeNoShadow()
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            var p = new Point(-20, 20, -20);
+            Assert.False(w.IsShadowed(p));
+        }
+
+        [Fact]
+        public void WhenAnObjectIsBehindThePoint_ShouldBeNoShadow()
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            var p = new Point(-2, 2, -2);
+            Assert.False(w.IsShadowed(p));
+        }
+
+        [Fact]
+        public void WhenShadeHitIsGivenAnIntersectionInShadow_ShouldJustCalcAmbient()
+        {
+            var w = new World();
+            w.Light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
+            var s1 = new Sphere();
+            var s2 = new Sphere();
+            s2.Transform = Transformation.Translation(0, 0, 10);
+            w.Shapes = new List<Sphere> {s1, s2};
+            var r = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
+            var i = new Intersection(4, s2);
+            var comps = i.PrepareComputations(r);
+            var c = w.ShadeHit(comps);
+            Assert.True(c.Equals(new Color(0.1, 0.1, 0.1)));
         }
     }
 }

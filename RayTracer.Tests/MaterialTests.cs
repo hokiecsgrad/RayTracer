@@ -75,5 +75,18 @@ namespace RayTracer.Tests
             var result = m.Lighting(light, position, eye, normal);
             Assert.True(result.Equals(new Color(0.1, 0.1, 0.1)));
         }
+
+        [Fact]
+        public void LightingWithTheSurfaceInShadow_ShouldWork()
+        {
+            var m = new Material();
+            var position = new Point(0, 0, 0);
+            var eye = new Vector(0, 0, -1);
+            var normal = new Vector(0, 0, -1);
+            var light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
+            var in_shadow = true;
+            var result = m.Lighting(light, position, eye, normal, in_shadow);
+            Assert.True(result.Equals(new Color(0.1, 0.1, 0.1)));
+        }
     }
 }

@@ -5,6 +5,8 @@ namespace RayTracer.Tests
 {
     public class IntersectionTests
     {
+        private const double EPSILON = 0.00001;
+        
         [Fact]
         public void CreatingIntersection_ShouldWork()
         {
@@ -49,6 +51,18 @@ namespace RayTracer.Tests
             Assert.True(comps.Eye.Equals(new Vector(0, 0, -1)));
             Assert.True(comps.Inside);
             Assert.True(comps.Normal.Equals(new Vector(0, 0, -1)));
+        }
+
+        [Fact]
+        public void WhenShadingTheHit_ShouldOffsetThePoint()
+        {
+            var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+            var shape = new Sphere();
+            shape.Transform = Transformation.Translation(0, 0, 1);
+            var i = new Intersection(5, shape);
+            var comps = i.PrepareComputations(r);
+            Assert.True(comps.OverPoint.z < -EPSILON/2);
+            Assert.True(comps.Point.z > comps.OverPoint.z);
         }
     }
 }

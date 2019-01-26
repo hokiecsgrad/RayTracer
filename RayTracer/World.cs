@@ -34,8 +34,10 @@ namespace RayTracer
 
         public Color ShadeHit(Comps comps)
         {
+            var shadowed = this.IsShadowed(comps.OverPoint);
+
             // For multiple world level lights, loop over the lights and call this multiple times
-            return comps.Object.Material.Lighting(this.Light, comps.Point, comps.Eye, comps.Normal);
+            return comps.Object.Material.Lighting(this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
         }
 
         public Color ColorAt(Ray ray)
@@ -45,6 +47,20 @@ namespace RayTracer
             var hit = ray.Hit(intersections);
             var comps = hit.PrepareComputations(ray);
             return ShadeHit(comps);
+        }
+
+        public bool IsShadowed(Point point)
+        {
+            var v = this.Light.Position - point;
+            var distance = v.Magnitude();
+            var direction = v.Normalize();
+            var r = new Ray(point, direction);
+            var intersections = this.Intersect(r);
+            var h = r.Hit(intersections);
+            if (h != null && h.Time < distance)
+                return true;
+            else
+                return false;
         }
     }
 }
