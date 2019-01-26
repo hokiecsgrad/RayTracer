@@ -34,10 +34,7 @@ namespace RayTracer.Tests.Smoke
                                           Wind = new Vector(-0.01, 0, 0) };
             
             while (cannonBall.Position.y > 0)
-            {
                 cannonBall = Tick(cannonBall, earth);
-                Console.WriteLine(cannonBall.Position);
-            }
 
             Console.WriteLine($"CannonBall traveled to position {cannonBall.Position.x}");
         }
