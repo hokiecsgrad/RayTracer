@@ -33,7 +33,7 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
             Sphere sphere = new Sphere();
-            List<Intersection> xs = ray.Intersect(sphere);
+            List<Intersection> xs = sphere.Intersect(ray);
             Assert.Equal(2, xs.Count);
             Assert.Equal(4.0, xs[0].Time);
             Assert.Equal(6.0, xs[1].Time);
@@ -44,7 +44,7 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 1, -5), new Vector(0, 0, 1));
             Sphere sphere = new Sphere();
-            List<Intersection> xs = ray.Intersect(sphere);
+            List<Intersection> xs = sphere.Intersect(ray);
             Assert.Equal(2, xs.Count);
             Assert.Equal(5.0, xs[0].Time);
             Assert.Equal(5.0, xs[1].Time);
@@ -55,7 +55,7 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 2, -5), new Vector(0, 0, 1));
             Sphere sphere = new Sphere();
-            List<Intersection> xs = ray.Intersect(sphere);
+            List<Intersection> xs = sphere.Intersect(ray);
             Assert.Equal(0, xs.Count);
         }
 
@@ -64,7 +64,7 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
             Sphere sphere = new Sphere();
-            List<Intersection> xs = ray.Intersect(sphere);
+            List<Intersection> xs = sphere.Intersect(ray);
             Assert.Equal(2, xs.Count);
             Assert.Equal(-1.0, xs[0].Time);
             Assert.Equal(1.0, xs[1].Time);
@@ -75,7 +75,7 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
             Sphere sphere = new Sphere();
-            List<Intersection> xs = ray.Intersect(sphere);
+            List<Intersection> xs = sphere.Intersect(ray);
             Assert.Equal(2, xs.Count);
             Assert.Equal(-6.0, xs[0].Time);
             Assert.Equal(-4.0, xs[1].Time);
@@ -86,8 +86,9 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 0));
             Sphere sphere = new Sphere();
+            World world = new World();
             List<Intersection> xs = new List<Intersection> { new Intersection(1, sphere), new Intersection(2, sphere) };
-            Intersection hit = ray.Hit(xs);
+            Intersection hit = world.Hit(xs);
             Assert.Equal(new Intersection(1, sphere), hit);
         }
 
@@ -96,8 +97,9 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 0));
             Sphere sphere = new Sphere();
+            World world = new World();
             List<Intersection> xs = new List<Intersection> { new Intersection(-1, sphere), new Intersection(1, sphere) };
-            Intersection hit = ray.Hit(xs);
+            Intersection hit = world.Hit(xs);
             Assert.Equal(new Intersection(1, sphere), hit);
         }
 
@@ -106,8 +108,9 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 0));
             Sphere sphere = new Sphere();
+            World world = new World();
             List<Intersection> xs = new List<Intersection> { new Intersection(-2, sphere), new Intersection(-1, sphere) };
-            Intersection hit = ray.Hit(xs);
+            Intersection hit = world.Hit(xs);
             Assert.Equal(null, hit);
         }
 
@@ -116,8 +119,9 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 0));
             Sphere sphere = new Sphere();
+            World world = new World();
             List<Intersection> xs = new List<Intersection> { new Intersection(5, sphere), new Intersection(7, sphere), new Intersection(-3, sphere), new Intersection(2, sphere) };
-            Intersection hit = ray.Hit(xs);
+            Intersection hit = world.Hit(xs);
             Assert.Equal(new Intersection(2, sphere), hit);
         }
 
@@ -163,7 +167,7 @@ namespace RayTracer.Tests
             Ray ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
             Sphere s = new Sphere();
             s.Transform = Transformation.Scaling(2, 2, 2);
-            List<Intersection> xs = ray.Intersect(s);
+            List<Intersection> xs = s.Intersect(ray);
             Assert.Equal(2, xs.Count);
             Assert.Equal(3, xs[0].Time);
             Assert.Equal(7, xs[1].Time);
@@ -175,7 +179,7 @@ namespace RayTracer.Tests
             Ray ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
             Sphere s = new Sphere();
             s.Transform = Transformation.Translation(5, 0, 0);
-            List<Intersection> xs = ray.Intersect(s);
+            List<Intersection> xs = s.Intersect(ray);
             Assert.Equal(0, xs.Count);
         }
     }

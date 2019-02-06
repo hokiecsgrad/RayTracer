@@ -16,6 +16,7 @@ namespace RayTracer.Tests.Smoke
             double wall_z = 10.0;
             double wall_size = 7.0;
 
+            World world = new World();
             Canvas canvas = new Canvas(canvas_pixels, canvas_pixels);
             Color color = new Color(1, 0, 0);
             Sphere shape = new Sphere();
@@ -36,8 +37,8 @@ namespace RayTracer.Tests.Smoke
                     double world_x = -half + pixel_size * x;
                     Point position = new Point(world_x, world_y, wall_z);
                     Ray r = new Ray(ray_origin, (position - ray_origin).Normalize());
-                    List<Intersection> xs = r.Intersect(shape);
-                    if (r.Hit(xs) != null)
+                    List<Intersection> xs = shape.Intersect(r);
+                    if (world.Hit(xs) != null)
                         canvas.SetPixel(x, canvas.Height - y, color);
                 }
             }

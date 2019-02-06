@@ -27,7 +27,7 @@ namespace RayTracer
         {
             List<Intersection> intersections = new List<Intersection>();
             foreach (var shape in Shapes)
-                intersections.AddRange(ray.Intersect(shape));
+                intersections.AddRange(shape.Intersect(ray));
             intersections = intersections.OrderBy(i => i.Time).ToList();
             return intersections;
         }
@@ -40,11 +40,23 @@ namespace RayTracer
             return comps.Object.Material.Lighting(this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
         }
 
+        // TODO: Moved method Hit from Ray to World b/c it didn't really
+        // make sense in the Hit class, but now that I'm using it in the
+        // world class, it doesn't really make sense here either.  Find a
+        // home for this method.
+        public Intersection Hit(List<Intersection> intersections)
+        {
+            intersections = intersections.OrderBy(i => i.Time).ToList();
+            for (int i = 0; i < intersections.Count; i++)
+                if (intersections[i].Time >= 0.0) return intersections[i];
+            return null;
+        }
+
         public Color ColorAt(Ray ray)
         {
             var intersections = this.Intersect(ray);
             if (intersections.Count == 0) return new Color(0,0,0);
-            var hit = ray.Hit(intersections);
+            var hit = this.Hit(intersections);
             var comps = hit.PrepareComputations(ray);
             return ShadeHit(comps);
         }
@@ -56,7 +68,7 @@ namespace RayTracer
             var direction = v.Normalize();
             var r = new Ray(point, direction);
             var intersections = this.Intersect(r);
-            var h = r.Hit(intersections);
+            var h = this.Hit(intersections);
             if (h != null && h.Time < distance)
                 return true;
             else

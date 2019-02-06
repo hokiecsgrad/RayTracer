@@ -1,21 +1,21 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace RayTracer
 {
-    public class Sphere
+    public abstract class Shape
     {
-        public Point Origin { get; }
-        public double Radius { get; }
         public Matrix Transform { get; set; }
         public Material Material { get; set; }
 
-        public Sphere()
+        public Shape()
         {
-            Origin = new Point(0, 0, 0);
-            Radius = 1.0;
             Transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
             Material = new Material();
         }
+
+        public abstract List<Intersection> Intersect(Ray r);
 
         public Vector Normal_at(Point world_point)
         {
