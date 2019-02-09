@@ -15,13 +15,21 @@ namespace RayTracer
             Material = new Material();
         }
 
-        public abstract List<Intersection> Intersect(Ray r);
+        protected abstract List<Intersection> LocalIntersect(Ray r);
+
+        public List<Intersection> Intersect(Ray r)
+        {
+            Ray transformedRay = r.Transform(this.Transform.Inverse());
+            return LocalIntersect(transformedRay);
+        }
+
+        protected abstract Vector LocalNormalAt(Point local_point);
 
         public Vector Normal_at(Point world_point)
         {
-            var object_point = Transform.Inverse() * world_point;
-            var object_normal = object_point - new Point(0, 0, 0);
-            var world_normal =  Transform.Inverse().Transpose() * object_normal;
+            Point local_point = this.Transform.Inverse() * world_point;
+            Vector local_normal = LocalNormalAt(local_point);
+            Vector world_normal = this.Transform.Inverse().Transpose() * local_normal;
             world_normal.w = 0;
             return world_normal.Normalize();
         }
