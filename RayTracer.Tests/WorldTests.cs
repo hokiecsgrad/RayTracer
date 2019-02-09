@@ -143,7 +143,7 @@ namespace RayTracer.Tests
             var s1 = new Sphere();
             var s2 = new Sphere();
             s2.Transform = Transformation.Translation(0, 0, 10);
-            w.Shapes = new List<Sphere> {s1, s2};
+            w.Shapes = new List<Shape> {s1, s2};
             var r = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
             var i = new Intersection(4, s2);
             var comps = i.PrepareComputations(r);
