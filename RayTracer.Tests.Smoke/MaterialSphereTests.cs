@@ -50,7 +50,7 @@ namespace RayTracer.Tests.Smoke
                     if (hit_intersect != null)
                     {
                         var hit_point = r.Position(hit_intersect.Time);
-                        var normal = shape.Normal_at(hit_point);
+                        var normal = shape.NormalAt(hit_point);
                         var eye = -r.Direction;
                         var hit_color = shape.Material.Lighting(light, hit_point, eye, normal);
                         canvas.SetPixel(x, canvas.Height - y, hit_color);

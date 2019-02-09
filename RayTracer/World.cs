@@ -8,7 +8,7 @@ namespace RayTracer
     public class World
     {
         public PointLight Light { get; set; }
-        public List<Sphere> Shapes { get; set; }
+        public List<Shape> Shapes { get; set; }
 
         public World() {}
 
@@ -20,7 +20,7 @@ namespace RayTracer
             s1.Material = m;
             var s2 = new Sphere();
             s2.Transform = Transformation.Scaling(0.5, 0.5, 0.5);
-            Shapes = new List<Sphere> {s1, s2};
+            Shapes = new List<Shape> {s1, s2};
         }
 
         public List<Intersection> Intersect(Ray ray)
@@ -36,7 +36,7 @@ namespace RayTracer
         {
             var shadowed = this.IsShadowed(comps.OverPoint);
 
-            // For multiple world level lights, loop over the lights and call this multiple times
+            // TODO: For multiple world level lights, loop over the lights and call this multiple times
             return comps.Object.Material.Lighting(this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
         }
 
@@ -57,6 +57,7 @@ namespace RayTracer
             var intersections = this.Intersect(ray);
             if (intersections.Count == 0) return new Color(0,0,0);
             var hit = this.Hit(intersections);
+            if (hit == null) return new Color(0,0,0);
             var comps = hit.PrepareComputations(ray);
             return ShadeHit(comps);
         }

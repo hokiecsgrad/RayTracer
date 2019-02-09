@@ -60,7 +60,6 @@ namespace RayTracer.Tests.Smoke
                                 canvas.Height - (int)Math.Round(cannonBall.Position.y), 
                                 new Color(1,0,0));
                 cannonBall = Tick(cannonBall, earth);
-                Console.WriteLine(cannonBall.Position);
             }
 
             Console.WriteLine($"CannonBall traveled to position {cannonBall.Position.x}");

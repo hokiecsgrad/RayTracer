@@ -53,7 +53,7 @@ namespace RayTracer.Tests.Smoke
             left.Material.Specular = 0.3;
 
             World world = new World();
-            world.Shapes = new List<Sphere> {left, right, middle, floor, left_wall, right_wall};
+            world.Shapes = new List<Shape> {left, right, middle, floor, left_wall, right_wall};
             world.Light = new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1));
 
             Camera camera = new Camera(200, 120, Math.PI/3);

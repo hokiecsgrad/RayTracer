@@ -25,7 +25,7 @@ namespace RayTracer
 
         protected abstract Vector LocalNormalAt(Point local_point);
 
-        public Vector Normal_at(Point world_point)
+        public Vector NormalAt(Point world_point)
         {
             Point local_point = this.Transform.Inverse() * world_point;
             Vector local_normal = LocalNormalAt(local_point);

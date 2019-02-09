@@ -6,30 +6,16 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class FirstWorldTests
+    public class BasicSceneWithPlanesTests
     {
         [Fact]
         public void RenderBasicScene()
         {
-            Sphere floor = new Sphere();
+            Plane floor = new Plane();
             floor.Transform = Transformation.Scaling(10, 0.01, 10);
             floor.Material = new Material();
             floor.Material.Color = new Color(1, 0.9, 0.9);
             floor.Material.Specular = 0;
-
-            Sphere left_wall = new Sphere();
-            left_wall.Transform = Transformation.Translation(0, 0, 5) *
-                                    Transformation.Rotation_y(-Math.PI/4) * 
-                                    Transformation.Rotation_x(Math.PI/2) *
-                                    Transformation.Scaling(10, 0.01, 10);
-            left_wall.Material = floor.Material;
-
-            Sphere right_wall = new Sphere();
-            right_wall.Transform = Transformation.Translation(0, 0, 5) *
-                                    Transformation.Rotation_y(Math.PI/4) * 
-                                    Transformation.Rotation_x(Math.PI/2) *
-                                    Transformation.Scaling(10, 0.01, 10);
-            right_wall.Material = floor.Material;
 
             Sphere middle = new Sphere();
             middle.Transform = Transformation.Translation(-0.5, 1, 0.5);
@@ -53,7 +39,7 @@ namespace RayTracer.Tests.Smoke
             left.Material.Specular = 0.3;
 
             World world = new World();
-            world.Shapes = new List<Shape> {left, right, middle, floor, left_wall, right_wall};
+            world.Shapes = new List<Shape> {left, right, middle, floor};
             world.Light = new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1));
 
             Camera camera = new Camera(200, 120, Math.PI/3);
@@ -63,7 +49,7 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/FirstBasicSceneSmokeTest.ppm";
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/BasicSceneWithPlanes.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);
