@@ -6,6 +6,7 @@ namespace RayTracer
     {
         private const double EPSILON = 0.00001;
         public Color Color { get; set; }
+        public Pattern Pattern { get; set; }
         public double Ambient { get; set; }
         public double Diffuse { get; set; }
         public double Specular { get; set; }
@@ -14,6 +15,7 @@ namespace RayTracer
         public Material()
         {
             Color = new Color(1, 1, 1);
+            Pattern = null;
             Ambient = 0.1;
             Diffuse = 0.9;
             Specular = 0.9;
@@ -23,20 +25,37 @@ namespace RayTracer
         public Material(Color color, double ambient, double diffuse, double specular, double shininess)
         {
             Color = color;
+            Pattern = null;
             Ambient = ambient;
             Diffuse = diffuse;
             Specular = specular;
             Shininess = shininess;
         }
 
-        public Color Lighting(PointLight light, Point point, Vector eye, Vector normal, bool in_shadow = false)
+        public Material(Color color, Pattern pattern, double ambient, double diffuse, double specular, double shininess)
+        {
+            Color = color;
+            Pattern = pattern;
+            Ambient = ambient;
+            Diffuse = diffuse;
+            Specular = specular;
+            Shininess = shininess;
+        }
+
+        public Color Lighting(Shape shape, PointLight light, Point point, Vector eye, Vector normal, bool in_shadow = false)
         {
             Color ambient;
             Color diffuse;
             Color specular;
+            Color color;
+
+            if (this.Pattern != null)
+                color = this.Pattern.PatternAtShape(shape, point);
+            else
+                color = this.Color;
 
             // combine the surface color with the light's color/intensity
-            var effective_color = this.Color * light.Intensity;
+            var effective_color = color * light.Intensity;
             // find the direction to the light source
             var lightv = (light.Position - point).Normalize();
             // compute the ambient contribution

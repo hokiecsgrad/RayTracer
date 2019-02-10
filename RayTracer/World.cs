@@ -37,7 +37,7 @@ namespace RayTracer
             var shadowed = this.IsShadowed(comps.OverPoint);
 
             // TODO: For multiple world level lights, loop over the lights and call this multiple times
-            return comps.Object.Material.Lighting(this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
+            return comps.Object.Material.Lighting(comps.Object, this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
         }
 
         // TODO: Moved method Hit from Ray to World b/c it didn't really
