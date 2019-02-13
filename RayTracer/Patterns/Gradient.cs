@@ -2,12 +2,12 @@ using System;
 
 namespace RayTracer
 {
-    public class StripePattern : Pattern
+    public class Gradient : Pattern
     {
         public Color a;
         public Color b;
 
-        public StripePattern(Color a, Color b)
+        public Gradient(Color a, Color b)
         {
             this.a = a;
             this.b = b;
@@ -15,10 +15,9 @@ namespace RayTracer
 
         public override Color PatternAt(Point point)
         {
-            if (Math.Floor(point.x) % 2 == 0)
-                return a;
-            else
-                return b;
+            var distance = this.b - this.a;
+            var fraction = point.x - Math.Floor(point.x);
+            return this.a + distance * fraction;
         }
     }
 }

@@ -100,7 +100,7 @@ namespace RayTracer.Tests
         {
             var s = new Sphere();
             var m = new Material();
-            m.Pattern = new StripePattern(new Color(1, 1, 1), new Color(0, 0, 0));
+            m.Pattern = new Stripe(new Color(1, 1, 1), new Color(0, 0, 0));
             m.Ambient = 1;
             m.Diffuse = 0;
             m.Specular = 0;
