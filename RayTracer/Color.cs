@@ -4,7 +4,7 @@ namespace RayTracer
 {
     public class Color
     {
-        private const double EPSILON = 0.00001;
+        private const double EPSILON = 0.0001;
         public double Red, Green, Blue;
 
         public Color(double red, double green, double blue)

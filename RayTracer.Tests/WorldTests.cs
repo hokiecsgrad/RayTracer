@@ -150,5 +150,68 @@ namespace RayTracer.Tests
             var c = w.ShadeHit(comps);
             Assert.True(c.Equals(new Color(0.1, 0.1, 0.1)));
         }
+
+        [Fact]
+        public void TheReflectedColorForNonReflectiveMaterial_ShouldBeBlack()
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            var r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+            var shape = w.Shapes[1];
+            shape.Material.Ambient = 1;
+            var i = new Intersection(1, shape);
+            var comps = i.PrepareComputations(r);
+            var color = w.ReflectedColor(comps);
+            Assert.True(color.Equals(new Color(0, 0, 0)));
+        }
+
+        [Fact]
+        public void TheReflectedColorForReflectiveMaterial_ShouldBeRightColor()
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            var shape = new Plane();
+            shape.Material.Reflective = 0.5;
+            shape.Transform = Transformation.Translation(0, -1, 0);
+            w.Shapes = new List<Shape> {w.Shapes[0], w.Shapes[1], shape};
+            var r = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2)/2, Math.Sqrt(2)/2));
+            var i = new Intersection(Math.Sqrt(2), shape);
+            var comps = i.PrepareComputations(r);
+            var color = w.ShadeHit(comps);
+            Assert.True(color.Equals(new Color(0.87677, 0.92436, 0.82918)));
+        }
+
+        [Fact]
+        public void ColorAtWithMutuallyReflectiveSurfaces_ShouldTerminateWithoutInfinteLoop()
+        {
+            var w = new World();
+            w.Light = new PointLight(new Point(0, 0, 0), new Color(1, 1, 1));
+            var lower = new Plane();
+            lower.Material.Reflective = 1;
+            lower.Transform = Transformation.Translation(0, -1, 0);
+            var upper = new Plane();
+            upper.Material.Reflective = 1;
+            upper.Transform = Transformation.Translation(0, 1, 0);
+            w.Shapes = new List<Shape> {lower, upper};
+            var r = new Ray(new Point(0, 0, 0), new Vector(0, 1, 0));
+            w.ColorAt(r);
+            Assert.True(true);
+        }      
+
+        [Fact]
+        public void TheReflectedColorAtMaxRecursionDepth_ShouldTerminateAsBlack()
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            var shape = new Plane();
+            shape.Material.Reflective = 0.5;
+            shape.Transform = Transformation.Translation(0, -1, 0);
+            w.Shapes = new List<Shape> {w.Shapes[0], w.Shapes[1], shape};
+            var r = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2)/2, Math.Sqrt(2)/2));
+            var i = new Intersection(Math.Sqrt(2), shape);
+            var comps = i.PrepareComputations(r);
+            var color = w.ReflectedColor(comps, 0);
+            Assert.True(color.Equals(new Color(0, 0, 0)));
+        }
     }
 }

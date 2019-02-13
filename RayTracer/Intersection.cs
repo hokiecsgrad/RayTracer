@@ -14,8 +14,9 @@ namespace RayTracer
         public Vector Normal;
         public bool Inside;
         public Point OverPoint;
+        public Vector Reflect;
 
-        public Comps(double time, Shape shape, Point point, Vector eye, Vector norm, bool inside, Point over_point)
+        public Comps(double time, Shape shape, Point point, Vector eye, Vector norm, bool inside, Point over_point, Vector reflect)
         {
             Time = time;
             Object = shape;
@@ -24,6 +25,7 @@ namespace RayTracer
             Normal = norm;
             Inside = inside;
             OverPoint = over_point;
+            Reflect = reflect;
         }
     }
 
@@ -56,6 +58,8 @@ namespace RayTracer
             }
             else
                 comps.Inside = false;
+
+            comps.Reflect = ray.Direction.Reflect(comps.Normal);
 
             comps.OverPoint = comps.Point + comps.Normal * EPSILON;
 

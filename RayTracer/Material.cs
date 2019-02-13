@@ -11,6 +11,7 @@ namespace RayTracer
         public double Diffuse { get; set; }
         public double Specular { get; set; }
         public double Shininess { get; set; }
+        public double Reflective { get; set; }
 
         public Material()
         {
@@ -20,6 +21,7 @@ namespace RayTracer
             Diffuse = 0.9;
             Specular = 0.9;
             Shininess = 200.0;
+            Reflective = 0.0;
         }
 
         public Material(Color color, double ambient, double diffuse, double specular, double shininess)
@@ -30,6 +32,7 @@ namespace RayTracer
             Diffuse = diffuse;
             Specular = specular;
             Shininess = shininess;
+            Reflective = 0.0;
         }
 
         public Material(Color color, Pattern pattern, double ambient, double diffuse, double specular, double shininess)
@@ -40,6 +43,7 @@ namespace RayTracer
             Diffuse = diffuse;
             Specular = specular;
             Shininess = shininess;
+            Reflective = 0.0;
         }
 
         public Color Lighting(Shape shape, PointLight light, Point point, Vector eye, Vector normal, bool in_shadow = false)

@@ -112,5 +112,12 @@ namespace RayTracer.Tests
             Assert.True(c1.Equals(new Color(1, 1, 1)));
             Assert.True(c2.Equals(new Color(0, 0, 0)));
         }
+
+        [Fact]
+        public void ReflectivityForTheDefaultMaterial_ShouldExist()
+        {
+            var m = new Material();
+            Assert.Equal(0, m.Reflective);
+        }
     }
 }

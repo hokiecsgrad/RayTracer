@@ -64,5 +64,15 @@ namespace RayTracer.Tests
             Assert.True(comps.OverPoint.z < -EPSILON/2);
             Assert.True(comps.Point.z > comps.OverPoint.z);
         }
+
+        [Fact]
+        public void PrepareComs_ShouldPrecomputTheReflectionVector()
+        {
+            var shape = new Plane();
+            var r = new Ray(new Point(0, 1, -1), new Vector(0, -Math.Sqrt(2)/2, Math.Sqrt(2)/2));
+            var i = new Intersection(Math.Sqrt(2), shape);
+            var comps = i.PrepareComputations(r);
+            Assert.True(comps.Reflect.Equals(new Vector(0, Math.Sqrt(2)/2, Math.Sqrt(2)/2)));
+        }
     }
 }

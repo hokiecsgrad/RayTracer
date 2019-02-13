@@ -32,12 +32,13 @@ namespace RayTracer
             return intersections;
         }
 
-        public Color ShadeHit(Comps comps)
+        public Color ShadeHit(Comps comps, int remaining = 5)
         {
             var shadowed = this.IsShadowed(comps.OverPoint);
-
             // TODO: For multiple world level lights, loop over the lights and call this multiple times
-            return comps.Object.Material.Lighting(comps.Object, this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
+            var surface = comps.Object.Material.Lighting(comps.Object, this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
+            var reflected = this.ReflectedColor(comps, remaining);
+            return surface + reflected;
         }
 
         // TODO: Moved method Hit from Ray to World b/c it didn't really
@@ -52,14 +53,24 @@ namespace RayTracer
             return null;
         }
 
-        public Color ColorAt(Ray ray)
+        public Color ReflectedColor(Comps comps, int remaining = 5)
+        {
+            if (remaining < 1 || comps.Object.Material.Reflective == 0)
+                return new Color(0, 0, 0);
+
+            var reflectRay = new Ray(comps.OverPoint, comps.Reflect);
+            var color = this.ColorAt(reflectRay, remaining - 1);
+            return color * comps.Object.Material.Reflective;
+        }
+
+        public Color ColorAt(Ray ray, int remaining = 5)
         {
             var intersections = this.Intersect(ray);
             if (intersections.Count == 0) return new Color(0,0,0);
             var hit = this.Hit(intersections);
             if (hit == null) return new Color(0,0,0);
             var comps = hit.PrepareComputations(ray);
-            return ShadeHit(comps);
+            return ShadeHit(comps, remaining);
         }
 
         public bool IsShadowed(Point point)
