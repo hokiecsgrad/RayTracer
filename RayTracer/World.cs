@@ -38,19 +38,8 @@ namespace RayTracer
             // TODO: For multiple world level lights, loop over the lights and call this multiple times
             var surface = comps.Object.Material.Lighting(comps.Object, this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
             var reflected = this.ReflectedColor(comps, remaining);
-            return surface + reflected;
-        }
-
-        // TODO: Moved method Hit from Ray to World b/c it didn't really
-        // make sense in the Hit class, but now that I'm using it in the
-        // world class, it doesn't really make sense here either.  Find a
-        // home for this method.
-        public Intersection Hit(List<Intersection> intersections)
-        {
-            intersections = intersections.OrderBy(i => i.Time).ToList();
-            for (int i = 0; i < intersections.Count; i++)
-                if (intersections[i].Time >= 0.0) return intersections[i];
-            return null;
+            var refracted = this.RefractedColor(comps, remaining);
+            return surface + reflected + refracted;
         }
 
         public Color ReflectedColor(Comps comps, int remaining = 5)
@@ -63,13 +52,39 @@ namespace RayTracer
             return color * comps.Object.Material.Reflective;
         }
 
+        public Color RefractedColor(Comps comps, int remaining = 5)
+        {
+            if (remaining < 1 || comps.Object.Material.Transparency == 0)
+                return new Color(0, 0, 0);
+
+            // Find the ratio of first index of refraction to the second.
+            // (Yup, this is inverted from the definition of Snell's Law.)
+            var n_ratio = comps.n1 / comps.n2;
+            // cos(theta_i) is the same as the dot product of the two vectors
+            var cos_i = comps.Eye.Dot(comps.Normal);
+            // Find sin(theta_t)^2 via trigonometric identity
+            var sin2_t = n_ratio*n_ratio * (1 - cos_i*cos_i);
+            if (sin2_t > 1)
+                return new Color(0,0,0);
+
+            // Find cos(theta_t) via trigonometric identity
+            var cos_t = Math.Sqrt(1.0 - sin2_t);
+            // Compute the direction of the refracted ray
+            var direction = comps.Normal * (n_ratio * cos_i - cos_t) - comps.Eye * n_ratio;
+            // Create the refracted ray
+            var refract_ray = new Ray(comps.UnderPoint, direction);
+            // Find the color of the refracted ray, making sure to multiply
+            // by the transparency value to account for any opacity
+            return this.ColorAt(refract_ray, remaining - 1) * comps.Object.Material.Transparency;
+        }
+
         public Color ColorAt(Ray ray, int remaining = 5)
         {
             var intersections = this.Intersect(ray);
             if (intersections.Count == 0) return new Color(0,0,0);
-            var hit = this.Hit(intersections);
+            var hit = ray.Hit(intersections);
             if (hit == null) return new Color(0,0,0);
-            var comps = hit.PrepareComputations(ray);
+            var comps = hit.PrepareComputations(ray, intersections);
             return ShadeHit(comps, remaining);
         }
 
@@ -80,7 +95,7 @@ namespace RayTracer
             var direction = v.Normalize();
             var r = new Ray(point, direction);
             var intersections = this.Intersect(r);
-            var h = this.Hit(intersections);
+            var h = r.Hit(intersections);
             if (h != null && h.Time < distance)
                 return true;
             else

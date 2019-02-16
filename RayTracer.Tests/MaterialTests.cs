@@ -1,8 +1,19 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Xunit;
 
 namespace RayTracer.Tests
 {
+    public class GlassSphere : Sphere
+    {
+        public GlassSphere() 
+        {
+            this.Material.Transparency = 1.0;
+            this.Material.RefractiveIndex = 1.5;
+        }
+    }
+
     public class MaterialTests
     {
         [Fact]
@@ -114,10 +125,27 @@ namespace RayTracer.Tests
         }
 
         [Fact]
-        public void ReflectivityForTheDefaultMaterial_ShouldExist()
+        public void ReflectivityForTheDefaultMaterial_ShouldExistAndDefaultTo0()
         {
             var m = new Material();
             Assert.Equal(0, m.Reflective);
+        }
+
+        [Fact]
+        public void TransparencyAndRefractiveIndexForDefaultMaterial_ShouldExistAndDefaultTo0And1Respectively()
+        {
+            var m = new Material();
+            Assert.Equal(0.0, m.Transparency);
+            Assert.Equal(1.0, m.RefractiveIndex);
+        }
+
+        [Fact]
+        public void HelperClassForProducingSphereWithGlassyMaterial_ShouldExist()
+        {
+            var s = new GlassSphere();
+            Assert.True(s.Transform.Equals(new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} })));
+            Assert.Equal(1.0, s.Material.Transparency);
+            Assert.Equal(1.5, s.Material.RefractiveIndex);
         }
     }
 }

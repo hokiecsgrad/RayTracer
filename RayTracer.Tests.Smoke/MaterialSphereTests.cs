@@ -46,7 +46,7 @@ namespace RayTracer.Tests.Smoke
                     Point position = new Point(world_x, world_y, wall_z);
                     Ray r = new Ray(ray_origin, (position - ray_origin).Normalize());
                     List<Intersection> xs = shape.Intersect(r);
-                    var hit_intersect = world.Hit(xs);
+                    var hit_intersect = r.Hit(xs);
                     if (hit_intersect != null)
                     {
                         var hit_point = r.Position(hit_intersect.Time);

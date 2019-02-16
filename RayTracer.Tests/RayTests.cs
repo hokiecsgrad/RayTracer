@@ -86,9 +86,8 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 0));
             Sphere sphere = new Sphere();
-            World world = new World();
             List<Intersection> xs = new List<Intersection> { new Intersection(1, sphere), new Intersection(2, sphere) };
-            Intersection hit = world.Hit(xs);
+            Intersection hit = ray.Hit(xs);
             Assert.Equal(new Intersection(1, sphere), hit);
         }
 
@@ -97,9 +96,8 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 0));
             Sphere sphere = new Sphere();
-            World world = new World();
             List<Intersection> xs = new List<Intersection> { new Intersection(-1, sphere), new Intersection(1, sphere) };
-            Intersection hit = world.Hit(xs);
+            Intersection hit = ray.Hit(xs);
             Assert.Equal(new Intersection(1, sphere), hit);
         }
 
@@ -108,9 +106,8 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 0));
             Sphere sphere = new Sphere();
-            World world = new World();
             List<Intersection> xs = new List<Intersection> { new Intersection(-2, sphere), new Intersection(-1, sphere) };
-            Intersection hit = world.Hit(xs);
+            Intersection hit = ray.Hit(xs);
             Assert.Equal(null, hit);
         }
 
@@ -119,9 +116,8 @@ namespace RayTracer.Tests
         {
             Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 0));
             Sphere sphere = new Sphere();
-            World world = new World();
             List<Intersection> xs = new List<Intersection> { new Intersection(5, sphere), new Intersection(7, sphere), new Intersection(-3, sphere), new Intersection(2, sphere) };
-            Intersection hit = world.Hit(xs);
+            Intersection hit = ray.Hit(xs);
             Assert.Equal(new Intersection(2, sphere), hit);
         }
 
