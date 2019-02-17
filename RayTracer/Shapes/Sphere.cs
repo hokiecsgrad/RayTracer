@@ -15,7 +15,7 @@ namespace RayTracer
             Radius = 1.0;
         }
 
-        protected override List<Intersection> LocalIntersect(Ray r)
+        public override List<Intersection> LocalIntersect(Ray r)
         {
             var shapeToRay = r.Origin - this.Origin;
             double a = r.Direction.Dot(r.Direction);
@@ -31,7 +31,7 @@ namespace RayTracer
             return new List<Intersection> { new Intersection(t1, this), new Intersection(t2, this) };
         }
 
-        protected override Vector LocalNormalAt(Point local_point)
+        public override Vector LocalNormalAt(Point local_point)
         {
             var object_normal = local_point - new Point(0, 0, 0);    
             return object_normal.Normalize();        
