@@ -39,7 +39,15 @@ namespace RayTracer
             var surface = comps.Object.Material.Lighting(comps.Object, this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
             var reflected = this.ReflectedColor(comps, remaining);
             var refracted = this.RefractedColor(comps, remaining);
-            return surface + reflected + refracted;
+
+            var material = comps.Object.Material;
+            if (material.Reflective > 0 && material.Transparency > 0)
+            {
+                var reflectance = comps.Schlick();
+                return surface + reflected * reflectance + refracted * (1 - reflectance);
+            } 
+            else
+                return surface + reflected + refracted;
         }
 
         public Color ReflectedColor(Comps comps, int remaining = 5)

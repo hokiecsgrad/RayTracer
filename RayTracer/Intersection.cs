@@ -35,6 +35,29 @@ namespace RayTracer
             n1 = nOne;
             n2 = nTwo;
         }
+
+        // This might help clear some of this stuff up:
+        // http://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
+        public double Schlick()
+        {
+            // find the cosine of the angle between the eye and normal vectors
+            var cos = Eye.Dot(Normal);
+            // total internal reflection can only occur if n1 > n2
+            if (n1 > n2)
+            {
+                var n = n1 / n2;
+                var sin2_t = n*n * (1.0 - cos*cos);
+                if (sin2_t > 1.0)
+                    return 1.0;
+
+                // compute cosine of theta_t using trig identity
+                var cos_t = Math.Sqrt(1.0 - sin2_t);
+                // when n1 > n2, use cos(theta_t) instead
+                cos = cos_t;
+            }
+            var r0 = Math.Pow((n1 - n2) / (n1 + n2), 2);
+            return r0 + (1 - r0) * Math.Pow(1 - cos, 5);
+        }
     }
 
 

@@ -133,6 +133,58 @@ namespace RayTracer.Tests
             var comps = i.PrepareComputations(r, xs);
             Assert.True(comps.UnderPoint.z > EPSILON/2);
             Assert.True(comps.Point.z < comps.UnderPoint.z);
-        }       
+        }
+
+        [Fact]
+        public void SchlickApproximationUnderTotalInternalReflection_ShouldReturn1()
+        {
+            var shape = new GlassSphere();
+            var r = new Ray(new Point(0, 0, Math.Sqrt(2)/2), new Vector(0, 1, 0));
+            var xs = new List<Intersection> { new Intersection(-Math.Sqrt(2)/2,shape), new Intersection(Math.Sqrt(2)/2,shape) };
+            var comps = xs[1].PrepareComputations(r, xs);
+            Assert.Equal(1.0, comps.Schlick());
+        }
+
+        [Fact]
+        public void SchlickApproximationWithPerpendicularViewingAngle_ShouldBeSmall()
+        {
+            var shape = new GlassSphere();
+            var r = new Ray(new Point(0, 0, 0), new Vector(0, 1, 0));
+            var xs = new List<Intersection> { new Intersection(-1, shape), new Intersection(1, shape) };
+            var comps = xs[1].PrepareComputations(r, xs);
+            Assert.Equal(0.04, comps.Schlick(), 2);
+        }
+
+        [Fact]
+        public void SchlickApproximationWithSmallAngleAndN2GreaterThanN1_ShouldBeSignificant()
+        {
+            var shape = new GlassSphere();
+            var r = new Ray(new Point(0, 0.99, -2), new Vector(0, 0, 1));
+            var xs = new List<Intersection> { new Intersection(1.8589, shape) };
+            var comps = xs[0].PrepareComputations(r, xs);
+            Assert.Equal(0.48873, comps.Schlick(), 4);
+        }
+
+        [Fact]
+        public void ShadeHitWithReflectiveAndTransparentMaterial_ShouldUseSchlickValue()
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            var r = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2)/2, Math.Sqrt(2)/2));
+            var floor = new Plane();
+            floor.Transform = Transformation.Translation(0, -1, 0);
+            floor.Material.Reflective = 0.5;
+            floor.Material.Transparency = 0.5;
+            floor.Material.RefractiveIndex = 1.5;
+            var ball = new Sphere();
+            ball.Material.Color = new Color(1, 0, 0);
+            ball.Material.Ambient = 0.5;
+            ball.Transform = Transformation.Translation(0, -3.5, -0.5);
+            w.Shapes = new List<Shape> {w.Shapes[0], w.Shapes[1], floor, ball};
+            var xs = new List<Intersection> { new Intersection(Math.Sqrt(2), floor) };
+            var comps = xs[0].PrepareComputations(r, xs);
+            var color = w.ShadeHit(comps, 5);
+            Assert.True(color.Equals(new Color(0.93391, 0.69643, 0.69243)));
+        }
     }
 }

@@ -6,7 +6,12 @@ namespace RayTracer
 {
     public abstract class Shape
     {
-        public Matrix Transform { get; set; }
+        private Matrix CacheTransformInverse = null;
+        private Matrix _transform;
+        public Matrix Transform { 
+            get { return _transform; } 
+            set { _transform = value; CacheTransformInverse = value.Inverse(); }
+        }
         public Material Material { get; set; }
 
         public Shape()
@@ -19,7 +24,7 @@ namespace RayTracer
 
         public List<Intersection> Intersect(Ray r)
         {
-            Ray transformedRay = r.Transform(this.Transform.Inverse());
+            Ray transformedRay = r.Transform(this.CacheTransformInverse);
             return LocalIntersect(transformedRay);
         }
 
@@ -27,9 +32,9 @@ namespace RayTracer
 
         public Vector NormalAt(Point world_point)
         {
-            Point local_point = this.Transform.Inverse() * world_point;
+            Point local_point = this.CacheTransformInverse * world_point;
             Vector local_normal = LocalNormalAt(local_point);
-            Vector world_normal = this.Transform.Inverse().Transpose() * local_normal;
+            Vector world_normal = this.CacheTransformInverse.Transpose() * local_normal;
             world_normal.w = 0;
             return world_normal.Normalize();
         }

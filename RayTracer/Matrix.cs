@@ -151,5 +151,17 @@ namespace RayTracer
 
             return true;
         }
+
+        public override string ToString() 
+        {
+            string output = String.Empty;
+            for (int row = 0; row < Rows; row++)
+            {
+                for (int col = 0; col < Cols; col++)
+                    output += (Data[row,col]) + " ";
+                output += "\n";
+            }
+            return output;
+        }
     }
 }
