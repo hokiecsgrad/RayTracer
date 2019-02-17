@@ -37,6 +37,7 @@ namespace RayTracer
             var shadowed = this.IsShadowed(comps.OverPoint);
             // TODO: For multiple world level lights, loop over the lights and call this multiple times
             var surface = comps.Object.Material.Lighting(comps.Object, this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
+            
             var reflected = this.ReflectedColor(comps, remaining);
             var refracted = this.RefractedColor(comps, remaining);
 
@@ -104,7 +105,8 @@ namespace RayTracer
             var r = new Ray(point, direction);
             var intersections = this.Intersect(r);
             var h = r.Hit(intersections);
-            if (h != null && h.Time < distance)
+            
+            if (h != null && h.Time < distance && h.Object.CastsShadow)
                 return true;
             else
                 return false;

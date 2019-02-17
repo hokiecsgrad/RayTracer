@@ -13,6 +13,7 @@ namespace RayTracer
             set { _transform = value; CacheTransformInverse = value.Inverse(); }
         }
         public Material Material { get; set; }
+        public bool CastsShadow = true;
 
         public Shape()
         {
@@ -20,7 +21,7 @@ namespace RayTracer
             Material = new Material();
         }
 
-        protected abstract List<Intersection> LocalIntersect(Ray r);
+        public abstract List<Intersection> LocalIntersect(Ray r);
 
         public List<Intersection> Intersect(Ray r)
         {
@@ -28,7 +29,7 @@ namespace RayTracer
             return LocalIntersect(transformedRay);
         }
 
-        protected abstract Vector LocalNormalAt(Point local_point);
+        public abstract Vector LocalNormalAt(Point local_point);
 
         public Vector NormalAt(Point world_point)
         {
