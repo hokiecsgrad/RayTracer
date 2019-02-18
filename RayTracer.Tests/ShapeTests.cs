@@ -214,5 +214,173 @@ namespace RayTracer.Tests
 
             return allData;
         }
+
+        [Theory]
+        [MemberData(nameof(GetMissingCylinderData))]
+        public void RayMissesCylinder_ShouldReturnNoIntersections(Point origin, Vector direction)
+        {
+            var cyl = new Cylinder();
+            var dir = direction.Normalize();
+            var r = new Ray(origin, direction);
+            var xs = cyl.LocalIntersect(r);
+            Assert.Equal(0, xs.Count);
+        }
+
+        public static IEnumerable<object[]> GetMissingCylinderData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(1, 0, 0), new Vector(0, 1, 0) },
+                new object[] { new Point(0, 0, 0), new Vector(0, 1, 0) },
+                new object[] { new Point(0, 0, -5), new Vector(1, 1, 1) },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCylinderData))]
+        public void RayStrikesCylinder_ShouldWork(Point origin, Vector direction, double t0, double t1)
+        {
+            var cyl = new Cylinder();
+            var dir = direction.Normalize();
+            var r = new Ray(origin, dir);
+            var xs = cyl.LocalIntersect(r);
+            Assert.Equal(2, xs.Count);
+            Assert.Equal(t0, xs[0].Time, 4);
+            Assert.Equal(t1, xs[1].Time, 4);
+        }
+
+        public static IEnumerable<object[]> GetCylinderData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(1, 0, -5), new Vector(0, 0, 1), 5, 5 },
+                new object[] { new Point(0, 0, -5), new Vector(0, 0, 1), 4, 6 },
+                new object[] { new Point(0.5, 0, -5), new Vector(0.1, 1, 1), 6.80798, 7.08872 },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCylinderNormalData))]
+        public void NormalOnSurfaceOfCylinder_ShouldWork(Point point, Vector normal)
+        {
+            var cyl = new Cylinder();
+            var n = cyl.LocalNormalAt(point);
+            Assert.True(n.Equals(normal));
+        }
+
+        public static IEnumerable<object[]> GetCylinderNormalData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(1, 0, 0), new Vector(1, 0, 0) },
+                new object[] { new Point(0, 5, -1), new Vector(0, 0, -1) },
+                new object[] { new Point(0, -2, 1), new Vector(0, 0, 1) },
+                new object[] { new Point(-1, 1, 0), new Vector(-1, 0, 0) },
+            };
+
+            return allData;
+        }
+
+        [Fact]
+        public void DefaultMinimumAndMaximumForCylinders_ShouldBeInfinity()
+        {
+            var cyl = new Cylinder();
+            Assert.True(double.IsInfinity(cyl.Minimum));
+            Assert.True(double.IsInfinity(cyl.Maximum));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCylinderIntersectData))]
+        public void IntersectingConstrainedCylinder_ShouldWork(Point point, Vector direction, int count)
+        {
+            var cyl = new Cylinder();
+            cyl.Minimum = 1;
+            cyl.Maximum = 2;
+            var dir = direction.Normalize();
+            var r = new Ray(point, dir);
+            var xs = cyl.LocalIntersect(r);
+            Assert.Equal(count, xs.Count);
+        }
+
+        public static IEnumerable<object[]> GetCylinderIntersectData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(0, 1.5, 0), new Vector(0.1, 1, 0), 0 },
+                new object[] { new Point(0, 3, -5), new Vector(0, 0, 1), 0 },
+                new object[] { new Point(0, 0, -5), new Vector(0, 0, 1), 0 },
+                new object[] { new Point(0, 2, -5), new Vector(0, 0, 1), 0 },
+                new object[] { new Point(0, 1, -5), new Vector(0, 0, 1), 0 },
+                new object[] { new Point(0, 1.5, -2), new Vector(0, 0, 1), 2 },
+            };
+
+            return allData;
+        }
+
+        [Fact]
+        public void DefaultClosedValueForCylinder_ShouldBeFalse()
+        {
+            var cyl = new Cylinder();
+            Assert.False(cyl.Closed);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCylinderCappedData))]
+        public void IntersectingTheCapsOfClosedCylinder_ShouldWork(Point point, Vector direction, int count)
+        {
+            var cyl = new Cylinder();
+            cyl.Minimum = 1;
+            cyl.Maximum = 2;
+            cyl.Closed = true;
+            var dir = direction.Normalize();
+            var r = new Ray(point, dir);
+            var xs = cyl.LocalIntersect(r);
+            Assert.Equal(count, xs.Count);
+        }
+
+        public static IEnumerable<object[]> GetCylinderCappedData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(0, 3, 0), new Vector(0, -1, 0), 2 },
+                new object[] { new Point(0, 3, -2), new Vector(0, -1, 2), 2 },
+                new object[] { new Point(0, 4, -2), new Vector(0, -1, 1), 2 }, // corner case
+                new object[] { new Point(0, 0, -2), new Vector(0, 1, 2), 2 },
+                new object[] { new Point(0, -1, -2), new Vector(0, 1, 1), 2 }, // corner case
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCylinderCappedNormalData))]
+        public void NormalVectorOnCylindersEndCaps_ShouldWorkLikePlanes(Point point, Vector normal)
+        {
+            var cyl = new Cylinder();
+            cyl.Minimum = 1;
+            cyl.Maximum = 2;
+            cyl.Closed = true;
+            var n = cyl.LocalNormalAt(point);
+            Assert.True(n.Equals(normal));
+        }
+
+        public static IEnumerable<object[]> GetCylinderCappedNormalData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(0, 1, 0), new Vector(0, -1, 0) },
+                new object[] { new Point(0.5, 1, 0), new Vector(0, -1, 0) },
+                new object[] { new Point(0, 1, 0.5), new Vector(0, -1, 0) },
+                new object[] { new Point(0, 2, 0), new Vector(0, 1, 0) },
+                new object[] { new Point(0.5, 2, 0), new Vector(0, 1, 0) },
+                new object[] { new Point(0, 2, 0.5), new Vector(0, 1, 0) },       
+            };
+
+            return allData;
+        }
     }
 }
