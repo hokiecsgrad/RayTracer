@@ -36,7 +36,7 @@ namespace RayTracer
         {
             var shadowed = this.IsShadowed(comps.OverPoint);
             // TODO: For multiple world level lights, loop over the lights and call this multiple times
-            var surface = comps.Object.Material.Lighting(comps.Object, this.Light, comps.Point, comps.Eye, comps.Normal, shadowed);
+            var surface = comps.Object.Material.Lighting(comps.Object, this.Light, comps.OverPoint, comps.Eye, comps.Normal, shadowed);
             
             var reflected = this.ReflectedColor(comps, remaining);
             var refracted = this.RefractedColor(comps, remaining);
