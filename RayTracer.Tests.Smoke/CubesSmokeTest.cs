@@ -18,10 +18,10 @@ namespace RayTracer.Tests.Smoke
 
             // floor/ceiling
             var floorCeiling = new Cube();
-            floorCeiling.Transform = Transformation.Translation(0, 3, 0) * Transformation.Scaling(20, 7, 20);
+            floorCeiling.Transform = Transformation.Scaling(20, 7, 20) * Transformation.Translation(0, 1, 0);
             floorCeiling.Material = new Material();
             floorCeiling.Material.Pattern = new Checkers(new Color(0,0,0), new Color(0.25, 0.25, 0.25));
-            floorCeiling.Material.Pattern.Transform = Transformation.Translation(0, 0.1, 0) * Transformation.Scaling(0.07, 0.07, 0.07);
+            floorCeiling.Material.Pattern.Transform = Transformation.Scaling(0.07, 0.07, 0.07);
             floorCeiling.Material.Ambient = 0.25;
             floorCeiling.Material.Diffuse = 0.7;
             floorCeiling.Material.Specular = 0.9;
@@ -33,7 +33,7 @@ namespace RayTracer.Tests.Smoke
             walls.Transform = Transformation.Scaling(10, 10, 10);
             walls.Material = new Material();
             walls.Material.Pattern = new Checkers(new Color(0.4863, 0.3765, 0.2941), new Color(0.3725, 0.2902, 0.2275));
-            walls.Material.Pattern.Transform = Transformation.Translation(1, -10, -1) * Transformation.Scaling(0.05, 20, 0.05);
+            walls.Material.Pattern.Transform = Transformation.Scaling(0.05, 20, 0.05);
             walls.Material.Ambient = 0.1;
             walls.Material.Diffuse = 0.7;
             walls.Material.Specular = 0.9;
@@ -45,7 +45,7 @@ namespace RayTracer.Tests.Smoke
             tableTop.Transform = Transformation.Translation(0, 3.1, 0) * Transformation.Scaling(3, 0.1, 2);
             tableTop.Material = new Material();
             tableTop.Material.Pattern = new Stripe(new Color(0.5529, 0.4235, 0.3255), new Color(0.6588, 0.5098, 0.4000));
-            tableTop.Material.Pattern.Transform = Transformation.Translation(0, 0.1, 0) * Transformation.Scaling(0.05, 0.05, 0.05) * Transformation.Rotation_y(0.1);
+            tableTop.Material.Pattern.Transform = Transformation.Scaling(0.05, 0.05, 0.05) * Transformation.Rotation_y(0.1);
             tableTop.Material.Ambient = 0.1;
             tableTop.Material.Diffuse = 0.7;
             tableTop.Material.Specular = 0.9;
