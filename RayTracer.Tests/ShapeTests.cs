@@ -382,5 +382,88 @@ namespace RayTracer.Tests
 
             return allData;
         }
+
+        [Theory]
+        [MemberData(nameof(GetConeIntersectData))]
+        public void IntersectingConeWithRay_ShouldWork(Point origin, Vector direction, double t0, double t1)
+        {
+            var shape = new Cone();
+            var dir = direction.Normalize();
+            var r = new Ray(origin, dir);
+            var xs = shape.LocalIntersect(r);
+            Assert.Equal(2, xs.Count);
+            Assert.Equal(t0, xs[0].Time, 5);
+            Assert.Equal(t1, xs[1].Time, 5);
+        }
+
+        public static IEnumerable<object[]> GetConeIntersectData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(0, 0, -5), new Vector(0, 0, 1), 5, 5 },
+                new object[] { new Point(0, 0, -5), new Vector(1, 1, 1), 8.66025, 8.66025 },
+                new object[] { new Point(1, 1, -5), new Vector(-0.5, -1, 1), 4.55006, 49.44994 },
+            };
+
+            return allData;
+        }
+
+        [Fact]
+        public void IntersectingConeWithRayParallelToOneOfItsHalves_ShouldWork()
+        {
+            var shape = new Cone();
+            var direction = new Vector(0, 1, 1).Normalize();
+            var r = new Ray(new Point(0, 0, -1), direction);
+            var xs = shape.LocalIntersect(r);
+            Assert.Equal(1, xs.Count);
+            Assert.Equal(0.35355, xs[0].Time, 5);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetConeCapIntersectData))]
+        public void IntersectingConeEndCaps_ShouldWork(Point origin, Vector direction, double count)
+        {
+            var shape = new Cone();
+            shape.Minimum = -0.5;
+            shape.Maximum = 0.5;
+            shape.Closed = true;
+            var dir = direction.Normalize();
+            var r = new Ray(origin, dir);
+            var xs = shape.LocalIntersect(r);
+            Assert.Equal(count, xs.Count);
+        }
+
+        public static IEnumerable<object[]> GetConeCapIntersectData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(0, 0, -5), new Vector(0, 1, 0), 0 },
+                new object[] { new Point(0, 0, -0.25), new Vector(0, 1, 1), 2 },
+                new object[] { new Point(0, 0, -0.25), new Vector(0, 1, 0), 4 },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetConeNormalData))]
+        public void ComputingNormalVectorOfCone_ShouldWork(Point point, Vector normal)
+        {
+            var shape = new Cone();
+            var n = shape.LocalNormalAt(point);
+            Assert.True(n.Equals(normal));
+        }
+
+        public static IEnumerable<object[]> GetConeNormalData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(0, 0, 0), new Vector(0, 0, 0) },
+                new object[] { new Point(1, 1, 1), new Vector(1, -Math.Sqrt(2), 1) },
+                new object[] { new Point(-1, -1, 0), new Vector(-1, 1, 0) },
+            };
+
+            return allData;
+        }
     }
 }
