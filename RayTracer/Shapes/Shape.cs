@@ -14,10 +14,12 @@ namespace RayTracer
         }
         public Material Material { get; set; }
         public bool CastsShadow = true;
+        public Shape Parent = null;
 
         public Shape()
         {
             Transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            CacheTransformInverse = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
             Material = new Material();
         }
 
@@ -33,11 +35,28 @@ namespace RayTracer
 
         public Vector NormalAt(Point world_point)
         {
-            Point local_point = this.CacheTransformInverse * world_point;
-            Vector local_normal = LocalNormalAt(local_point);
-            Vector world_normal = this.CacheTransformInverse.Transpose() * local_normal;
-            world_normal.w = 0;
-            return world_normal.Normalize();
+            Point local_point = this.ConverWorldPointToObjectPoint(world_point);
+            Vector local_normal = this.LocalNormalAt(local_point);
+            return this.NormalToWorld(local_normal);
+        }
+
+        public Point ConverWorldPointToObjectPoint(Point point)
+        {
+            if (this.Parent != null)
+                point = this.Parent.ConverWorldPointToObjectPoint(point);
+
+            return this.CacheTransformInverse * point;
+        }
+
+        public Vector NormalToWorld(Vector normal)
+        {
+            normal = this.CacheTransformInverse.Transpose() * normal;
+            normal.w = 0;
+            normal = normal.Normalize();
+            if (this.Parent != null)
+                normal = this.Parent.NormalToWorld(normal);
+
+            return normal;
         }
     }
 }
