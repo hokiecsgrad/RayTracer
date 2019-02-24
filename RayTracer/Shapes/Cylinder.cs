@@ -92,5 +92,10 @@ namespace RayTracer
             else
                 return new Vector(local_point.x, 0, local_point.z);
         }
+
+        public override BoundingBox GetBounds()
+        {
+            return new BoundingBox(new Point(-1, Minimum, -1), new Point(1, Maximum, 1));
+        }
     }
 }

@@ -58,5 +58,12 @@ namespace RayTracer
 
             return normal;
         }
+
+        public abstract BoundingBox GetBounds();
+       
+        public BoundingBox GetParentSpaceBounds()
+        {
+            return BoundingBox.Transform(this.GetBounds(), this.Transform);
+        }
     }
 }

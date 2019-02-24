@@ -20,8 +20,9 @@ namespace RayTracer
         public override List<Intersection> LocalIntersect(Ray r)
         {
             var xs = new List<Intersection>();
-            foreach (var shape in this.Shapes)
-                xs.AddRange(shape.Intersect(r));
+            if (GetBounds().Intersects(r))
+                foreach (var shape in this.Shapes)
+                    xs.AddRange(shape.Intersect(r));
             return xs;
         }
 
@@ -29,6 +30,19 @@ namespace RayTracer
         {
             // TODO: Throw an exception here since this should never be called.
             return new Vector(0, 0, 0);
+        }
+
+        public override BoundingBox GetBounds()
+        {
+            var box = new BoundingBox();
+
+            foreach (Shape s in this.Shapes)
+            {
+                var cbox = s.GetParentSpaceBounds();
+                box.Add(cbox);
+            }
+
+            return box;
         }
     }
 }

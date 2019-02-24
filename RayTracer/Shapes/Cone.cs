@@ -100,5 +100,15 @@ namespace RayTracer
                 return new Vector(local_point.x, y, local_point.z);
             }
         }
+
+        public override BoundingBox GetBounds()
+        {
+            var a = Math.Abs(Minimum);
+            var b = Math.Abs(Maximum);
+            var limit = Math.Max(a, b);
+
+            return new BoundingBox(new Point(-limit, Minimum, -limit),
+                                    new Point(limit, Maximum, limit));
+        }
     }
 }

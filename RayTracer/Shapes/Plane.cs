@@ -21,5 +21,11 @@ namespace RayTracer
         {
             return new Vector(0, 1, 0);
         }
+
+        public override BoundingBox GetBounds()
+        {
+            return new BoundingBox(new Point(double.NegativeInfinity, 0, double.NegativeInfinity), 
+                                   new Point(double.PositiveInfinity, 0, double.PositiveInfinity));
+        }
     }
 }

@@ -9,8 +9,14 @@ namespace RayTracer.Tests
 
     public class TestShape : Shape
     {
-        public override List<Intersection> LocalIntersect(Ray r) { return new List<Intersection>(); }
+        public Ray SavedRay = null;
+        public override List<Intersection> LocalIntersect(Ray r) { SavedRay = r; return new List<Intersection>(); }
         public override Vector LocalNormalAt(Point local_point) { return new Vector(0, 0, 0); }
+
+        public override BoundingBox GetBounds()
+        {
+            return new BoundingBox(new Point(-1, -1, -1), new Point(1, 1, 1));
+        }
     }
 
     public class GroupTests
@@ -129,6 +135,45 @@ namespace RayTracer.Tests
             var n = s.NormalAt(new Point(1.7321, 1.1547, -5.5774));
             Assert.True(n.Equals(new Vector(0.28570, 0.42854, -0.85716)));
             //Assert.StrictEqual(n, new Vector(0.28570, 0.42854, -0.85716));
+        }
+
+        [Fact]
+        public void GroupHasBoundingBoxThatContainsItsChildren_ShouldWork()
+        {
+            var s = new Sphere();
+            s.Transform = Transformation.Translation(2, 5, -3) * Transformation.Scaling(2, 2, 2);
+            var c = new Cylinder();
+            c.Minimum = -2;
+            c.Maximum = 2;
+            c.Transform = Transformation.Translation(-4, -1, 4) * Transformation.Scaling(0.5, 1, 0.5);
+            var group = new Group();
+            group.AddShape(s);
+            group.AddShape(c);
+            var box = group.GetBounds();
+            Assert.StrictEqual(new Point(-4.5, -3, -5), box.Min);
+            Assert.StrictEqual(new Point(4, 7, 4.5), box.Max);
+        }
+
+        [Fact]
+        public void IntersectingGroupWithRay_ShouldNotTestChildrenIfBoxIsMissed()
+        {
+            var child = new TestShape();
+            var group = new Group();
+            group.AddShape(child);
+            var r = new Ray(new Point(0, 0, -5), new Vector(0, 1, 0));
+            var xs = group.Intersect(r);
+            Assert.Null(child.SavedRay);
+        }
+
+        [Fact]
+        public void IntersectingGroupWithRay_ShouldTestChildrenIfBoxIsHit()
+        {
+            var child = new TestShape();
+            var group = new Group();
+            group.AddShape(child);
+            var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+            var xs = group.Intersect(r);
+            Assert.NotNull(child.SavedRay);
         }
     }
 }

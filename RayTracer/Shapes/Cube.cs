@@ -51,5 +51,10 @@ namespace RayTracer
                 return new Vector(0, local_point.y, 0);
             return new Vector(0, 0, local_point.z);
         }
+
+        public override BoundingBox GetBounds()
+        {
+            return new BoundingBox(new Point(-1, -1, -1), new Point(1, 1, 1));
+        }
     }
 }

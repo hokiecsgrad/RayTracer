@@ -36,5 +36,10 @@ namespace RayTracer
             var object_normal = local_point - new Point(0, 0, 0);    
             return object_normal.Normalize();        
         }
+
+        public override BoundingBox GetBounds()
+        {
+            return new BoundingBox(new Point(-1, -1, -1), new Point(1, 1, 1));
+        }
     }
 }
