@@ -8,11 +8,26 @@ namespace RayTracer
     {
         private const double EPSILON = 0.00001;
         private List<Shape> Shapes = new List<Shape>();
+        public string Name = string.Empty;
 
         public void AddShape(Shape shape)
         {
             shape.Parent = this;
             this.Shapes.Add(shape);
+        }
+
+        public void AddTriangles(List<Triangle> shapes)
+        {
+            foreach (var shape in shapes)
+            {
+                shape.Parent = this;
+                this.Shapes.Add(shape);
+            }
+        }
+
+        public void AddGroups(List<Group> groups)
+        {
+            this.Shapes.AddRange(groups);
         }
 
         public List<Shape> GetShapes() { return this.Shapes; }
