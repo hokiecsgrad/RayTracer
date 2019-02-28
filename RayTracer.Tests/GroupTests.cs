@@ -17,7 +17,9 @@ namespace RayTracer.Tests
         {
             return new BoundingBox(new Point(-1, -1, -1), new Point(1, 1, 1));
         }
-    }
+    
+        public override void Divide(int threshold) { }
+}
 
     public class GroupTests
     {
@@ -174,6 +176,102 @@ namespace RayTracer.Tests
             var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
             var xs = group.Intersect(r);
             Assert.NotNull(child.SavedRay);
+        }
+
+        [Fact]
+        public void PartitioningGroupsChildren_ShouldSplitShapesInGroupIntoLeftAndRight()
+        {
+            var s1 = new Sphere();
+            s1.Transform = Transformation.Translation(-2, 0, 0);
+            var s2 = new Sphere();
+            s2.Transform = Transformation.Translation(2, 0, 0);
+            var s3 = new Sphere();
+            var g = new Group();
+            g.AddShape(s1);
+            g.AddShape(s2);
+            g.AddShape(s3);
+            var (left, right) = g.PartitionChildren();
+            Assert.Equal(1, g.GetShapes().Count);
+            Assert.Contains(s3, g.GetShapes());
+            Assert.Equal(1, left.Count);
+            Assert.Contains(s1, left);
+            Assert.Equal(1, right.Count);
+            Assert.Contains(s2, right);
+        }
+
+        [Fact]
+        public void AddingListOfShapesToGroup_ShouldCreateSubGroup()
+        {
+            var s1 = new Sphere();
+            var s2 = new Sphere();
+            var g = new Group();
+            g.MakeSubgroup(new List<Shape> {s1, s2});
+            var subgroup = (object)g.GetShapes()[0] as Group;
+            Assert.Equal(1, g.GetShapes().Count);
+            Assert.Contains(s1, subgroup.GetShapes());
+            Assert.Contains(s2, subgroup.GetShapes());
+        }
+
+        [Fact]
+        public void SubdividingPrimitive_ShouldDoNothing()
+        {
+            var shape = new Sphere();
+            shape.Divide(1);
+            Assert.IsType(typeof(Sphere), shape);
+        }
+
+        [Fact]
+        public void SubdividingGroup_ShouldPartitionItsChildren()
+        {
+            var s1 = new Sphere();
+            s1.Transform = Transformation.Translation(-2, -2, 0);
+            var s2 = new Sphere();
+            s2.Transform = Transformation.Translation(-2, 2, 0);
+            var s3 = new Sphere();
+            s3.Transform = Transformation.Scaling(4, 4, 4);
+            var g = new Group();
+            g.AddShape(s1);
+            g.AddShape(s2);
+            g.AddShape(s3);
+            g.Divide(1);
+            Assert.StrictEqual(s3, g.GetShapes()[0]);
+            var subgroup = (object)g.GetShapes()[1] as Group;
+            Assert.IsType(typeof(Group), subgroup);
+            Assert.Equal(2, subgroup.GetShapes().Count);
+            var subgroupS1 = (object)subgroup.GetShapes()[0] as Group;
+            Assert.Equal(1, subgroupS1.GetShapes().Count);
+            Assert.Contains(s1, subgroupS1.GetShapes());
+            var subgroupS2 = (object)subgroup.GetShapes()[1] as Group;
+            Assert.Equal(1, subgroupS2.GetShapes().Count);
+            Assert.Contains(s2, subgroupS2.GetShapes());
+        }
+
+        [Fact]
+        public void SubdividingGroupWithTooFewChildren_ShouldNotDivideGroup()
+        {
+            var s1 = new Sphere();
+            s1.Transform = Transformation.Translation(-2, 0, 0);
+            var s2 = new Sphere();
+            s2.Transform = Transformation.Translation(2, 1, 0);
+            var s3 = new Sphere();
+            s3.Transform = Transformation.Translation(2, -1, 0);
+            var subgroup = new Group();
+            subgroup.AddShape(s1);
+            subgroup.AddShape(s2);
+            subgroup.AddShape(s3);
+            var s4 = new Sphere();
+            var g = new Group();
+            g.AddShape(s4);
+            g.AddGroups(new List<Group>{subgroup});
+            g.Divide(3);
+            Assert.StrictEqual(s4, g.GetShapes()[0]);
+            Assert.StrictEqual(subgroup, g.GetShapes()[1]);
+            Assert.Equal(2, g.GetShapes().Count);
+            var subgroup0 = (object)subgroup.GetShapes()[0] as Group;
+            var subgroup1 = (object)subgroup.GetShapes()[1] as Group;
+            Assert.Contains(s1, subgroup0.GetShapes());
+            Assert.Contains(s2, subgroup1.GetShapes());
+            Assert.Contains(s3, subgroup1.GetShapes());
         }
     }
 }

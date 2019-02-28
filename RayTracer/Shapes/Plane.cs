@@ -27,5 +27,7 @@ namespace RayTracer
             return new BoundingBox(new Point(double.NegativeInfinity, 0, double.NegativeInfinity), 
                                    new Point(double.PositiveInfinity, 0, double.PositiveInfinity));
         }
+
+        public override void Divide(int threshold) { }
     }
 }

@@ -33,10 +33,10 @@ namespace RayTracer.Tests.Smoke
             // the camera
             // ======================================================
 
-            Camera camera = new Camera(400, 200, 0.314);
+            Camera camera = new Camera(400, 300, 0.314);
             camera.Transform = Transformation.ViewTransform(
-                                new Point(10, 10, 0), // view from
-                                new Point(0, 0, 0),// view to
+                                new Point(15, 10, -15), // view from
+                                new Point(0, 1.5, 0),// view to
                                 new Vector(0, 1, 0));    // vector up
 
             Canvas canvas = camera.Render(world);

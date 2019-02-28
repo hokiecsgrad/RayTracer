@@ -110,5 +110,7 @@ namespace RayTracer
             return new BoundingBox(new Point(-limit, Minimum, -limit),
                                     new Point(limit, Maximum, limit));
         }
+
+        public override void Divide(int threshold) { }
     }
 }

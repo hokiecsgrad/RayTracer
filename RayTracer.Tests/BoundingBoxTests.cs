@@ -259,5 +259,49 @@ namespace RayTracer.Tests
 
             return allData;
         }
+
+        [Fact]
+        public void SplittingPerfectCubeIntoBhv_ShoudSplitBoundingBoxOnX()
+        {
+            var box = new BoundingBox(new Point(-1, -4, -5), new Point(9, 6, 5));
+            var (left, right) = box.SplitBounds();
+            Assert.StrictEqual(new Point(-1, -4, -5), left.Min);
+            Assert.StrictEqual(new Point(4, 6, 5), left.Max);
+            Assert.StrictEqual(new Point(4, -4, -5), right.Min);
+            Assert.StrictEqual(new Point(9, 6, 5), right.Max);
+        }
+
+        [Fact]
+        public void SplittingAnXwideBox_ShouldSplitBoxAlongX()
+        {
+            var box = new BoundingBox(new Point(-1, -2, -3), new Point(9, 5.5, 3));
+            var (left, right) = box.SplitBounds();
+            Assert.True(left.Min.Equals(new Point(-1, -2, -3)));
+            Assert.True(left.Max.Equals(new Point(4, 5.5, 3)));
+            Assert.True(right.Min.Equals(new Point(4, -2, -3)));
+            Assert.True(right.Max.Equals(new Point(9, 5.5, 3)));
+        }
+
+        [Fact]
+        public void SplittingYwideBox_ShouldSplitBoxAlongY()
+        {
+            var box = new BoundingBox(new Point(-1, -2, -3), new Point(5, 8, 3));
+            var (left, right) = box.SplitBounds();
+            Assert.True(left.Min.Equals(new Point(-1, -2, -3)));
+            Assert.True(left.Max.Equals(new Point(5, 3, 3)));
+            Assert.True(right.Min.Equals(new Point(-1, 3, -3)));
+            Assert.True(right.Max.Equals(new Point(5, 8, 3)));
+        }
+
+        [Fact]
+        public void SplittingZwideBox_ShouldSplitBoxAlongZ()
+        {
+            var box = new BoundingBox(new Point(-1, -2, -3), new Point(5, 3, 7));
+            var (left, right) = box.SplitBounds();
+            Assert.True(left.Min.Equals(new Point(-1, -2, -3)));
+            Assert.True(left.Max.Equals(new Point(5, 3, 2)));
+            Assert.True(right.Min.Equals(new Point(-1, -2, 2)));
+            Assert.True(right.Max.Equals(new Point(5, 3, 7)));
+        }
     }
 }

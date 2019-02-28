@@ -37,6 +37,23 @@ v 1 1 0";
         }
 
         [Fact]
+        public void ParsingVertexRecordsWithMultipleSpacesBetweenRecords_ShouldReturnArrayOfPoints()
+        {
+            var file =
+@"v  -1  1  0
+v  -1.0000  0.5000  0.0000
+v  1  0  0
+v  1  1  0";
+            
+            var parser = new ObjParser(file);
+            parser.Parse();
+            Assert.True(parser.Vertices[0].Equals( new Point(-1, 1, 0) ));
+            Assert.True(parser.Vertices[1].Equals( new Point(-1, 0.5, 0) ));
+            Assert.True(parser.Vertices[2].Equals( new Point(1, 0, 0) ));
+            Assert.True(parser.Vertices[3].Equals( new Point(1, 1, 0) ));
+        }
+
+        [Fact]
         public void ParsingTriangleFaces_ShouldReturnGroupsAndVetices()
         {
             var file =
@@ -132,6 +149,32 @@ f 1 3 4";
             var g = new Group();
             g.AddGroups(parser.ObjToGroup());
             Assert.True(true);
+        }
+
+        [Fact]
+        public void LoadObjFileWithSlashFormatForFaces_ShouldOnlyDealWithVerticesAndThrowAwayTextureAndNormalData()
+        {
+            var file =
+@"v -1 1 0
+v -1 0 0
+v 1 0 0
+v 1 1 0
+g FirstGroup
+f 1/1/1 2/2/2 3/3/3
+g SecondGroup
+f 1/1/1 3/3/3 4/4/4";
+
+            var parser = new ObjParser(file);
+            parser.Parse();
+            var g = parser.Groups;
+            Triangle t1 = (object)g[0].GetShapes()[0] as Triangle;
+            Triangle t2 = (object)g[1].GetShapes()[0] as Triangle;
+            Assert.Equal(t1.p1, parser.Vertices[0]);
+            Assert.Equal(t1.p2, parser.Vertices[1]);
+            Assert.Equal(t1.p3, parser.Vertices[2]);
+            Assert.Equal(t2.p1, parser.Vertices[0]);
+            Assert.Equal(t2.p2, parser.Vertices[2]);
+            Assert.Equal(t2.p3, parser.Vertices[3]);
         }
     }
 }

@@ -104,5 +104,38 @@ namespace RayTracer
             if (tmin > tmax) return false;
             return true;
         }
+
+        public (BoundingBox, BoundingBox) SplitBounds()
+        {
+            // figure out the box's largest dimension
+            var dx = Math.Abs(Max.x - Min.x);
+            var dy = Math.Abs(Max.y - Min.y);
+            var dz = Math.Abs(Max.z - Min.z);
+            var greatest = Math.Max(dx, Math.Max(dy, dz));
+
+            // variables to help construct the points on
+            // the dividing plane
+            var (x0, y0, z0) = (Min.x, Min.y, Min.z);
+            var (x1, y1, z1) = (Max.x, Max.y, Max.z);
+
+            // adjust the points so that they lie on the
+            // dividing plane
+            if (dz > dx && dz > dy)
+                z0 = z1 = z0 + dz / 2.0;
+            else if (dy > dx && dy > dz)
+                y0 = y1 = y0 + dy / 2.0;
+            else
+                x0 = x1 = x0 + dx / 2.0;
+
+            var mid_min = new Point(x0, y0, z0);
+            var mid_max = new Point(x1, y1, z1);
+
+            // construct and return the two halves of
+            // the bounding box
+            var left = new BoundingBox(Min, mid_max);
+            var right = new BoundingBox(mid_min, Max);
+
+            return (left, right);
+        }
     }
 }

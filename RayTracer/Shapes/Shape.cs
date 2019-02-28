@@ -65,5 +65,7 @@ namespace RayTracer
         {
             return BoundingBox.Transform(this.GetBounds(), this.Transform);
         }
+
+        public abstract void Divide(int threshold);
     }
 }

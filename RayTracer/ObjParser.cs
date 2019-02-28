@@ -51,8 +51,9 @@ namespace RayTracer
                 Group currentGroup = DefaultGroup;
                 while ((line = reader.ReadLine()) != null)
                 {
+                    if (line == string.Empty) continue;
                     // tokenize each line
-                    string[] commands = line.Split(new char[0]);
+                    string[] commands = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
                     // first token should be a command
                     switch (commands[0])
                     {
@@ -64,7 +65,14 @@ namespace RayTracer
                         case "f" :
                             var vertices = new List<Point>();
                             for (var i = 1; i < commands.Length; i++)
-                                vertices.Add( this.Vertices[int.Parse(commands[i]) - 1] );
+                            {
+                                int vertNum;
+                                if (commands[i].Contains("/"))
+                                    vertNum = int.Parse(commands[i].Split('/')[0]);
+                                else
+                                    vertNum = int.Parse(commands[i]);
+                                vertices.Add( this.Vertices[vertNum - 1] );
+                            }
                             currentGroup.AddTriangles(FanTriangulation(vertices));
                             break;
                         case "g" :

@@ -55,5 +55,7 @@ namespace RayTracer
         {
             return new BoundingBox();
         }
+
+        public override void Divide(int threshold) { }
     }
 }
