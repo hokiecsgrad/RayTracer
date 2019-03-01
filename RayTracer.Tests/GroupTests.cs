@@ -23,6 +23,14 @@ namespace RayTracer.Tests
 
     public class GroupTests
     {
+        const double epsilon = 0.00001;
+
+        static readonly IEqualityComparer<Vector> VectorComparer =
+            Vector.GetEqualityComparer(epsilon);
+
+        static readonly IEqualityComparer<Point> PointComparer =
+            Point.GetEqualityComparer(epsilon);
+
         [Fact]
         public void CreatingNewGroup_ShouldWork()
         {
@@ -104,7 +112,7 @@ namespace RayTracer.Tests
             s.Transform = Transformation.Translation(5, 0, 0);
             g2.AddShape(s);
             var p = s.ConverWorldPointToObjectPoint(new Point(-2, 0, -10));
-            Assert.True(p.Equals(new Point(0, 0, -1)));
+            Assert.Equal(new Point(0, 0, -1), p, PointComparer);
         }
 
         [Fact]
@@ -119,7 +127,7 @@ namespace RayTracer.Tests
             s.Transform = Transformation.Translation(5, 0, 0);
             g2.AddShape(s);
             var n = s.NormalToWorld(new Vector(Math.Sqrt(3)/3, Math.Sqrt(3)/3, Math.Sqrt(3)/3));
-            Assert.True(n.Equals(new Vector(0.28571, 0.42857, -0.85714)));
+            Assert.Equal(new Vector(0.28571, 0.42857, -0.85714), n, VectorComparer);
             //Assert.StrictEqual(n, new Vector(0.28571, 0.42857, -0.85714));
         }
 
@@ -135,7 +143,7 @@ namespace RayTracer.Tests
             s.Transform = Transformation.Translation(5, 0, 0);
             g2.AddShape(s);
             var n = s.NormalAt(new Point(1.7321, 1.1547, -5.5774));
-            Assert.True(n.Equals(new Vector(0.28570, 0.42854, -0.85716)));
+            Assert.Equal(new Vector(0.28570, 0.42854, -0.85716), n, VectorComparer);
             //Assert.StrictEqual(n, new Vector(0.28570, 0.42854, -0.85716));
         }
 
@@ -152,8 +160,8 @@ namespace RayTracer.Tests
             group.AddShape(s);
             group.AddShape(c);
             var box = group.GetBounds();
-            Assert.StrictEqual(new Point(-4.5, -3, -5), box.Min);
-            Assert.StrictEqual(new Point(4, 7, 4.5), box.Max);
+            Assert.Equal(new Point(-4.5, -3, -5), box.Min, PointComparer);
+            Assert.Equal(new Point(4, 7, 4.5), box.Max, PointComparer);
         }
 
         [Fact]

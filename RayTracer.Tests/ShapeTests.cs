@@ -8,12 +8,17 @@ namespace RayTracer.Tests
 {
     public class ShapeTests
     {
+        const double epsilon = 0.00001;
+
+        static readonly IEqualityComparer<Vector> VectorComparer =
+            Vector.GetEqualityComparer(epsilon);
+
         [Fact]
         public void CalculatingNormalOnPointOfSphereOnXAxis_ShouldWork()
         {
             var sphere = new Sphere();
             var normal = sphere.NormalAt(new Point(1, 0, 0));
-            Assert.True(normal.Equals(new Vector(1, 0, 0)));
+            Assert.Equal(new Vector(1, 0, 0), normal, VectorComparer);
         }
 
         [Fact]
@@ -21,7 +26,7 @@ namespace RayTracer.Tests
         {
             var sphere = new Sphere();
             var normal = sphere.NormalAt(new Point(0, 1, 0));
-            Assert.True(normal.Equals(new Vector(0, 1, 0)));
+            Assert.Equal(new Vector(0, 1, 0), normal, VectorComparer);
         }
 
         [Fact]
@@ -29,7 +34,7 @@ namespace RayTracer.Tests
         {
             var sphere = new Sphere();
             var normal = sphere.NormalAt(new Point(0, 0, 1));
-            Assert.True(normal.Equals(new Vector(0, 0, 1)));
+            Assert.Equal(new Vector(0, 0, 1), normal, VectorComparer);
         }
 
         [Fact]
@@ -37,7 +42,7 @@ namespace RayTracer.Tests
         {
             var sphere = new Sphere();
             var normal = sphere.NormalAt(new Point(Math.Sqrt(3)/3, Math.Sqrt(3)/3, Math.Sqrt(3)/3));
-            Assert.True(normal.Equals(new Vector(Math.Sqrt(3)/3, Math.Sqrt(3)/3, Math.Sqrt(3)/3)));
+            Assert.Equal(new Vector(Math.Sqrt(3)/3, Math.Sqrt(3)/3, Math.Sqrt(3)/3), normal, VectorComparer);
         }
 
         [Fact]
@@ -45,7 +50,7 @@ namespace RayTracer.Tests
         {
             var sphere = new Sphere();
             var normal = sphere.NormalAt(new Point(Math.Sqrt(3)/3, Math.Sqrt(3)/3, Math.Sqrt(3)/3));
-            Assert.True(normal.Equals(normal.Normalize()));
+            Assert.Equal(normal, normal.Normalize(), VectorComparer);
         }
 
         [Fact]
@@ -54,7 +59,7 @@ namespace RayTracer.Tests
             var s = new Sphere();
             s.Transform = Transformation.Translation(0, 1, 0);
             var n = s.NormalAt(new Point(0, 1.70711, -0.70711));
-            Assert.True(n.Equals(new Vector(0, 0.70711, -0.70711)));
+            Assert.Equal(new Vector(0, 0.70711, -0.70711), n, VectorComparer);
         }
 
         [Fact]
@@ -64,7 +69,7 @@ namespace RayTracer.Tests
             var m = Transformation.Scaling(1, 0.5, 1) * Transformation.Rotation_z(Math.PI/5);
             s.Transform = m;
             var n = s.NormalAt(new Point(0, Math.Sqrt(2)/2, -Math.Sqrt(2)/2));
-            Assert.True(n.Equals(new Vector(0, 0.97014, -0.24254)));
+            Assert.Equal(new Vector(0, 0.97014, -0.24254), n, VectorComparer);
         }
 
         [Fact]
@@ -512,7 +517,7 @@ namespace RayTracer.Tests
             var tri = new SmoothTriangle(p1, p2, p3, n1, n2, n3);
             var i = new Intersection(1, tri, 0.45, 0.25);
             var n = tri.NormalAt(new Point(0, 0, 0), i);
-            Assert.True(n.Equals(new Vector(-0.5547, 0.83205, 0)));
+            Assert.Equal(new Vector(-0.5547, 0.83205, 0), n, VectorComparer);
         }
 
         [Fact]
@@ -529,7 +534,7 @@ namespace RayTracer.Tests
             var r = new Ray(new Point(-0.2, 0.3, -2), new Vector(0, 0, 1));
             var xs = new List<Intersection> { i };
             var comps = i.PrepareComputations(r, xs);
-            Assert.StrictEqual(new Vector(-0.5547, 0.83205, 0), comps.Normal);
+            Assert.Equal(new Vector(-0.5547, 0.83205, 0), comps.Normal, VectorComparer);
         }
     }
 }

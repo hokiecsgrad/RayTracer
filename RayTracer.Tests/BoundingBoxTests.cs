@@ -7,6 +7,11 @@ namespace RayTracer.Tests
 {
     public class BoundingBoxTests
     {
+        private const double EPSILON = 0.00001;
+
+        static readonly IEqualityComparer<Point> PointComparer =
+            Point.GetEqualityComparer(EPSILON);
+
         [Fact]
         public void CreatingEmptyBoundingBox_ShouldSetMinToInfinityAndMaxToNegativeInfinity()
         {
@@ -23,8 +28,8 @@ namespace RayTracer.Tests
         public void CreatingBoundingBoxWithGivenVolume_ShouldSetBoxToThatVolume()
         {
             var box = new BoundingBox(new Point(-1, -2, -3), new Point(3, 2, 1));
-            Assert.StrictEqual(new Point(-1, -2, -3), box.Min);
-            Assert.StrictEqual(new Point(3, 2, 1), box.Max);
+            Assert.Equal(new Point(-1, -2, -3), box.Min, PointComparer);
+            Assert.Equal(new Point(3, 2, 1), box.Max, PointComparer);
         }
 
         [Fact]
@@ -35,8 +40,8 @@ namespace RayTracer.Tests
             var p2 = new Point(7, 0, -3);
             box.Add(p1);
             box.Add(p2);
-            Assert.StrictEqual(new Point(-5, 0, -3), box.Min);
-            Assert.StrictEqual(new Point(7, 2, 0), box.Max);
+            Assert.Equal(new Point(-5, 0, -3), box.Min, PointComparer);
+            Assert.Equal(new Point(7, 2, 0), box.Max, PointComparer);
         }
 
         [Fact]
@@ -44,8 +49,8 @@ namespace RayTracer.Tests
         {
             var shape = new Sphere();
             var box = shape.GetBounds();
-            Assert.StrictEqual(new Point(-1, -1, -1), box.Min);
-            Assert.StrictEqual(new Point(1, 1, 1), box.Max);
+            Assert.Equal(new Point(-1, -1, -1), box.Min, PointComparer);
+            Assert.Equal(new Point(1, 1, 1), box.Max, PointComparer);
         }
 
         [Fact]
@@ -66,8 +71,8 @@ namespace RayTracer.Tests
         {
             var shape = new Cube();
             var box = shape.GetBounds();
-            Assert.StrictEqual(new Point(-1, -1, -1), box.Min);
-            Assert.StrictEqual(new Point(1, 1, 1), box.Max);
+            Assert.Equal(new Point(-1, -1, -1), box.Min, PointComparer);
+            Assert.Equal(new Point(1, 1, 1), box.Max, PointComparer);
         }
 
         [Fact]
@@ -90,8 +95,8 @@ namespace RayTracer.Tests
             shape.Minimum = -5;
             shape.Maximum = 3;
             var box = shape.GetBounds();
-            Assert.StrictEqual(new Point(-1, -5, -1), box.Min);
-            Assert.StrictEqual(new Point(1, 3, 1), box.Max);
+            Assert.Equal(new Point(-1, -5, -1), box.Min, PointComparer);
+            Assert.Equal(new Point(1, 3, 1), box.Max, PointComparer);
         }
 
         [Fact]
@@ -114,8 +119,8 @@ namespace RayTracer.Tests
             shape.Minimum = -5;
             shape.Maximum = 3;
             var box = shape.GetBounds();
-            Assert.StrictEqual(new Point(-5, -5, -5), box.Min);
-            Assert.StrictEqual(new Point(5, 3, 5), box.Max);
+            Assert.Equal(new Point(-5, -5, -5), box.Min, PointComparer);
+            Assert.Equal(new Point(5, 3, 5), box.Max, PointComparer);
         }
 
         [Fact]
@@ -124,8 +129,8 @@ namespace RayTracer.Tests
             var box1 = new BoundingBox(new Point(-5, -2, 0), new Point(7, 4, 4));
             var box2 = new BoundingBox(new Point(8, -7, -2), new Point(14, 2, 8));
             box1.Add(box2);
-            Assert.StrictEqual(new Point(-5, -7, -2), box1.Min);
-            Assert.StrictEqual(new Point(14, 4, 8), box1.Max);
+            Assert.Equal(new Point(-5, -7, -2), box1.Min, PointComparer);
+            Assert.Equal(new Point(14, 4, 8), box1.Max, PointComparer);
         }
 
         [Theory]
@@ -182,8 +187,8 @@ namespace RayTracer.Tests
             var box = new BoundingBox(new Point(-1, -1, -1), new Point(1, 1, 1));
             var transform = Transformation.Rotation_x(Math.PI / 4) * Transformation.Rotation_y(Math.PI / 4);
             var box2 = BoundingBox.Transform(box, transform);
-            Assert.True(box2.Min.Equals(new Point(-1.41421, -1.70710, -1.70711)));
-            Assert.True(box2.Max.Equals(new Point(1.41421, 1.70710, 1.70711)));
+            Assert.Equal(new Point(-1.41421, -1.70710, -1.70711), box2.Min, PointComparer);
+            Assert.Equal(new Point(1.41421, 1.70710, 1.70711), box2.Max, PointComparer);
         }
 
         [Fact]
@@ -192,8 +197,8 @@ namespace RayTracer.Tests
             var shape = new Sphere();
             shape.Transform = Transformation.Translation(1, -3, 5) * Transformation.Scaling(0.5, 2, 4);
             var box = shape.GetParentSpaceBounds();
-            Assert.True(box.Min.Equals(new Point(0.5, -5, 1)));
-            Assert.True(box.Max.Equals(new Point(1.5, -1, 9)));
+            Assert.Equal(new Point(0.5, -5, 1), box.Min, PointComparer);
+            Assert.Equal(new Point(1.5, -1, 9), box.Max, PointComparer);
         }
 
         [Theory]
@@ -265,10 +270,10 @@ namespace RayTracer.Tests
         {
             var box = new BoundingBox(new Point(-1, -4, -5), new Point(9, 6, 5));
             var (left, right) = box.SplitBounds();
-            Assert.StrictEqual(new Point(-1, -4, -5), left.Min);
-            Assert.StrictEqual(new Point(4, 6, 5), left.Max);
-            Assert.StrictEqual(new Point(4, -4, -5), right.Min);
-            Assert.StrictEqual(new Point(9, 6, 5), right.Max);
+            Assert.Equal(new Point(-1, -4, -5), left.Min, PointComparer);
+            Assert.Equal(new Point(4, 6, 5), left.Max, PointComparer);
+            Assert.Equal(new Point(4, -4, -5), right.Min, PointComparer);
+            Assert.Equal(new Point(9, 6, 5), right.Max, PointComparer);
         }
 
         [Fact]
@@ -276,10 +281,10 @@ namespace RayTracer.Tests
         {
             var box = new BoundingBox(new Point(-1, -2, -3), new Point(9, 5.5, 3));
             var (left, right) = box.SplitBounds();
-            Assert.True(left.Min.Equals(new Point(-1, -2, -3)));
-            Assert.True(left.Max.Equals(new Point(4, 5.5, 3)));
-            Assert.True(right.Min.Equals(new Point(4, -2, -3)));
-            Assert.True(right.Max.Equals(new Point(9, 5.5, 3)));
+            Assert.Equal(new Point(-1, -2, -3), left.Min, PointComparer);
+            Assert.Equal(new Point(4, 5.5, 3), left.Max, PointComparer);
+            Assert.Equal(new Point(4, -2, -3), right.Min, PointComparer);
+            Assert.Equal(new Point(9, 5.5, 3), right.Max, PointComparer);
         }
 
         [Fact]
@@ -287,10 +292,10 @@ namespace RayTracer.Tests
         {
             var box = new BoundingBox(new Point(-1, -2, -3), new Point(5, 8, 3));
             var (left, right) = box.SplitBounds();
-            Assert.True(left.Min.Equals(new Point(-1, -2, -3)));
-            Assert.True(left.Max.Equals(new Point(5, 3, 3)));
-            Assert.True(right.Min.Equals(new Point(-1, 3, -3)));
-            Assert.True(right.Max.Equals(new Point(5, 8, 3)));
+            Assert.Equal(new Point(-1, -2, -3), left.Min, PointComparer);
+            Assert.Equal(new Point(5, 3, 3), left.Max, PointComparer);
+            Assert.Equal(new Point(-1, 3, -3), right.Min, PointComparer);
+            Assert.Equal(new Point(5, 8, 3), right.Max, PointComparer);
         }
 
         [Fact]
@@ -298,10 +303,10 @@ namespace RayTracer.Tests
         {
             var box = new BoundingBox(new Point(-1, -2, -3), new Point(5, 3, 7));
             var (left, right) = box.SplitBounds();
-            Assert.True(left.Min.Equals(new Point(-1, -2, -3)));
-            Assert.True(left.Max.Equals(new Point(5, 3, 2)));
-            Assert.True(right.Min.Equals(new Point(-1, -2, 2)));
-            Assert.True(right.Max.Equals(new Point(5, 3, 7)));
+            Assert.Equal(new Point(-1, -2, -3), left.Min, PointComparer);
+            Assert.Equal(new Point(5, 3, 2), left.Max, PointComparer);
+            Assert.Equal(new Point(-1, -2, 2), right.Min, PointComparer);
+            Assert.Equal(new Point(5, 3, 7), right.Max, PointComparer);
         }
     }
 }

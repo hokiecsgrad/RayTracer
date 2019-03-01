@@ -11,6 +11,12 @@ namespace RayTracer.Tests
         static readonly IEqualityComparer<Color> ColorComparer =
             Color.GetEqualityComparer(EPSILON);
 
+        static readonly IEqualityComparer<Point> PointComparer =
+            Point.GetEqualityComparer(EPSILON);
+
+        static readonly IEqualityComparer<Vector> VectorComparer =
+            Vector.GetEqualityComparer(EPSILON);
+
         [Fact]
         public void ConstructingACamera_ShouldWork()
         {
@@ -40,8 +46,8 @@ namespace RayTracer.Tests
         {
             var c = new Camera(201, 101, Math.PI/2);
             var r = c.RayForPixel(100, 50);
-            Assert.True(r.Origin.Equals(new Point(0, 0, 0)));
-            Assert.True(r.Direction.Equals(new Vector(0, 0, -1)));
+            Assert.Equal(new Point(0, 0, 0), r.Origin, PointComparer);
+            Assert.Equal(new Vector(0, 0, -1), r.Direction, VectorComparer);
         }
         
         [Fact]
@@ -49,8 +55,8 @@ namespace RayTracer.Tests
         {
             var c = new Camera(201, 101, Math.PI/2);
             var r = c.RayForPixel(0, 0);
-            Assert.True(r.Origin.Equals(new Point(0, 0, 0)));
-            Assert.True(r.Direction.Equals(new Vector(0.66519, 0.33259, -0.66851)));
+            Assert.Equal(new Point(0, 0, 0), r.Origin, PointComparer);
+            Assert.Equal(new Vector(0.66519, 0.33259, -0.66851), r.Direction, VectorComparer);
         }
         
         [Fact]
@@ -59,8 +65,8 @@ namespace RayTracer.Tests
             var c = new Camera(201, 101, Math.PI/2);
             c.Transform = Transformation.Rotation_y(Math.PI/4) * Transformation.Translation(0, -2, 5);
             var r = c.RayForPixel(100, 50);
-            Assert.True(r.Origin.Equals(new Point(0, 2, -5)));
-            Assert.True(r.Direction.Equals(new Vector(Math.Sqrt(2)/2, 0, -Math.Sqrt(2)/2)));
+            Assert.Equal(new Point(0, 2, -5), r.Origin, PointComparer);
+            Assert.Equal(new Vector(Math.Sqrt(2)/2, 0, -Math.Sqrt(2)/2), r.Direction, VectorComparer);
         }
 
         [Fact]

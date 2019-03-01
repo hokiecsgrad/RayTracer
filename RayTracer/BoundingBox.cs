@@ -24,13 +24,17 @@ namespace RayTracer
 
         public void Add(Point point)
         {
-            if (point.x < Min.x) Min.x = point.x;
-            if (point.y < Min.y) Min.y = point.y;
-            if (point.z < Min.z) Min.z = point.z;
+            double minX = Min.x, minY = Min.y, minZ = Min.z;
+            if (point.x < Min.x) minX = point.x;
+            if (point.y < Min.y) minY = point.y;
+            if (point.z < Min.z) minZ = point.z;
+            Min = new Point(minX, minY, minZ);
 
-            if (point.x > Max.x) Max.x = point.x;
-            if (point.y > Max.y) Max.y = point.y;
-            if (point.z > Max.z) Max.z = point.z;
+            double maxX = Max.x, maxY = Max.y, maxZ = Max.z;
+            if (point.x > Max.x) maxX = point.x;
+            if (point.y > Max.y) maxY = point.y;
+            if (point.z > Max.z) maxZ = point.z;
+            Max = new Point(maxX, maxY, maxZ);
         }
 
         public void Add(BoundingBox box)

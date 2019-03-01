@@ -8,14 +8,21 @@ namespace RayTracer.Tests
 {
     public class RayTests
     {
+        const double epsilon = 0.00001;
+
+        static readonly IEqualityComparer<Point> PointComparer =
+            Point.GetEqualityComparer(epsilon);
+        static readonly IEqualityComparer<Vector> VectorComparer =
+            Vector.GetEqualityComparer(epsilon);
+
         [Fact]
         public void CreatingAndQueryingRay_ShouldWork()
         {
             var origin = new Point(1, 2, 3);
             var direction = new Vector(4, 5, 6);
             var ray = new Ray(origin, direction);
-            Assert.True(ray.Origin == origin);
-            Assert.True(ray.Direction == direction);
+            Assert.Equal(ray.Origin, origin, PointComparer);
+            Assert.Equal(ray.Direction, direction, VectorComparer);
         }
 
         [Fact]
@@ -127,8 +134,8 @@ namespace RayTracer.Tests
             Ray ray = new Ray(new Point(1, 2, 3), new Vector(0, 1, 0));
             var transform = Transformation.Translation(3, 4, 5);
             var ray2 = ray.Transform(transform);
-            Assert.Equal(new Point(4, 6, 8), ray2.Origin);
-            Assert.Equal(new Vector(0, 1, 0), ray2.Direction);
+            Assert.Equal(new Point(4, 6, 8), ray2.Origin, PointComparer);
+            Assert.Equal(new Vector(0, 1, 0), ray2.Direction, VectorComparer);
         }
 
         [Fact]
@@ -137,8 +144,8 @@ namespace RayTracer.Tests
             Ray ray = new Ray(new Point(1, 2, 3), new Vector(0, 1, 0));
             var transform = Transformation.Scaling(2, 3, 4);
             var ray2 = ray.Transform(transform);
-            Assert.Equal(new Point(2, 6, 12), ray2.Origin);
-            Assert.Equal(new Vector(0, 3, 0), ray2.Direction);
+            Assert.Equal(new Point(2, 6, 12), ray2.Origin, PointComparer);
+            Assert.Equal(new Vector(0, 3, 0), ray2.Direction, VectorComparer);
         }
 
         [Fact]

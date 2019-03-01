@@ -51,7 +51,7 @@ namespace RayTracer
         public Vector NormalToWorld(Vector normal)
         {
             normal = this.CacheTransformInverse.Transpose() * normal;
-            normal.w = 0;
+            //normal.w = 0;
             normal = normal.Normalize();
             if (this.Parent != null)
                 normal = this.Parent.NormalToWorld(normal);

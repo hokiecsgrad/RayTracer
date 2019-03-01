@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 
 namespace RayTracer
 {
-    public class Vector
+    public struct Vector
     {
-        private const double EPSILON = 0.00001;
-        public double x,y,z,w;
+        public readonly double x;
+        public readonly double y;
+        public readonly double z;
+        public readonly double w;
 
         public Vector(double x, double y, double z)
         {
@@ -15,99 +18,113 @@ namespace RayTracer
             this.w = 0.0;
         }
 
-        public static Vector operator+(Vector a, Vector b)
+        public static Vector operator +(Vector a, Vector b)
         {
             if ( a.w + b.w > 1.0 )
                 throw new InvalidOperationException("Cannot add two points together.");
 
-            return new Vector(a.x + b.x, 
-                                a.y + b.y, 
-                                a.z + b.z);
+            return new Vector(
+                        a.x + b.x, 
+                        a.y + b.y, 
+                        a.z + b.z);
         }
 
-        public static Point operator+(Vector a, Point b)
+        public static Point operator +(Vector a, Point b)
         {
             if ( a.w + b.w > 1.0 )
                 throw new InvalidOperationException("Cannot add two points together.");
 
-            return new Point(a.x + b.x, 
-                                a.y + b.y, 
-                                a.z + b.z);
+            return new Point(
+                        a.x + b.x, 
+                        a.y + b.y, 
+                        a.z + b.z);
         }
 
-        public static Vector operator-(Vector a)
-        {
-            return new Vector(-a.x, -a.y, -a.z);
-        }
+        public static Vector operator -(Vector a) =>
+            new Vector(
+                -a.x, 
+                -a.y, 
+                -a.z);
 
-        public static Vector operator-(Vector a, Vector b)
+        public static Vector operator -(Vector a, Vector b)
         {
             if ( a.w - b.w < 0.0 )
                 throw new InvalidOperationException("Cannot subtract a Point from a Vector.");
 
-            return new Vector(a.x - b.x, 
-                                a.y - b.y, 
-                                a.z - b.z);
+            return new Vector(
+                        a.x - b.x, 
+                        a.y - b.y, 
+                        a.z - b.z);
         }
 
-        public static Vector operator-(Vector a, Point b)
+        public static Vector operator -(Vector a, Point b)
         {
             throw new InvalidOperationException("Cannot subtract a Point from a Vector.");
         }
 
-        public static Vector operator*(Vector a, double multiplier)
-        {
-            return new Vector(a.x * multiplier, 
-                                a.y * multiplier, 
-                                a.z * multiplier);
-        }
+        public static Vector operator *(Vector a, double multiplier) =>
+            new Vector(
+                    a.x * multiplier, 
+                    a.y * multiplier, 
+                    a.z * multiplier);
 
-        public static Vector operator/(Vector a, double divisor)
-        {
-            return new Vector(a.x / divisor, 
-                                a.y / divisor, 
-                                a.z / divisor);
-        }
+        public static Vector operator /(Vector a, double divisor) =>
+            new Vector(
+                a.x / divisor, 
+                a.y / divisor, 
+                a.z / divisor);
 
-        public override bool Equals(Object other)
-        {
-            Vector objTuple = other as Vector;
+        public double Magnitude() =>
+            Math.Sqrt(x*x + y*y + z*z);
 
-            if (objTuple == null) {
-                return false;
-            }
- 
-            return (Math.Abs(objTuple.x - this.x) < EPSILON) && 
-                    (Math.Abs(objTuple.y - this.y) < EPSILON) && 
-                    (Math.Abs(objTuple.z - this.z) < EPSILON) && 
-                    (Math.Abs(objTuple.w - this.w) < EPSILON);
-        }
+        public Vector Normalize() =>
+            new Vector(
+                x / Magnitude(), 
+                y / Magnitude(), 
+                z / Magnitude());
 
-        public double Magnitude()
-        {
-            return Math.Sqrt(x*x + y*y + z*z);
-        }
+        public double Dot(Vector other) =>
+            x * other.x + y * other.y + z * other.z;
 
-        public Vector Normalize()
-        {
-            return new Vector(x / Magnitude(), y / Magnitude(), z / Magnitude());
-        }
+        public Vector Cross(Vector other) =>
+            new Vector(
+                y * other.z - z * other.y,
+                z * other.x - x * other.z,
+                x * other.y - y * other.x);
 
-        public double Dot(Vector other)
-        {
-            return x * other.x + y * other.y + z * other.z;
-        }
+        public Vector Reflect(Vector normal) =>
+            this - normal * 2 * this.Dot(normal);
 
-        public Vector Cross(Vector other)
-        {
-            return new Vector(y * other.z - z * other.y,
-                              z * other.x - x * other.z,
-                              x * other.y - y * other.x);
-        }
+        public static IEqualityComparer<Vector> GetEqualityComparer(double epsilon = 0.0) =>
+            new ApproxVectorEqualityComparer(epsilon);
 
-        public Vector Reflect(Vector normal)
-        {
-            return this - normal * 2 * this.Dot(normal);
-        }
+        public override string ToString() =>
+            $"({this.x}, {this.y}, {this.z})";
     }
+
+    internal class ApproxVectorEqualityComparer : ApproxEqualityComparer<Vector>
+    {
+        public ApproxVectorEqualityComparer(double epsilon = 0.0)
+            : base(epsilon)
+        {
+        }
+
+        public override bool Equals(Vector a, Vector b) =>
+            this.ApproxEqual(a.x, b.x) &&
+            this.ApproxEqual(a.y, b.y) &&
+            this.ApproxEqual(a.z, b.z);
+
+        public override int GetHashCode(Vector obj)
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                // Suitable nullity checks etc, of course :)
+                hash = hash * 23 + obj.x.GetHashCode();
+                hash = hash * 23 + obj.y.GetHashCode();
+                hash = hash * 23 + obj.z.GetHashCode();
+                return hash;
+            }
+        }        
+    }    
 }
