@@ -81,7 +81,7 @@ namespace RayTracer
             return xs;
         }
 
-        public override Vector LocalNormalAt(Point local_point)
+        public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
         {
             // compute the square of the distance from the y axis
             var dist = local_point.x*local_point.x + local_point.z*local_point.z;

@@ -4,24 +4,18 @@ using System.Collections.Generic;
 
 namespace RayTracer
 {
-    public class Triangle : Shape
+    public class SmoothTriangle : Triangle
     {
-        protected const double EPSILON = 0.00001;
-        public Point p1;
-        public Point p2;
-        public Point p3;
-        public Vector e1;
-        public Vector e2;
-        public Vector Normal;
+        public Vector n1;
+        public Vector n2;
+        public Vector n3;
 
-        public Triangle(Point point1, Point point2, Point point3)
+        public SmoothTriangle(Point point1, Point point2, Point point3, Vector norm1, Vector norm2, Vector norm3)
+            : base(point1, point2, point3)
         {
-            p1 = point1;
-            p2 = point2;
-            p3 = point3;
-            e1 = p2 - p1;
-            e2 = p3 - p1;
-            Normal = e2.Cross(e1).Normalize();
+            n1 = norm1;
+            n2 = norm2;
+            n3 = norm3;
         }
 
         public override List<Intersection> LocalIntersect(Ray r)
@@ -43,12 +37,14 @@ namespace RayTracer
                 return new List<Intersection>();
 
             var t = f * e2.Dot(originCrossE1);
-            return new List<Intersection> { new Intersection(t, this) };
+            return new List<Intersection> { new Intersection(t, this, u, v) };
         }
 
         public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
         {
-            return Normal;
+            return this.n2 * hit.u +
+                    this.n3 * hit.v +
+                    this.n1 * (1 - hit.u - hit.v);
         }
 
         public override BoundingBox GetBounds()

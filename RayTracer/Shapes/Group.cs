@@ -80,7 +80,7 @@ namespace RayTracer
             return xs;
         }
 
-        public override Vector LocalNormalAt(Point local_point)
+        public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
         {
             // TODO: Throw an exception here since this should never be called.
             return new Vector(0, 0, 0);

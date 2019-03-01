@@ -186,5 +186,14 @@ namespace RayTracer.Tests
             var color = w.ShadeHit(comps, 5);
             Assert.True(color.Equals(new Color(0.93391, 0.69643, 0.69243)));
         }
+
+        [Fact]
+        public void IntersectionCanEncapsulateUandV_ShouldWork()
+        {
+            var s = new Triangle(new Point(0, 1, 0), new Point(-1, 0, 0), new Point(1, 0, 0));
+            var i = new Intersection(3.5, s, 0.2, 0.4);
+            Assert.Equal(0.2, i.u);
+            Assert.Equal(0.4, i.v);
+        }
     }
 }

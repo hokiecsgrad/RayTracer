@@ -66,11 +66,21 @@ namespace RayTracer
         private const double EPSILON = 0.00001;
         public double Time { get; }
         public Shape Object { get; }
+        public double u { get; }
+        public double v { get; }
 
         public Intersection(double t, Shape obj)
         {
             Time = t;
             Object = obj;
+        }
+
+        public Intersection(double t, Shape obj, double u, double v)
+        {
+            Time = t;
+            Object = obj;
+            this.u = u;
+            this.v = v;
         }
 
         public Comps PrepareComputations(Ray ray, List<Intersection> xs)
@@ -82,7 +92,10 @@ namespace RayTracer
             comps.Object = this.Object;
             comps.Point = ray.Position(comps.Time);
             comps.Eye = -ray.Direction;
-            comps.Normal = comps.Object.NormalAt(comps.Point);
+            if (!xs.Any())
+                comps.Normal = comps.Object.NormalAt(comps.Point);
+            else
+                comps.Normal = comps.Object.NormalAt(comps.Point, xs[0]);
 
             if (comps.Normal.Dot(comps.Eye) < 0)
             {

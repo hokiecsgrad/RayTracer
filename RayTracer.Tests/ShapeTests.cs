@@ -465,5 +465,71 @@ namespace RayTracer.Tests
 
             return allData;
         }
+
+        [Fact]
+        public void ConstructingSmoothTriangle()
+        {
+            var p1 = new Point(0, 1, 0);
+            var p2 = new Point(-1, 0, 0);
+            var p3 = new Point(1, 0, 0);
+            var n1 = new Vector(0, 1, 0);
+            var n2 = new Vector(-1, 0, 0);
+            var n3 = new Vector(1, 0, 0);
+            var tri = new SmoothTriangle(p1, p2, p3, n1, n2, n3);
+            Assert.Equal(p1, tri.p1);
+            Assert.Equal(p2, tri.p2);
+            Assert.Equal(p3, tri.p3);
+            Assert.Equal(n1, tri.n1);
+            Assert.Equal(n2, tri.n2);
+            Assert.Equal(n3, tri.n3);
+        }
+
+        [Fact]
+        public void IntersectionWithSmoothTriangle_ShouldStoresUv()
+        {
+            var p1 = new Point(0, 1, 0);
+            var p2 = new Point(-1, 0, 0);
+            var p3 = new Point(1, 0, 0);
+            var n1 = new Vector(0, 1, 0);
+            var n2 = new Vector(-1, 0, 0);
+            var n3 = new Vector(1, 0, 0);
+            var tri = new SmoothTriangle(p1, p2, p3, n1, n2, n3);
+            var r = new Ray(new Point(-0.2, 0.3, -2), new Vector(0, 0, 1));
+            var xs = tri.LocalIntersect(r);
+            Assert.Equal(0.45, xs[0].u, 2);
+            Assert.Equal(0.25, xs[0].v, 2);
+        }
+
+        [Fact]
+        public void SmoothTriangle_ShouldUseUvToInterpolateTheNormal()
+        {
+            var p1 = new Point(0, 1, 0);
+            var p2 = new Point(-1, 0, 0);
+            var p3 = new Point(1, 0, 0);
+            var n1 = new Vector(0, 1, 0);
+            var n2 = new Vector(-1, 0, 0);
+            var n3 = new Vector(1, 0, 0);
+            var tri = new SmoothTriangle(p1, p2, p3, n1, n2, n3);
+            var i = new Intersection(1, tri, 0.45, 0.25);
+            var n = tri.NormalAt(new Point(0, 0, 0), i);
+            Assert.True(n.Equals(new Vector(-0.5547, 0.83205, 0)));
+        }
+
+        [Fact]
+        public void PreparingTheNormalOnSmoothTriangle_ShouldWork()
+        {
+            var p1 = new Point(0, 1, 0);
+            var p2 = new Point(-1, 0, 0);
+            var p3 = new Point(1, 0, 0);
+            var n1 = new Vector(0, 1, 0);
+            var n2 = new Vector(-1, 0, 0);
+            var n3 = new Vector(1, 0, 0);
+            var tri = new SmoothTriangle(p1, p2, p3, n1, n2, n3);
+            var i = new Intersection(1, tri, 0.45, 0.25);
+            var r = new Ray(new Point(-0.2, 0.3, -2), new Vector(0, 0, 1));
+            var xs = new List<Intersection> { i };
+            var comps = i.PrepareComputations(r, xs);
+            Assert.StrictEqual(new Vector(-0.5547, 0.83205, 0), comps.Normal);
+        }
     }
 }

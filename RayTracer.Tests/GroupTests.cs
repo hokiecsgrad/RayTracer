@@ -11,7 +11,7 @@ namespace RayTracer.Tests
     {
         public Ray SavedRay = null;
         public override List<Intersection> LocalIntersect(Ray r) { SavedRay = r; return new List<Intersection>(); }
-        public override Vector LocalNormalAt(Point local_point) { return new Vector(0, 0, 0); }
+        public override Vector LocalNormalAt(Point local_point, Intersection hit = null) { return new Vector(0, 0, 0); }
 
         public override BoundingBox GetBounds()
         {

@@ -31,7 +31,7 @@ namespace RayTracer
             return new List<Intersection> { new Intersection(t1, this), new Intersection(t2, this) };
         }
 
-        public override Vector LocalNormalAt(Point local_point)
+        public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
         {
             var object_normal = local_point - new Point(0, 0, 0);    
             return object_normal.Normalize();        

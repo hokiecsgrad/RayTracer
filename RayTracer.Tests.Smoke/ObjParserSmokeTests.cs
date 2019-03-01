@@ -11,7 +11,7 @@ namespace RayTracer.Tests.Smoke
         [Fact]
         public void RenderBasicScene()
         {
-            var objFile = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/models/teapot.obj";
+            var objFile = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/models/teapot-low.obj";
             FileStream instream = File.OpenRead(objFile);
             StreamReader reader = new StreamReader(instream);
             var objData = reader.ReadToEnd();
@@ -19,6 +19,7 @@ namespace RayTracer.Tests.Smoke
             parser.Parse();            
             var teapot = new Group();
             teapot.AddGroups(parser.ObjToGroup());
+            //teapot.Divide(200);
 
             World world = new World();
             world.Shapes = new List<Shape> {teapot};
@@ -27,17 +28,17 @@ namespace RayTracer.Tests.Smoke
             // light sources
             // ======================================================
 
-            world.Light = new PointLight(new Point(1, 6.9, -4.9), new Color(1, 1, 1));
+            world.Light = new PointLight(new Point(1, 10, 20), new Color(1, 1, 1));
 
             // ======================================================
             // the camera
             // ======================================================
 
-            Camera camera = new Camera(400, 300, 0.314);
+            Camera camera = new Camera(400, 300, Math.PI/2);
             camera.Transform = Transformation.ViewTransform(
-                                new Point(15, 10, -15), // view from
-                                new Point(0, 1.5, 0),// view to
-                                new Vector(0, 1, 0));    // vector up
+                                new Point(25, 20, 15), // view from
+                                new Point(0, 8, 4),// view to
+                                new Vector(0, 0, 1));    // vector up
 
             Canvas canvas = camera.Render(world);
 

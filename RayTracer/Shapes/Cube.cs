@@ -42,7 +42,7 @@ namespace RayTracer
             return new List<Intersection> { new Intersection(tmin, this), new Intersection(tmax, this) };
         }
 
-        public override Vector LocalNormalAt(Point local_point)
+        public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
         {
             var maxc = Math.Max(Math.Abs(local_point.x), Math.Max(Math.Abs(local_point.y), Math.Abs(local_point.z)));
             if (maxc == Math.Abs(local_point.x))

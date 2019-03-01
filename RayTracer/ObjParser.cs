@@ -11,7 +11,8 @@ namespace RayTracer
         public int IgnoredCount = 0;
         public string data;
         public List<Point> Vertices = new List<Point>();
-        private List<string> knownCommands = new List<string> {"v", "f", "g"};
+        public List<Vector> Normals = new List<Vector>();
+        private List<string> knownCommands = new List<string> {"v", "f", "g", "vn"};
         public Group DefaultGroup;
         public List<Group> Groups;
 
@@ -22,12 +23,16 @@ namespace RayTracer
             Groups = new List<Group>();
         }
 
-        private List<Triangle> FanTriangulation(List<Point> vertices)
+        private List<Triangle> FanTriangulation(List<Point> vertices, List<Vector> normals)
         {
             var triangles = new List<Triangle>();
             for (var index = 1; index < vertices.Count - 1; index++)
             {
-                var tri = new Triangle(vertices[0], vertices[index], vertices[index+1]);
+                Triangle tri;
+                if (normals.Count > index)
+                    tri = new SmoothTriangle(vertices[0], vertices[index], vertices[index+1], normals[0], normals[index], normals[index+1]);
+                else
+                    tri = new Triangle(vertices[0], vertices[index], vertices[index+1]);
                 triangles.Add(tri);
             }
             return triangles;
@@ -62,18 +67,28 @@ namespace RayTracer
                                 new Point(double.Parse(commands[1]), double.Parse(commands[2]), double.Parse(commands[3])) 
                                 );
                             break;
+                        case "vn" :
+                            this.Normals.Add(
+                                new Vector(double.Parse(commands[1]), double.Parse(commands[2]), double.Parse(commands[3]))
+                                );
+                            break;
                         case "f" :
                             var vertices = new List<Point>();
+                            var normals = new List<Vector>();
                             for (var i = 1; i < commands.Length; i++)
                             {
                                 int vertNum;
+                                int normNum;
                                 if (commands[i].Contains("/"))
+                                {
                                     vertNum = int.Parse(commands[i].Split('/')[0]);
-                                else
+                                    normNum = int.Parse(commands[i].Split('/')[2]);
+                                    normals.Add( this.Normals[normNum - 1] );
+                                } else
                                     vertNum = int.Parse(commands[i]);
                                 vertices.Add( this.Vertices[vertNum - 1] );
                             }
-                            currentGroup.AddTriangles(FanTriangulation(vertices));
+                            currentGroup.AddTriangles(FanTriangulation(vertices, normals));
                             break;
                         case "g" :
                             var group = new Group();

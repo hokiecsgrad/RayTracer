@@ -31,12 +31,12 @@ namespace RayTracer
             return LocalIntersect(transformedRay);
         }
 
-        public abstract Vector LocalNormalAt(Point local_point);
+        public abstract Vector LocalNormalAt(Point local_point, Intersection hit = null);
 
-        public Vector NormalAt(Point world_point)
+        public Vector NormalAt(Point world_point, Intersection i = null)
         {
             Point local_point = this.ConverWorldPointToObjectPoint(world_point);
-            Vector local_normal = this.LocalNormalAt(local_point);
+            Vector local_normal = this.LocalNormalAt(local_point, i);
             return this.NormalToWorld(local_normal);
         }
 

@@ -17,7 +17,7 @@ namespace RayTracer
             return new List<Intersection> { new Intersection(t1, this) };
         }
 
-        public override Vector LocalNormalAt(Point local_point)
+        public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
         {
             return new Vector(0, 1, 0);
         }
