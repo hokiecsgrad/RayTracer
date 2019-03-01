@@ -1,10 +1,16 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace RayTracer.Tests
 {
     public class CameraTests
     {
+        private const double EPSILON = 0.00001;
+
+        static readonly IEqualityComparer<Color> ColorComparer =
+            Color.GetEqualityComparer(EPSILON);
+
         [Fact]
         public void ConstructingACamera_ShouldWork()
         {
@@ -68,7 +74,7 @@ namespace RayTracer.Tests
             var up = new Vector(0, 1, 0);
             c.Transform = Transformation.ViewTransform(from, to, up);
             var image = c.Render(world);
-            Assert.True(image.GetPixel(5, 5).Equals(new Color(0.38066, 0.47583, 0.2855)));
+            Assert.Equal(new Color(0.38066, 0.47583, 0.2855), image.GetPixel(5, 5), ColorComparer);
         }
     }
 }

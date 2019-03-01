@@ -8,6 +8,9 @@ namespace RayTracer.Tests
     public class IntersectionTests
     {
         private const double EPSILON = 0.00001;
+
+        static readonly IEqualityComparer<Color> ColorComparer =
+            Color.GetEqualityComparer(EPSILON);
         
         [Fact]
         public void CreatingIntersection_ShouldWork()
@@ -184,7 +187,7 @@ namespace RayTracer.Tests
             var xs = new List<Intersection> { new Intersection(Math.Sqrt(2), floor) };
             var comps = xs[0].PrepareComputations(r, xs);
             var color = w.ShadeHit(comps, 5);
-            Assert.True(color.Equals(new Color(0.93391, 0.69643, 0.69243)));
+            Assert.Equal(new Color(0.93391, 0.69643, 0.69243), color, ColorComparer);
         }
 
         [Fact]

@@ -16,11 +16,16 @@ namespace RayTracer.Tests
 
     public class MaterialTests
     {
+        const double epsilon = 0.0001;
+
+        static readonly IEqualityComparer<Color> ColorComparer =
+            Color.GetEqualityComparer(epsilon);
+
         [Fact]
         public void Material_ShouldHaveColorAmbientDiffuseSpecularShininess()
         {
             Material m = new Material();
-            Assert.True(m.Color.Equals(new Color(1, 1, 1)));
+            Assert.Equal(Color.White, m.Color, ColorComparer);
             Assert.Equal(0.1, m.Ambient);
             Assert.Equal(0.9, m.Diffuse);
             Assert.Equal(0.9, m.Specular);
@@ -37,7 +42,7 @@ namespace RayTracer.Tests
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
             var result = m.Lighting(s, light, position, eye, normal);
-            Assert.True(result.Equals(new Color(1.9, 1.9, 1.9)));
+            Assert.Equal(new Color(1.9, 1.9, 1.9), result, ColorComparer);
         }
 
         [Fact]
@@ -50,7 +55,7 @@ namespace RayTracer.Tests
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
             var result = m.Lighting(s, light, position, eye, normal);
-            Assert.True(result.Equals(new Color(1.0, 1.0, 1.0)));
+            Assert.Equal(Color.White, result, ColorComparer);
         }
 
         [Fact]
@@ -63,7 +68,7 @@ namespace RayTracer.Tests
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 10, -10), new Color(1, 1, 1));
             var result = m.Lighting(s, light, position, eye, normal);
-            Assert.True(result.Equals(new Color(0.7364, 0.7364, 0.7364)));
+            Assert.Equal(new Color(0.7364, 0.7364, 0.7364), result, ColorComparer);
         }
 
         [Fact]
@@ -76,7 +81,7 @@ namespace RayTracer.Tests
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 10, -10), new Color(1, 1, 1));
             var result = m.Lighting(s, light, position, eye, normal);
-            Assert.True(result.Equals(new Color(1.6364, 1.6364, 1.6364)));
+            Assert.Equal(new Color(1.6364, 1.6364, 1.6364), result, ColorComparer);
         }
 
         [Fact]
@@ -89,7 +94,7 @@ namespace RayTracer.Tests
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, 10), new Color(1, 1, 1));
             var result = m.Lighting(s, light, position, eye, normal);
-            Assert.True(result.Equals(new Color(0.1, 0.1, 0.1)));
+            Assert.Equal(new Color(0.1, 0.1, 0.1), result, ColorComparer);
         }
 
         [Fact]
@@ -103,7 +108,7 @@ namespace RayTracer.Tests
             var light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
             var in_shadow = true;
             var result = m.Lighting(s, light, position, eye, normal, in_shadow);
-            Assert.True(result.Equals(new Color(0.1, 0.1, 0.1)));
+            Assert.Equal(new Color(0.1, 0.1, 0.1), result, ColorComparer);
         }
 
         [Fact]
@@ -120,8 +125,8 @@ namespace RayTracer.Tests
             var light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
             var c1 = m.Lighting(s, light, new Point(0.9, 0, 0), eyev, normalv, false);
             var c2 = m.Lighting(s, light, new Point(1.1, 0, 0), eyev, normalv, false);
-            Assert.True(c1.Equals(new Color(1, 1, 1)));
-            Assert.True(c2.Equals(new Color(0, 0, 0)));
+            Assert.Equal(Color.White, c1, ColorComparer);
+            Assert.Equal(Color.Black, c2, ColorComparer);
         }
 
         [Fact]

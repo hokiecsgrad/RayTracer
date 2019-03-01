@@ -7,6 +7,11 @@ namespace RayTracer.Tests
 {
     public class WorldTests
     {
+        const double epsilon = 0.0001;
+
+        static readonly IEqualityComparer<Color> Comparer =
+            Color.GetEqualityComparer(epsilon);
+
         [Fact]
         public void CreatingWorld_ShouldWork()
         {
@@ -48,7 +53,7 @@ namespace RayTracer.Tests
             var i = new Intersection(4, shape);
             var comps = i.PrepareComputations(r, new List<Intersection>());
             var c = w.ShadeHit(comps);
-            Assert.True(c.Equals(new Color(0.38066, 0.47583, 0.2855)));
+            Assert.Equal(new Color(0.38066, 0.47583, 0.2855), c, Comparer);
         }
 
         [Fact]
@@ -62,7 +67,7 @@ namespace RayTracer.Tests
             var i = new Intersection(0.5, shape);
             var comps = i.PrepareComputations(r, new List<Intersection>());
             var c = w.ShadeHit(comps);
-            Assert.True(c.Equals(new Color(0.90498, 0.90498, 0.90498)));
+            Assert.Equal(new Color(0.90498, 0.90498, 0.90498), c, Comparer);
         }     
 
         [Fact]
@@ -72,7 +77,7 @@ namespace RayTracer.Tests
             w.CreateDefaultWorld();
             var r = new Ray(new Point(0, 0, -5), new Vector(0, 1, 0));
             var c = w.ColorAt(r);
-            Assert.True(c.Equals(new Color(0, 0, 0)));
+            Assert.Equal(Color.Black, c, Comparer);
         }
 
         [Fact]
@@ -82,7 +87,7 @@ namespace RayTracer.Tests
             w.CreateDefaultWorld();
             var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
             var c = w.ColorAt(r);
-            Assert.True(c.Equals(new Color(0.38066, 0.47583, 0.2855)));
+            Assert.Equal(new Color(0.38066, 0.47583, 0.2855), c, Comparer);
         }
 
         [Fact]
@@ -96,7 +101,7 @@ namespace RayTracer.Tests
             inner.Material.Ambient = 1;
             var r = new Ray(new Point(0, 0, 0.75), new Vector(0, 0, -1));
             var c = w.ColorAt(r);
-            Assert.Equal(inner.Material.Color, c);
+            Assert.Equal(inner.Material.Color, c, Comparer);
         }
 
         [Fact]
@@ -148,7 +153,7 @@ namespace RayTracer.Tests
             var i = new Intersection(4, s2);
             var comps = i.PrepareComputations(r, new List<Intersection>());
             var c = w.ShadeHit(comps);
-            Assert.True(c.Equals(new Color(0.1, 0.1, 0.1)));
+            Assert.Equal(new Color(0.1, 0.1, 0.1), c, Comparer);
         }
 
         [Fact]
@@ -162,7 +167,7 @@ namespace RayTracer.Tests
             var i = new Intersection(1, shape);
             var comps = i.PrepareComputations(r, new List<Intersection>());
             var color = w.ReflectedColor(comps);
-            Assert.True(color.Equals(new Color(0, 0, 0)));
+            Assert.Equal(Color.Black, color, Comparer);
         }
 
         [Fact]
@@ -178,7 +183,7 @@ namespace RayTracer.Tests
             var i = new Intersection(Math.Sqrt(2), shape);
             var comps = i.PrepareComputations(r, new List<Intersection>());
             var color = w.ShadeHit(comps);
-            Assert.True(color.Equals(new Color(0.87677, 0.92436, 0.82918)));
+            Assert.Equal(new Color(0.87677, 0.92436, 0.82918), color, Comparer);
         }
 
         [Fact]
@@ -211,7 +216,7 @@ namespace RayTracer.Tests
             var i = new Intersection(Math.Sqrt(2), shape);
             var comps = i.PrepareComputations(r, new List<Intersection>());
             var color = w.ReflectedColor(comps, 0);
-            Assert.True(color.Equals(new Color(0, 0, 0)));
+            Assert.Equal(Color.Black, color, Comparer);
         }
 
         [Fact]
@@ -226,7 +231,7 @@ namespace RayTracer.Tests
             var xs = new List<Intersection> {x0, x1};
             var comps = xs[0].PrepareComputations(r, xs);
             var c = w.RefractedColor(comps, 5);
-            Assert.True(c.Equals(new Color(0, 0, 0)));
+            Assert.Equal(Color.Black, c, Comparer);
         }
 
         [Fact]
@@ -243,7 +248,7 @@ namespace RayTracer.Tests
             var xs = new List<Intersection> {x0, x1};
             var comps = xs[0].PrepareComputations(r, xs);
             var c = w.RefractedColor(comps, 0);
-            Assert.True(c.Equals(new Color(0, 0, 0)));
+            Assert.Equal(Color.Black, c, Comparer);
         }
 
         [Fact]
@@ -262,7 +267,7 @@ namespace RayTracer.Tests
             // to look at the second intersection, xs[1], not xs[0]
             var comps = xs[1].PrepareComputations(r, xs);
             var c = w.RefractedColor(comps, 5);
-            Assert.True(c.Equals(new Color(0, 0, 0)));
+            Assert.Equal(Color.Black, c, Comparer);
         }
 
         [Fact]
@@ -284,7 +289,7 @@ namespace RayTracer.Tests
             var xs = new List<Intersection> { x0, x1, x2, x3 };
             var comps = xs[2].PrepareComputations(r, xs);
             var c = w.RefractedColor(comps, 5);
-            Assert.True(c.Equals(new Color(0, 0.99888, 0.04725)));
+            Assert.Equal(new Color(0, 0.99888, 0.04725), c, Comparer);
         }
 
         [Fact]
@@ -305,7 +310,7 @@ namespace RayTracer.Tests
             var xs = new List<Intersection> { new Intersection(Math.Sqrt(2), floor) };
             var comps = xs[0].PrepareComputations(r, xs);
             var color = w.ShadeHit(comps, 5);
-            Assert.True(color.Equals(new Color(0.93642, 0.68642, 0.68642)));
+            Assert.Equal(new Color(0.93642, 0.68642, 0.68642), color, Comparer);
         }
     }
 }
