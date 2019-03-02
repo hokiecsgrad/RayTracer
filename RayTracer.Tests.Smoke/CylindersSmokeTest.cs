@@ -22,7 +22,7 @@ namespace RayTracer.Tests.Smoke
             var cyl = new Cylinder();
             cyl.Minimum = 0;
             cyl.Maximum = 0.75;
-            cyl.Closed = true;
+            cyl.IsClosed = true;
             cyl.Transform = Transformation.Translation(-1, 0, 1) * Transformation.Scaling(0.5, 1, 0.5);
             cyl.Material = new Material();
             cyl.Material.Color = new Color(0, 0, 0.6);
@@ -34,7 +34,7 @@ namespace RayTracer.Tests.Smoke
             var decCyl1 = new Cylinder();
             decCyl1.Minimum = 0;
             decCyl1.Maximum = 0.3;
-            decCyl1.Closed = true;
+            decCyl1.IsClosed = true;
             decCyl1.Transform = Transformation.Translation(0,0,-0.75) * Transformation.Scaling(0.05, 1, 0.05);
             decCyl1.Material = new Material();
             decCyl1.Material.Color = new Color(1, 0, 0);
@@ -46,7 +46,7 @@ namespace RayTracer.Tests.Smoke
             var decCyl2 = new Cylinder();
             decCyl2.Minimum = 0;
             decCyl2.Maximum = 0.3;
-            decCyl2.Closed = true;
+            decCyl2.IsClosed = true;
             decCyl2.Transform = Transformation.Translation(0,0,-2.25) * Transformation.Rotation_y(-0.15) * Transformation.Translation(0, 0, 1.5) * Transformation.Scaling(0.05, 1, 0.05);
             decCyl2.Material = new Material();
             decCyl2.Material.Color = new Color(1, 1, 0);
@@ -58,7 +58,7 @@ namespace RayTracer.Tests.Smoke
             var decCyl3 = new Cylinder();
             decCyl3.Minimum = 0;
             decCyl3.Maximum = 0.3;
-            decCyl3.Closed = true;
+            decCyl3.IsClosed = true;
             decCyl3.Transform = Transformation.Translation(0,0,-2.25) * Transformation.Rotation_y(-0.3) * Transformation.Translation(0, 0, 1.5) * Transformation.Scaling(0.05, 1, 0.05);
             decCyl3.Material = new Material();
             decCyl3.Material.Color = new Color(0, 1, 0);
@@ -70,7 +70,7 @@ namespace RayTracer.Tests.Smoke
             var decCyl4 = new Cylinder();
             decCyl4.Minimum = 0;
             decCyl4.Maximum = 0.3;
-            decCyl4.Closed = true;
+            decCyl4.IsClosed = true;
             decCyl4.Transform = Transformation.Translation(0,0,-2.25) * Transformation.Rotation_y(-0.45) * Transformation.Translation(0, 0, 1.5) * Transformation.Scaling(0.05, 1, 0.05);
             decCyl4.Material = new Material();
             decCyl4.Material.Color = new Color(0, 1, 1);
@@ -82,7 +82,7 @@ namespace RayTracer.Tests.Smoke
             var glassCyl = new Cylinder();
             glassCyl.Minimum = 0.0001;
             glassCyl.Maximum = 0.5;
-            glassCyl.Closed = true;
+            glassCyl.IsClosed = true;
             glassCyl.Transform = Transformation.Translation(0, 0, -1.5) * Transformation.Scaling(0.33, 1, 0.33);
             glassCyl.Material = new Material();
             glassCyl.Material.Color = new Color(0.25, 0, 0);
@@ -96,7 +96,7 @@ namespace RayTracer.Tests.Smoke
             var conCentCyl1 = new Cylinder();
             conCentCyl1.Minimum = 0;
             conCentCyl1.Maximum = 0.2;
-            conCentCyl1.Closed = false;
+            conCentCyl1.IsClosed = false;
             conCentCyl1.Transform = Transformation.Translation(1, 0, 0) * Transformation.Scaling(0.8, 1, 0.8);
             conCentCyl1.Material = new Material();
             conCentCyl1.Material.Color = new Color(1, 1, 0.3);
@@ -108,7 +108,7 @@ namespace RayTracer.Tests.Smoke
             var conCentCyl2 = new Cylinder();
             conCentCyl2.Minimum = 0;
             conCentCyl2.Maximum = 0.3;
-            conCentCyl2.Closed = false;
+            conCentCyl2.IsClosed = false;
             conCentCyl2.Transform = Transformation.Translation(1, 0, 0) * Transformation.Scaling(0.6, 1, 0.6);
             conCentCyl2.Material = new Material();
             conCentCyl2.Material.Color = new Color(1, 0.9, 0.4);
@@ -120,7 +120,7 @@ namespace RayTracer.Tests.Smoke
             var conCentCyl3 = new Cylinder();
             conCentCyl3.Minimum = 0;
             conCentCyl3.Maximum = 0.4;
-            conCentCyl3.Closed = false;
+            conCentCyl3.IsClosed = false;
             conCentCyl3.Transform = Transformation.Translation(1, 0, 0) * Transformation.Scaling(0.4, 1, 0.4);
             conCentCyl3.Material = new Material();
             conCentCyl3.Material.Color = new Color(1, 0.8, 0.5);
@@ -132,7 +132,7 @@ namespace RayTracer.Tests.Smoke
             var conCentCyl4 = new Cylinder();
             conCentCyl4.Minimum = 0;
             conCentCyl4.Maximum = 0.5;
-            conCentCyl4.Closed = true;
+            conCentCyl4.IsClosed = true;
             conCentCyl4.Transform = Transformation.Translation(1, 0, 0) * Transformation.Scaling(0.2, 1, 0.2);
             conCentCyl4.Material = new Material();
             conCentCyl4.Material.Color = new Color(1, 0.7, 0.6);

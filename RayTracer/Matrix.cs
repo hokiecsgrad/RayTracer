@@ -9,6 +9,13 @@ namespace RayTracer
         public int Rows => Data.GetUpperBound(0) + 1;
         public int Cols => Data.GetUpperBound(1) + 1;
 
+        public static Matrix Identity =>
+            new Matrix(new double[,] {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0},
+                {0, 0, 1, 0},
+                {0, 0, 0, 1}});
+
         public Matrix(double[,] data)
         {
             Data = data;

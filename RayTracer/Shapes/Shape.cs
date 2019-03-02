@@ -6,30 +6,42 @@ namespace RayTracer
 {
     public abstract class Shape
     {
-        private Matrix CacheTransformInverse = null;
-        private Matrix _transform;
-        public Matrix Transform { 
-            get { return _transform; } 
-            set { _transform = value; CacheTransformInverse = value.Inverse(); }
-        }
-        public Material Material { get; set; }
-        public bool CastsShadow = true;
-        public Shape Parent = null;
+        protected Matrix _transform = Matrix.Identity;
 
-        public Shape()
+        protected Matrix _inverse = Matrix.Identity;
+
+        public Matrix Inverse => this._inverse;
+
+        protected Matrix _transpose = Matrix.Identity;
+
+        public Matrix Transform
         {
-            Transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
-            CacheTransformInverse = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
-            Material = new Material();
+            get => this._transform;
+            set
+            {
+                this._inverse = value.Inverse();
+                this._transpose = this._inverse.Transpose();
+                this._transform = value;
+            }
         }
+
+        public Material Material { get; set; } = new Material();
+
+        public Shape Parent { get; set; } = null;
+
+        public bool HasParent => this.Parent != null;
+
+        public bool CastsShadow = true;
+
 
         public abstract List<Intersection> LocalIntersect(Ray r);
 
         public List<Intersection> Intersect(Ray r)
         {
-            Ray transformedRay = r.Transform(this.CacheTransformInverse);
+            Ray transformedRay = r.Transform(this._inverse);
             return LocalIntersect(transformedRay);
         }
+
 
         public abstract Vector LocalNormalAt(Point local_point, Intersection hit = null);
 
@@ -39,31 +51,34 @@ namespace RayTracer
             Vector local_normal = this.LocalNormalAt(local_point, i);
             return this.NormalToWorld(local_normal);
         }
+        
 
         public Point ConverWorldPointToObjectPoint(Point point)
         {
-            if (this.Parent != null)
+            if (this.HasParent)
                 point = this.Parent.ConverWorldPointToObjectPoint(point);
 
-            return this.CacheTransformInverse * point;
+            return this._inverse * point;
         }
 
         public Vector NormalToWorld(Vector normal)
         {
-            normal = this.CacheTransformInverse.Transpose() * normal;
-            //normal.w = 0;
+            normal = this._transpose * normal;
+            normal.w = 0;
             normal = normal.Normalize();
-            if (this.Parent != null)
+
+            if (this.HasParent)
                 normal = this.Parent.NormalToWorld(normal);
 
             return normal;
         }
 
+
         public abstract BoundingBox GetBounds();
        
         public BoundingBox GetParentSpaceBounds()
         {
-            return BoundingBox.Transform(this.GetBounds(), this.Transform);
+            return BoundingBox.Transform(this.GetBounds(), this._transform);
         }
 
         public abstract void Divide(int threshold);

@@ -330,7 +330,7 @@ namespace RayTracer.Tests
         public void DefaultClosedValueForCylinder_ShouldBeFalse()
         {
             var cyl = new Cylinder();
-            Assert.False(cyl.Closed);
+            Assert.False(cyl.IsClosed);
         }
 
         [Theory]
@@ -340,7 +340,7 @@ namespace RayTracer.Tests
             var cyl = new Cylinder();
             cyl.Minimum = 1;
             cyl.Maximum = 2;
-            cyl.Closed = true;
+            cyl.IsClosed = true;
             var dir = direction.Normalize();
             var r = new Ray(point, dir);
             var xs = cyl.LocalIntersect(r);
@@ -368,7 +368,7 @@ namespace RayTracer.Tests
             var cyl = new Cylinder();
             cyl.Minimum = 1;
             cyl.Maximum = 2;
-            cyl.Closed = true;
+            cyl.IsClosed = true;
             var n = cyl.LocalNormalAt(point);
             Assert.True(n.Equals(normal));
         }
@@ -431,7 +431,7 @@ namespace RayTracer.Tests
             var shape = new Cone();
             shape.Minimum = -0.5;
             shape.Maximum = 0.5;
-            shape.Closed = true;
+            shape.IsClosed = true;
             var dir = direction.Normalize();
             var r = new Ray(origin, dir);
             var xs = shape.LocalIntersect(r);

@@ -6,7 +6,7 @@ namespace RayTracer.Tests
 {
     public class ColorTests
     {
-        const double epsilon = 0.000001;
+        const double epsilon = 0.00001;
 
         static readonly IEqualityComparer<Color> Comparer =
             Color.GetEqualityComparer(epsilon);

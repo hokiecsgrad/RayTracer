@@ -5,10 +5,13 @@ namespace RayTracer
 {
     public struct Vector
     {
-        public readonly double x;
-        public readonly double y;
-        public readonly double z;
-        public readonly double w;
+        public static Vector Zero =>
+            new Vector(0,0,0);
+
+        public double x;
+        public double y;
+        public double z;
+        public double w;
 
         public Vector(double x, double y, double z)
         {

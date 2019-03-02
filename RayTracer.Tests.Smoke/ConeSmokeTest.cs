@@ -22,7 +22,7 @@ namespace RayTracer.Tests.Smoke
             var cone = new Cone();
             cone.Minimum = 0;
             cone.Maximum = 1;
-            cone.Closed = true;
+            cone.IsClosed = true;
             cone.Transform = Transformation.Translation(-1, 0, 1) * Transformation.Scaling(0.5, 1, 0.5);
             cone.Material = new Material();
             cone.Material.Color = new Color(0, 0, 0.6);
@@ -34,7 +34,7 @@ namespace RayTracer.Tests.Smoke
             var cone2 = new Cone();
             cone2.Minimum = -1;
             cone2.Maximum = 1;
-            cone2.Closed = true;
+            cone2.IsClosed = true;
             cone2.Transform = Transformation.Translation(0,0,-0.75) * Transformation.Scaling(0.05, 1, 0.05);
             cone2.Material = new Material();
             cone2.Material.Color = new Color(1, 0, 0);
@@ -46,7 +46,7 @@ namespace RayTracer.Tests.Smoke
             var cone3 = new Cone();
             cone3.Minimum = -1;
             cone3.Maximum = 0;
-            cone3.Closed = true;
+            cone3.IsClosed = true;
             cone3.Transform = Transformation.Translation(0,0,-2.25) * Transformation.Rotation_y(-0.15) * Transformation.Translation(0, 0, 1.5) * Transformation.Scaling(0.05, 1, 0.05);
             cone3.Material = new Material();
             cone3.Material.Color = new Color(1, 1, 0);
@@ -58,7 +58,7 @@ namespace RayTracer.Tests.Smoke
             var cone4 = new Cone();
             cone4.Minimum = 0;
             cone4.Maximum = 2;
-            cone4.Closed = false;
+            cone4.IsClosed = false;
             cone4.Transform = Transformation.Translation(0,0,-2.25) * Transformation.Rotation_y(-0.3) * Transformation.Translation(0, 0, 1.5) * Transformation.Scaling(0.05, 1, 0.05);
             cone4.Material = new Material();
             cone4.Material.Color = new Color(0, 1, 0);

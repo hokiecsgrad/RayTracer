@@ -5,6 +5,9 @@ namespace RayTracer
 {
     public struct Point
     {
+        public static Point Origin =>
+            new Point(0,0,0);
+
         public readonly double x;
         public readonly double y;
         public readonly double z;

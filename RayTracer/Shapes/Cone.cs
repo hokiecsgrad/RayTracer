@@ -7,9 +7,12 @@ namespace RayTracer
     public class Cone : Shape
     {
         private const double EPSILON = 0.00001;
-        public double Maximum = Double.PositiveInfinity;
-        public double Minimum = Double.NegativeInfinity;
-        public bool Closed = false;
+
+        public double Maximum { get; set; } = double.PositiveInfinity;
+
+        public double Minimum { get; set; } = double.NegativeInfinity;
+
+        public bool IsClosed { get; set; } = false;
 
         // a helper function to reduce duplication.
         // checks to see if the intersection at `t` is within a radius
@@ -27,7 +30,10 @@ namespace RayTracer
 
             // caps only matter if the cone is closed, and might possibly be
             // intersected by the ray.
-            if (this.Closed == false || ray.Direction.y == 0)
+            if (!this.IsClosed)
+                return xs;
+
+            if (ray.Direction.y < EPSILON)
                 return xs;
 
             // check for an intersection with the lower end cap by intersecting
@@ -49,12 +55,16 @@ namespace RayTracer
         {
             var xs = new List<Intersection>();
 
-            var a = ray.Direction.x*ray.Direction.x - ray.Direction.y*ray.Direction.y + ray.Direction.z*ray.Direction.z;
-            var b = 2 * ray.Origin.x * ray.Direction.x - 2 * ray.Origin.y * ray.Direction.y + 2 * ray.Origin.z * ray.Direction.z;
-            var c = ray.Origin.x*ray.Origin.x - ray.Origin.y*ray.Origin.y + ray.Origin.z*ray.Origin.z;
+            var o = ray.Origin;
+            var d = ray.Direction;
+
+            var a = d.x * d.x - d.y * d.y + d.z * d.z;
+            var b = 2 * o.x * d.x - 2 * o.y * d.y + 2 * o.z * d.z;
+            var c = o.x * o.x - o.y * o.y + o.z * o.z;
+
             if (Math.Abs(0 - a) <= EPSILON && Math.Abs(0 - b) > EPSILON)
             {
-                var t0 = -c / (2*b);
+                var t0 = -c / (2 * b);
                 xs.Add(new Intersection(t0, this));
             }
             else if (Math.Abs(0 - a) > EPSILON) 
@@ -65,7 +75,9 @@ namespace RayTracer
                 
                 var t0 = (-b - Math.Sqrt(disc)) / (2 * a);
                 var t1 = (-b + Math.Sqrt(disc)) / (2 * a);
-                if (t0 > t1) {
+
+                if (t0 > t1) 
+                {
                     var temp = t0;
                     t0 = t1;
                     t1 = temp;
@@ -88,27 +100,34 @@ namespace RayTracer
         public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
         {
             // compute the square of the distance from the y axis
-            var dist = local_point.x*local_point.x + local_point.z*local_point.z;
+            var dist = Math.Pow(local_point.x, 2) + Math.Pow(local_point.z, 2);
             if (dist < 1 && local_point.y >= this.Maximum - EPSILON)
-                return new Vector(0, 1, 0);
-            else if (dist < 1 && local_point.y <= this.Minimum + EPSILON)
-                return new Vector(0, -1, 0);
-            else
             {
-                var y = Math.Sqrt(local_point.x*local_point.x + local_point.z*local_point.z);
-                if (local_point.y > 0) y = -y;
-                return new Vector(local_point.x, y, local_point.z);
+                return new Vector(0, 1, 0);
             }
+            else if (dist < 1 && local_point.y <= this.Minimum + EPSILON)
+            {
+                return new Vector(0, -1, 0);
+            }
+
+            var y = Math.Sqrt(dist);
+            if (local_point.y > 0) 
+            {
+                y = -y;
+            }
+
+            return new Vector(local_point.x, y, local_point.z);
         }
 
         public override BoundingBox GetBounds()
         {
-            var a = Math.Abs(Minimum);
-            var b = Math.Abs(Maximum);
-            var limit = Math.Max(a, b);
+            var limit = Math.Max(
+                Math.Abs(Minimum),
+                Math.Abs(Maximum));
 
-            return new BoundingBox(new Point(-limit, Minimum, -limit),
-                                    new Point(limit, Maximum, limit));
+            return new BoundingBox(
+                new Point(-limit, Minimum, -limit),
+                new Point(limit, Maximum, limit));
         }
 
         public override void Divide(int threshold) { }
