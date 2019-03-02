@@ -11,15 +11,15 @@ namespace RayTracer.Tests.Smoke
         [Fact]
         public void RenderBasicScene()
         {
-            //var objFile = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Tests.Smoke/models/teapot-normals.obj";
-            var objFile = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Tests.Smoke/models/utah_teapot_hires.obj";
+            var objFile = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/models/utah_teapot_hires.obj";
+            //var objFile = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Tests.Smoke/models/utah_teapot_hires.obj";
             FileStream instream = File.OpenRead(objFile);
             StreamReader reader = new StreamReader(instream);
             var objData = reader.ReadToEnd();
             var parser = new ObjParser(objData);
             parser.Parse();            
             var teapot = new Group();
-            teapot.AddGroups(parser.ObjToGroup());
+            teapot.AddShapes(parser.ObjToGroup());
             teapot.Divide(200);
 
             World world = new World();
@@ -43,7 +43,7 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Tests.Smoke/Teapot.ppm";
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/SmoothTeapot.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

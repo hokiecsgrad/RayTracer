@@ -35,8 +35,8 @@ namespace RayTracer.Tests
         public void CreatingNewGroup_ShouldWork()
         {
             var g = new Group();
-            Assert.True(g.Transform.Equals(new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} })));
-            Assert.True(!g.GetShapes().Any());
+            Assert.True(g.Transform.Equals(Matrix.Identity));
+            Assert.Equal(0, g.Count);
         }
 
         [Fact]
@@ -52,8 +52,8 @@ namespace RayTracer.Tests
             var g = new Group();
             var s = new TestShape();
             g.AddShape(s);
-            Assert.True(g.GetShapes().Any());
-            Assert.True(g.GetShapes().Find(x => x.Equals(s)) != null);
+            Assert.Equal(1, g.Count);
+            Assert.Contains(s, g.Shapes);
             Assert.Equal(s.Parent, g);
         }
 
@@ -199,8 +199,8 @@ namespace RayTracer.Tests
             g.AddShape(s2);
             g.AddShape(s3);
             var (left, right) = g.PartitionChildren();
-            Assert.Equal(1, g.GetShapes().Count);
-            Assert.Contains(s3, g.GetShapes());
+            Assert.Equal(1, g.Count);
+            Assert.Contains(s3, g.Shapes);
             Assert.Equal(1, left.Count);
             Assert.Contains(s1, left);
             Assert.Equal(1, right.Count);
@@ -214,10 +214,10 @@ namespace RayTracer.Tests
             var s2 = new Sphere();
             var g = new Group();
             g.MakeSubgroup(new List<Shape> {s1, s2});
-            var subgroup = (object)g.GetShapes()[0] as Group;
-            Assert.Equal(1, g.GetShapes().Count);
-            Assert.Contains(s1, subgroup.GetShapes());
-            Assert.Contains(s2, subgroup.GetShapes());
+            var subgroup = (object)g[0] as Group;
+            Assert.Equal(1, g.Count);
+            Assert.Contains(s1, subgroup.Shapes);
+            Assert.Contains(s2, subgroup.Shapes);
         }
 
         [Fact]
@@ -242,16 +242,16 @@ namespace RayTracer.Tests
             g.AddShape(s2);
             g.AddShape(s3);
             g.Divide(1);
-            Assert.StrictEqual(s3, g.GetShapes()[0]);
-            var subgroup = (object)g.GetShapes()[1] as Group;
+            Assert.StrictEqual(s3, g[0]);
+            var subgroup = (object)g[1] as Group;
             Assert.IsType(typeof(Group), subgroup);
-            Assert.Equal(2, subgroup.GetShapes().Count);
-            var subgroupS1 = (object)subgroup.GetShapes()[0] as Group;
-            Assert.Equal(1, subgroupS1.GetShapes().Count);
-            Assert.Contains(s1, subgroupS1.GetShapes());
-            var subgroupS2 = (object)subgroup.GetShapes()[1] as Group;
-            Assert.Equal(1, subgroupS2.GetShapes().Count);
-            Assert.Contains(s2, subgroupS2.GetShapes());
+            Assert.Equal(2, subgroup.Count);
+            var subgroupS1 = (object)subgroup[0] as Group;
+            Assert.Equal(1, subgroupS1.Count);
+            Assert.Contains(s1, subgroupS1.Shapes);
+            var subgroupS2 = (object)subgroup[1] as Group;
+            Assert.Equal(1, subgroupS2.Count);
+            Assert.Contains(s2, subgroupS2.Shapes);
         }
 
         [Fact]
@@ -270,16 +270,16 @@ namespace RayTracer.Tests
             var s4 = new Sphere();
             var g = new Group();
             g.AddShape(s4);
-            g.AddGroups(new List<Group>{subgroup});
+            g.AddShape(subgroup);
             g.Divide(3);
-            Assert.StrictEqual(s4, g.GetShapes()[0]);
-            Assert.StrictEqual(subgroup, g.GetShapes()[1]);
-            Assert.Equal(2, g.GetShapes().Count);
-            var subgroup0 = (object)subgroup.GetShapes()[0] as Group;
-            var subgroup1 = (object)subgroup.GetShapes()[1] as Group;
-            Assert.Contains(s1, subgroup0.GetShapes());
-            Assert.Contains(s2, subgroup1.GetShapes());
-            Assert.Contains(s3, subgroup1.GetShapes());
+            Assert.Equal(s4, g[0]);
+            Assert.Equal(subgroup, g[1]);
+            Assert.Equal(2, g.Count);
+            var subgroup0 = (object)subgroup[0] as Group;
+            var subgroup1 = (object)subgroup[1] as Group;
+            Assert.Contains(s1, subgroup0.Shapes);
+            Assert.Contains(s2, subgroup1.Shapes);
+            Assert.Contains(s3, subgroup1.Shapes);
         }
     }
 }

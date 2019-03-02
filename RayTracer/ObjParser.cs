@@ -23,9 +23,9 @@ namespace RayTracer
             Groups = new List<Group>();
         }
 
-        private List<Triangle> FanTriangulation(List<Point> vertices, List<Vector> normals)
+        private List<Shape> FanTriangulation(List<Point> vertices, List<Vector> normals)
         {
-            var triangles = new List<Triangle>();
+            var triangles = new List<Shape>();
             for (var index = 1; index < vertices.Count - 1; index++)
             {
                 Triangle tri;
@@ -38,12 +38,15 @@ namespace RayTracer
             return triangles;
         }
 
-        public List<Group> ObjToGroup()
+        public List<Shape> ObjToGroup()
         {
-            var groups = new List<Group>();
-            if (this.DefaultGroup.GetShapes().Any())
+            var groups = new List<Shape>();
+
+            if (this.DefaultGroup.Shapes.Any())
                 groups.Add(this.DefaultGroup);
+
             groups.AddRange(this.Groups);
+            
             return groups;
         }
 
@@ -88,7 +91,7 @@ namespace RayTracer
                                     vertNum = int.Parse(commands[i]);
                                 vertices.Add( this.Vertices[vertNum - 1] );
                             }
-                            currentGroup.AddTriangles(FanTriangulation(vertices, normals));
+                            currentGroup.AddShapes(FanTriangulation(vertices, normals));
                             break;
                         case "g" :
                             var group = new Group();
