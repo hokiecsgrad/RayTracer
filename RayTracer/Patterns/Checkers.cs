@@ -15,7 +15,11 @@ namespace RayTracer
 
         public override Color PatternAt(Point point)
         {
-            if ( (Math.Floor(point.x) + Math.Floor(point.y) + Math.Floor(point.z)) % 2 == 0 )
+            var x = Math.Floor(point.x);
+            var y = Math.Floor(point.y);
+            var z = Math.Floor(point.z);
+
+            if ( (x + y + z) % 2 == 0 )
                 return this.a;
             else
                 return this.b;

@@ -7,8 +7,11 @@ namespace RayTracer
     public class SmoothTriangle : Triangle
     {
         public Vector n1;
+
         public Vector n2;
+
         public Vector n3;
+
 
         public SmoothTriangle(Point point1, Point point2, Point point3, Vector norm1, Vector norm2, Vector norm3)
             : base(point1, point2, point3)
@@ -37,7 +40,9 @@ namespace RayTracer
                 return new List<Intersection>();
 
             var t = f * e2.Dot(originCrossE1);
-            return new List<Intersection> { new Intersection(t, this, u, v) };
+            return new List<Intersection> { 
+                new Intersection(t, this, u, v) 
+                };
         }
 
         public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
@@ -47,10 +52,8 @@ namespace RayTracer
                     this.n1 * (1 - hit.u - hit.v);
         }
 
-        public override BoundingBox GetBounds()
-        {
-            return new BoundingBox();
-        }
+        public override BoundingBox GetBounds() =>
+            new BoundingBox();
 
         public override void Divide(int threshold) { }
     }

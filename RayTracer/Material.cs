@@ -2,22 +2,30 @@ using System;
 
 namespace RayTracer
 {
-    public class Material
+    public class Material : IEquatable<Material>
     {
-        private const double EPSILON = 0.00001;
         public Color Color { get; set; }
+
         public Pattern Pattern { get; set; }
+
         public double Ambient { get; set; }
+
         public double Diffuse { get; set; }
+
         public double Specular { get; set; }
+
         public double Shininess { get; set; }
+
         public double Reflective { get; set; }
+
         public double Transparency { get; set; }
+
         public double RefractiveIndex { get; set; }
+
 
         public Material()
         {
-            Color = new Color(1, 1, 1);
+            Color = Color.White;
             Pattern = null;
             Ambient = 0.1;
             Diffuse = 0.9;
@@ -106,19 +114,11 @@ namespace RayTracer
                 return ambient + diffuse + specular;
         }
 
-        public override bool Equals(Object other)
-        {
-            Material objMat = other as Material;
-
-            if (objMat == null) {
-                return false;
-            }
- 
-            return (objMat.Color.Equals(this.Color) &&
-                    (Math.Abs(objMat.Ambient - this.Ambient) < EPSILON) && 
-                    (Math.Abs(objMat.Diffuse - this.Diffuse) < EPSILON) && 
-                    (Math.Abs(objMat.Specular - this.Specular) < EPSILON) && 
-                    (Math.Abs(objMat.Shininess - this.Shininess) < EPSILON));
-        }
+        public bool Equals(Material other) =>
+            this.Ambient == other.Ambient &&
+            this.Diffuse == other.Diffuse &&
+            this.Specular == other.Specular &&
+            this.Shininess == other.Shininess &&
+            this.Color.Equals(other.Color);
     }
 }

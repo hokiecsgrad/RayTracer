@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace RayTracer
 {
@@ -60,9 +61,11 @@ namespace RayTracer
         {
             Canvas image = new Canvas(this.HSize, this.VSize);
 
+            Stats.Reset();
             for (int y = 0; y < this.VSize; y++)
                 for (int x = 0; x < this.HSize; x++)
                 {
+                    Interlocked.Increment(ref Stats.PrimaryRays);
                     Ray ray = this.RayForPixel(x, y);
                     Color color = world.ColorAt(ray);
                     image.SetPixel(x, y, color);

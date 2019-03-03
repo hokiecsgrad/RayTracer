@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace RayTracer
 {
@@ -25,6 +26,7 @@ namespace RayTracer
 
         public List<Intersection> Intersect(Ray ray)
         {
+            Interlocked.Increment(ref Stats.Tests);
             List<Intersection> intersections = new List<Intersection>();
             foreach (var shape in Shapes)
                 intersections.AddRange(shape.Intersect(ray));
@@ -56,6 +58,7 @@ namespace RayTracer
             if (remaining < 1 || comps.Object.Material.Reflective == 0)
                 return new Color(0, 0, 0);
 
+            Interlocked.Increment(ref Stats.SecondaryRays);
             var reflectRay = new Ray(comps.OverPoint, comps.Reflect);
             var color = this.ColorAt(reflectRay, remaining - 1);
             return color * comps.Object.Material.Reflective;
@@ -64,7 +67,7 @@ namespace RayTracer
         public Color RefractedColor(Comps comps, int remaining = 5)
         {
             if (remaining < 1 || comps.Object.Material.Transparency == 0)
-                return new Color(0, 0, 0);
+                return Color.Black;
 
             // Find the ratio of first index of refraction to the second.
             // (Yup, this is inverted from the definition of Snell's Law.)
@@ -74,8 +77,9 @@ namespace RayTracer
             // Find sin(theta_t)^2 via trigonometric identity
             var sin2_t = n_ratio*n_ratio * (1 - cos_i*cos_i);
             if (sin2_t > 1)
-                return new Color(0,0,0);
+                return Color.Black;
 
+            Interlocked.Increment(ref Stats.SecondaryRays);
             // Find cos(theta_t) via trigonometric identity
             var cos_t = Math.Sqrt(1.0 - sin2_t);
             // Compute the direction of the refracted ray
@@ -99,6 +103,7 @@ namespace RayTracer
 
         public bool IsShadowed(Point point)
         {
+            Interlocked.Increment(ref Stats.ShadowRays);
             var v = this.Light.Position - point;
             var distance = v.Magnitude();
             var direction = v.Normalize();
