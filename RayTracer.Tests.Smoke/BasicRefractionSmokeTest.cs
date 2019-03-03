@@ -29,21 +29,32 @@ namespace RayTracer.Tests.Smoke
             // ======================================================
 
             // the checkered floor
-            var floor = new Plane();
-            floor.Transform = Transformation.Rotation_y(0.31415);
-            floor.Material = new Material();
-            floor.Material.Pattern = new Checkers(new Color(0.35, 0.35, 0.35), new Color(0.65, 0.65, 0.65));
-            floor.Material.Pattern.Transform = Transformation.Translation(0, 0.01, 0);
-            floor.Material.Specular = 0;
-            floor.Material.Reflective = 0.4;
+            var floor = new Plane()
+            {
+                Transform = Transformation.Rotation_y(0.31415),
+
+                Material = new Material()
+                {
+                    Pattern = new Checkers(new Color(0.35, 0.35, 0.35), new Color(0.65, 0.65, 0.65))
+                    {
+                        Transform = Transformation.Translation(0, 0.01, 0)
+                    },
+                    Specular = 0,
+                    Reflective = 0.4,
+                }
+            };
 
             // the ceiling
-            var ceiling = new Plane();
-            ceiling.Transform = Transformation.Translation(0, 5, 0);
-            ceiling.Material = new Material();
-            ceiling.Material.Color = new Color(0.8, 0.8, 0.8);
-            ceiling.Material.Ambient = 0.3;
-            ceiling.Material.Specular = 0;
+            var ceiling = new Plane()
+            {
+                Transform = Transformation.Translation(0, 5, 0),
+                Material = new Material()
+                {
+                    Color = new Color(0.8, 0.8, 0.8),
+                    Ambient = 0.3,
+                    Specular = 0
+                }
+            };
 
             // west wall
             var westWall = new Plane();
@@ -69,34 +80,41 @@ namespace RayTracer.Tests.Smoke
             // background balls
             // ----------------------
 
+            var bgGroup1 = new Group();
             var bg1 = new Sphere();
             bg1.Transform = Transformation.Translation(4.6, 0.4, 1) * Transformation.Scaling(0.4, 0.4, 0.4);
             bg1.Material = new Material();
             bg1.Material.Color = new Color(0.8, 0.5, 0.3);
             bg1.Material.Shininess = 50;
+            bgGroup1.AddShape(bg1);
 
             var bg2 = new Sphere();
             bg2.Transform = Transformation.Translation(4.7, 0.3, 0.4) * Transformation.Scaling(0.3, 0.3, 0.3);
             bg2.Material = new Material();
             bg2.Material.Color = new Color(0.9, 0.4, 0.5);
             bg2.Material.Shininess = 50;
+            bgGroup1.AddShape(bg2);
 
+            var bgGroup2 = new Group();
             var bg3 = new Sphere();
             bg3.Transform = Transformation.Translation(-1, 0.5, 4.5) * Transformation.Scaling(0.5, 0.5, 0.5);
             bg3.Material = new Material();
             bg3.Material.Color = new Color(0.4, 0.9, 0.6);
             bg3.Material.Shininess = 50;
+            bgGroup2.AddShape(bg3);
 
             var bg4 = new Sphere();
             bg4.Transform = Transformation.Translation(-1.7, 0.3, 4.7) * Transformation.Scaling(0.3, 0.3, 0.3);
             bg4.Material = new Material();
             bg4.Material.Color = new Color(0.4, 0.6, 0.9);
             bg4.Material.Shininess = 50;
+            bgGroup2.AddShape(bg4);
 
             // ----------------------
             // foreground balls
             // ----------------------
 
+            var fgGroup = new Group();
             // red sphere
             var redSphere = new Sphere();
             redSphere.Transform = Transformation.Translation(-0.6, 1, 0.6);
@@ -104,6 +122,7 @@ namespace RayTracer.Tests.Smoke
             redSphere.Material.Color = new Color(1, 0.3, 0.2);
             redSphere.Material.Specular = 0.4;
             redSphere.Material.Shininess = 5;
+            fgGroup.AddShape(redSphere);
 
             // blue glass sphere
             var blueGlassSphere = new Sphere();
@@ -117,6 +136,7 @@ namespace RayTracer.Tests.Smoke
             blueGlassSphere.Material.Reflective = 0.9;
             blueGlassSphere.Material.Transparency = 0.9;
             blueGlassSphere.Material.RefractiveIndex = 1.5;
+            fgGroup.AddShape(blueGlassSphere);
 
             // green glass sphere
             var greenGlassSphere = new Sphere();
@@ -130,9 +150,10 @@ namespace RayTracer.Tests.Smoke
             greenGlassSphere.Material.Reflective = 0.9;
             greenGlassSphere.Material.Transparency = 0.9;
             greenGlassSphere.Material.RefractiveIndex = 1.5;
+            fgGroup.AddShape(greenGlassSphere);
 
             World world = new World();
-            world.Shapes = new List<Shape> {floor, ceiling, westWall, eastWall, northWall, southWall, bg1, bg2, bg3, bg4, redSphere, blueGlassSphere, greenGlassSphere};
+            world.Shapes = new List<Shape> {floor, ceiling, westWall, eastWall, northWall, southWall, bgGroup1, bgGroup2, fgGroup};
 
             // ======================================================
             // light sources

@@ -62,7 +62,12 @@ namespace RayTracer.Program
             Canvas canvas = camera.Render(world);
 
             var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/SphereInSphere.ppm";
-            PpmWriter.WriteCanvasToPpm(filename, canvas);
+            if (File.Exists(filename))
+                File.Delete(filename);
+            FileStream stream = File.OpenWrite(filename);
+            StreamWriter writer = new StreamWriter(stream);
+            PpmWriter.WriteCanvasToPpm(writer, canvas);
+            writer.Close();
 
             sw.Stop();
 
