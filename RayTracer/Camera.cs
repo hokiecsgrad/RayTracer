@@ -1,16 +1,24 @@
 using System;
 using System.Threading;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace RayTracer
 {
     public class Camera
     {
-        public int HSize { get; }
-        public int VSize { get; }
-        public double FieldOfView { get; }
+        public int HSize { get; set; }
+
+        public int VSize { get; set; }
+
+        public double FieldOfView { get; set; }
+
         public Matrix Transform { get; set; }
+
         public double PixelSize { get; private set; }
+
         public double HalfWidth { get; private set; }
+
         public double HalfHeight { get; private set; }
 
         public Camera(int hsize, int vsize, double fov)
@@ -18,7 +26,7 @@ namespace RayTracer
             HSize = hsize;
             VSize = vsize;
             FieldOfView = fov;
-            Transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            Transform = Matrix.Identity;
             CalculatePixelSize();
         }
 
