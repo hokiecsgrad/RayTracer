@@ -6,12 +6,20 @@ using Xunit;
 
 namespace RayTracer.Tests
 {
-
     public class TestShape : Shape
     {
         public Ray SavedRay = null;
-        public override List<Intersection> LocalIntersect(Ray r) { SavedRay = r; return new List<Intersection>(); }
-        public override Vector LocalNormalAt(Point local_point, Intersection hit = null) { return new Vector(0, 0, 0); }
+
+        public override List<Intersection> LocalIntersect(Ray r) 
+        { 
+            SavedRay = r; 
+            return new List<Intersection>(); 
+        }
+
+        public override Vector LocalNormalAt(Point local_point, Intersection hit = null) 
+        { 
+            return new Vector(0, 0, 0); 
+        }
 
         public override BoundingBox GetBounds()
         {
@@ -19,7 +27,7 @@ namespace RayTracer.Tests
         }
     
         public override void Divide(int threshold) { }
-}
+    }
 
     public class GroupTests
     {
@@ -144,7 +152,6 @@ namespace RayTracer.Tests
             g2.AddShape(s);
             var n = s.NormalAt(new Point(1.7321, 1.1547, -5.5774));
             Assert.Equal(new Vector(0.28570, 0.42854, -0.85716), n, VectorComparer);
-            //Assert.StrictEqual(n, new Vector(0.28570, 0.42854, -0.85716));
         }
 
         [Fact]
