@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,58 +11,172 @@ namespace RayTracer.Program
     {
         public static void Render()
         {
-            var floor = new Plane();
-            floor.Transform = Transformation.Translation(0, -10, 0);
-            floor.Material = new Material();
-            floor.Material.Pattern = new Checkers(new Color(0,0,0), new Color(1,1,1));
-            floor.Material.Ambient = 0.1;
-            floor.Material.Diffuse = 0.9;
-            floor.Material.Specular = 0.9;
-            floor.Material.Shininess = 200;
+            // ======================================================
+            // define constants to avoid duplication
+            // ======================================================
 
-            var group = new Group();
-            var innerSphere = new Sphere();
-            innerSphere.CastsShadow = false;
-            innerSphere.Transform = Transformation.Scaling(0.5, 0.5, 0.5);
-            innerSphere.Material = new Material();
-            innerSphere.Material.Ambient = 0;
-            innerSphere.Material.Diffuse = 0.1;
-            innerSphere.Material.Specular = 0.9;
-            innerSphere.Material.Shininess = 300;
-            innerSphere.Material.Reflective = 1;
-            innerSphere.Material.Transparency = 1;
-            innerSphere.Material.RefractiveIndex = 1.00029;
-            group.AddShape(innerSphere);
+            var wallMaterial = new Material();
+            wallMaterial.Pattern = new Stripe(new Color(0.45, 0.45, 0.45), new Color(0.55, 0.55, 0.55));
+            wallMaterial.Pattern.Transform = Transformation.Scaling(0.25, 0.25, 0.25);
+            wallMaterial.Ambient = 0;
+            wallMaterial.Diffuse = 0.4;
+            wallMaterial.Specular = 0;
+            wallMaterial.Reflective = 0.3;
 
-            var outerSphere = new Sphere();
-            outerSphere.CastsShadow = false;
-            outerSphere.Material = new Material();
-            outerSphere.Material.Ambient = 0;
-            outerSphere.Material.Diffuse = 0.1;
-            outerSphere.Material.Specular = 0.9;
-            outerSphere.Material.Shininess = 300;
-            outerSphere.Material.Reflective = 1;
-            outerSphere.Material.Transparency = 1;
-            outerSphere.Material.RefractiveIndex = 1.52;
-            group.AddShape(outerSphere);
+            // ======================================================
+            // describe the elements of the scene
+            // ======================================================
+
+            // the checkered floor
+            var floor = new Plane()
+            {
+                Transform = Transformation.Rotation_y(0.31415),
+
+                Material = new Material()
+                {
+                    Pattern = new Checkers(new Color(0.35, 0.35, 0.35), new Color(0.65, 0.65, 0.65))
+                    {
+                        Transform = Transformation.Translation(0, 0.01, 0)
+                    },
+                    Specular = 0,
+                    Reflective = 0.4,
+                }
+            };
+
+            // the ceiling
+            var ceiling = new Plane()
+            {
+                Transform = Transformation.Translation(0, 5, 0),
+                Material = new Material()
+                {
+                    Color = new Color(0.8, 0.8, 0.8),
+                    Ambient = 0.3,
+                    Specular = 0
+                }
+            };
+
+            // west wall
+            var westWall = new Plane();
+            westWall.Transform = Transformation.Translation(-5, 0, 0) * Transformation.Rotation_z(1.5708) * Transformation.Rotation_y(1.5708);
+            westWall.Material = wallMaterial;
+
+            // east wall
+            var eastWall = new Plane();
+            eastWall.Transform = Transformation.Translation(5, 0, 0) * Transformation.Rotation_z(1.5708) * Transformation.Rotation_y(1.5708);
+            eastWall.Material = wallMaterial;
+
+            // north wall
+            var northWall = new Plane();
+            northWall.Transform = Transformation.Translation(0, 0, 5) * Transformation.Rotation_x(1.5708);
+            northWall.Material = wallMaterial;
+
+            // south wall
+            var southWall = new Plane();
+            southWall.Transform = Transformation.Translation(0, 0, -5) * Transformation.Rotation_x(1.5708);
+            southWall.Material = wallMaterial;
+
+            // ----------------------
+            // background balls
+            // ----------------------
+
+            var bgGroup1 = new Group();
+            var bg1 = new Sphere();
+            bg1.Transform = Transformation.Translation(4.6, 0.4, 1) * Transformation.Scaling(0.4, 0.4, 0.4);
+            bg1.Material = new Material();
+            bg1.Material.Color = new Color(0.8, 0.5, 0.3);
+            bg1.Material.Shininess = 50;
+            bgGroup1.AddShape(bg1);
+
+            var bg2 = new Sphere();
+            bg2.Transform = Transformation.Translation(4.7, 0.3, 0.4) * Transformation.Scaling(0.3, 0.3, 0.3);
+            bg2.Material = new Material();
+            bg2.Material.Color = new Color(0.9, 0.4, 0.5);
+            bg2.Material.Shininess = 50;
+            bgGroup1.AddShape(bg2);
+
+            var bgGroup2 = new Group();
+            var bg3 = new Sphere();
+            bg3.Transform = Transformation.Translation(-1, 0.5, 4.5) * Transformation.Scaling(0.5, 0.5, 0.5);
+            bg3.Material = new Material();
+            bg3.Material.Color = new Color(0.4, 0.9, 0.6);
+            bg3.Material.Shininess = 50;
+            bgGroup2.AddShape(bg3);
+
+            var bg4 = new Sphere();
+            bg4.Transform = Transformation.Translation(-1.7, 0.3, 4.7) * Transformation.Scaling(0.3, 0.3, 0.3);
+            bg4.Material = new Material();
+            bg4.Material.Color = new Color(0.4, 0.6, 0.9);
+            bg4.Material.Shininess = 50;
+            bgGroup2.AddShape(bg4);
+
+            // ----------------------
+            // foreground balls
+            // ----------------------
+
+            var fgGroup = new Group();
+            // red sphere
+            var redSphere = new Sphere();
+            redSphere.Transform = Transformation.Translation(-0.6, 1, 0.6);
+            redSphere.Material = new Material();
+            redSphere.Material.Color = new Color(1, 0.3, 0.2);
+            redSphere.Material.Specular = 0.4;
+            redSphere.Material.Shininess = 5;
+            fgGroup.AddShape(redSphere);
+
+            // blue glass sphere
+            var blueGlassSphere = new Sphere();
+            blueGlassSphere.Transform = Transformation.Translation(0.6, 0.7, -0.6) * Transformation.Scaling(0.7, 0.7, 0.7);
+            blueGlassSphere.Material = new Material();
+            blueGlassSphere.Material.Color = new Color(0, 0, 0.2);
+            blueGlassSphere.Material.Ambient = 0;
+            blueGlassSphere.Material.Diffuse = 0.4;
+            blueGlassSphere.Material.Specular = 0.9;
+            blueGlassSphere.Material.Shininess = 300;
+            blueGlassSphere.Material.Reflective = 0.9;
+            blueGlassSphere.Material.Transparency = 0.9;
+            blueGlassSphere.Material.RefractiveIndex = 1.5;
+            fgGroup.AddShape(blueGlassSphere);
+
+            // green glass sphere
+            var greenGlassSphere = new Sphere();
+            greenGlassSphere.Transform = Transformation.Translation(-0.7, 0.5, -0.8) * Transformation.Scaling(0.5, 0.5, 0.5);
+            greenGlassSphere.Material = new Material();
+            greenGlassSphere.Material.Color = new Color(0, 0.2, 0);
+            greenGlassSphere.Material.Ambient = 0;
+            greenGlassSphere.Material.Diffuse = 0.4;
+            greenGlassSphere.Material.Specular = 0.9;
+            greenGlassSphere.Material.Shininess = 300;
+            greenGlassSphere.Material.Reflective = 0.9;
+            greenGlassSphere.Material.Transparency = 0.9;
+            greenGlassSphere.Material.RefractiveIndex = 1.5;
+            fgGroup.AddShape(greenGlassSphere);
 
             World world = new World();
-            world.Shapes = new List<Shape> {floor, group};
-            world.Light = new PointLight(new Point(20, 10, 0), new Color(0.7, 0.7, 0.7));
+            world.Shapes = new List<Shape> {floor, ceiling, westWall, eastWall, northWall, southWall, bgGroup1, bgGroup2, fgGroup};
 
-            var pixels = 300 * 300;
-            Camera camera = new Camera(300, 300, Math.PI/3);
-            camera.Transform = Transformation.ViewTransform(new Point(0, 2.5, 0),
-                                new Point(0, 0, 0),
-                                new Vector(-1, 0, 0));
+            // ======================================================
+            // light sources
+            // ======================================================
 
+            world.Light = new PointLight(new Point(-4.9, 4.9, -1), new Color(1, 1, 1));
+
+            // ======================================================
+            // the camera
+            // ======================================================
+
+            var pixels = 400*300;
+            Camera camera = new Camera(400, 300, 1.152);
+            camera.Transform = Transformation.ViewTransform(
+                                new Point(-2.6, 1.5, -3.9), // view from
+                                new Point(-0.6, 1, -0.8),// view to
+                                new Vector(0, 1, 0));    // vector up
 
             var sw = new Stopwatch();
             sw.Start();
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/SphereInSphere.ppm";
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/RefractionTest.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);
