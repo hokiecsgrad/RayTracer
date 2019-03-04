@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace RayTracer
 {
@@ -38,6 +39,7 @@ namespace RayTracer
 
         public List<Intersection> Intersect(Ray r)
         {
+            Interlocked.Increment(ref Stats.Tests);
             Ray transformedRay = r.Transform(this._inverse);
             return LocalIntersect(transformedRay);
         }

@@ -26,7 +26,6 @@ namespace RayTracer
 
         public List<Intersection> Intersect(Ray ray)
         {
-            Interlocked.Increment(ref Stats.Tests);
             List<Intersection> intersections = new List<Intersection>();
             foreach (var shape in Shapes)
                 intersections.AddRange(shape.Intersect(ray));
