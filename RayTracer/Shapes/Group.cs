@@ -11,6 +11,12 @@ namespace RayTracer
 
         public string Name { get; set; } = string.Empty;
 
+        public Group() {}
+
+        public Group(string name)
+        {
+            this.Name = name;
+        }
 
         private List<Shape> _shapes = new List<Shape>();
 

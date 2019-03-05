@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace RayTracer
 {
-    public struct Point
+    public class Point
     {
         public static Point Origin =>
             new Point(0,0,0);
 
-        public readonly double x;
-        public readonly double y;
-        public readonly double z;
+        public double x;
+        public double y;
+        public double z;
         public readonly double w;
 
         public Point(double x, double y, double z)
