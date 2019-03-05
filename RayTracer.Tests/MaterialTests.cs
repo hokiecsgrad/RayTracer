@@ -21,6 +21,9 @@ namespace RayTracer.Tests
         static readonly IEqualityComparer<Color> ColorComparer =
             Color.GetEqualityComparer(epsilon);
 
+        static readonly IEqualityComparer<Matrix> MatrixComparer =
+            Matrix.GetEqualityComparer(epsilon);
+
         [Fact]
         public void Material_ShouldHaveColorAmbientDiffuseSpecularShininess()
         {
@@ -148,7 +151,7 @@ namespace RayTracer.Tests
         public void HelperClassForProducingSphereWithGlassyMaterial_ShouldExist()
         {
             var s = new GlassSphere();
-            Assert.True(s.Transform.Equals(new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} })));
+            Assert.Equal(Matrix.Identity, s.Transform, MatrixComparer);
             Assert.Equal(1.0, s.Material.Transparency);
             Assert.Equal(1.5, s.Material.RefractiveIndex);
         }

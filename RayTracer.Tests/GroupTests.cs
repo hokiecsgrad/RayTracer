@@ -39,11 +39,14 @@ namespace RayTracer.Tests
         static readonly IEqualityComparer<Point> PointComparer =
             Point.GetEqualityComparer(epsilon);
 
+        static readonly IEqualityComparer<Matrix> MatrixComparer =
+            Matrix.GetEqualityComparer(epsilon);
+
         [Fact]
         public void CreatingNewGroup_ShouldWork()
         {
             var g = new Group();
-            Assert.True(g.Transform.Equals(Matrix.Identity));
+            Assert.Equal(Matrix.Identity, g.Transform, MatrixComparer);
             Assert.Equal(0, g.Count);
         }
 

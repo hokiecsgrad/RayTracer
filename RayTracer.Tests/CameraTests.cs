@@ -17,6 +17,9 @@ namespace RayTracer.Tests
         static readonly IEqualityComparer<Vector> VectorComparer =
             Vector.GetEqualityComparer(EPSILON);
 
+        static readonly IEqualityComparer<Matrix> MatrixComparer =
+            Matrix.GetEqualityComparer(EPSILON);
+
         [Fact]
         public void ConstructingACamera_ShouldWork()
         {
@@ -24,7 +27,7 @@ namespace RayTracer.Tests
             Assert.Equal(160, c.HSize);
             Assert.Equal(120, c.VSize);
             Assert.Equal(Math.PI/2, c.FieldOfView);
-            Assert.True(c.Transform.Equals(new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} })));
+            Assert.Equal(Matrix.Identity, c.Transform, MatrixComparer);
         }
 
         [Fact]

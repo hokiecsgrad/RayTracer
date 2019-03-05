@@ -5,9 +5,10 @@ namespace RayTracer
 {
     public class Matrix
     {
-        private const double EPSILON = 0.00001;
         private readonly double[,] Data;
+
         public int Rows => Data.GetUpperBound(0) + 1;
+
         public int Cols => Data.GetUpperBound(1) + 1;
 
         public static Matrix Identity =>
@@ -29,13 +30,15 @@ namespace RayTracer
 
         public ref double this[int row, int column] => ref Data[row, column];
 
-        public static Matrix operator*(Matrix a, Matrix b)
+        public static Matrix operator *(Matrix a, Matrix b)
         {
             if ( a.Rows != b.Cols )
                 throw new ArgumentException("Matrix Rows/Cols mismatch.");
 
             Matrix result = new Matrix(a.Rows, b.Cols);
+
             for (int i = 0; i < result.Rows; i++)
+            {
                 for (int j = 0; j < result.Cols; j++)
                 {
                     double value = 0.0;
@@ -43,11 +46,12 @@ namespace RayTracer
                         value += a[i, m] * b[m, j];
                     result[i, j] = value;
                 }
+            }
 
             return result;
         }
 
-        public static Point operator*(Matrix a, Point b)
+        public static Point operator *(Matrix a, Point b)
         {
             if ( a.Rows != 4 )
                 throw new ArgumentException("Matrix must have same number of Rows as a Tuple.");
@@ -59,7 +63,7 @@ namespace RayTracer
             return new Point(result[0], result[1], result[2]);
         }
 
-        public static Vector operator*(Matrix a, Vector b)
+        public static Vector operator *(Matrix a, Vector b)
         {
             if ( a.Rows != 4 )
                 throw new ArgumentException("Matrix must have same number of Rows as a Tuple.");

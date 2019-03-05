@@ -16,6 +16,9 @@ namespace RayTracer.Tests
         static readonly IEqualityComparer<Vector> VectorComparer =
             Vector.GetEqualityComparer(epsilon);
 
+        static readonly IEqualityComparer<Matrix> MatrixComparer =
+            Matrix.GetEqualityComparer(epsilon);
+
         [Fact]
         public void CreatingAndQueryingRay_ShouldWork()
         {
@@ -153,7 +156,7 @@ namespace RayTracer.Tests
         public void SphereDefaultTransformation_ShouldBeIdentityMatrix()
         {
             Sphere s = new Sphere();
-            Assert.True(s.Transform.Equals(new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} })));
+            Assert.Equal(Matrix.Identity, s.Transform, MatrixComparer);
         }
 
         [Fact]

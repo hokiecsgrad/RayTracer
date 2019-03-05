@@ -14,6 +14,9 @@ namespace RayTracer.Tests
         static readonly IEqualityComparer<Vector> VectorComparer =
             Vector.GetEqualityComparer(epsilon);
 
+        static readonly IEqualityComparer<Matrix> MatrixComparer =
+            Matrix.GetEqualityComparer(epsilon);
+
         [Fact]
         public void MultiplyingByTranslationMatrix_ShouldWork()
         {
@@ -195,7 +198,7 @@ namespace RayTracer.Tests
             var to = new Point(0, 0, -1);
             var up = new Vector(0, 1, 0);
             var t = Transformation.ViewTransform(from, to, up);
-            Assert.True(t.Equals(new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} })));
+            Assert.Equal(Matrix.Identity, t, MatrixComparer);
         }
 
         [Fact]
@@ -205,7 +208,7 @@ namespace RayTracer.Tests
             var to = new Point(0, 0, 1);
             var up = new Vector(0, 1, 0);
             var t = Transformation.ViewTransform(from, to, up);
-            Assert.True(t.Equals(Transformation.Scaling(-1, 1, -1)));
+            Assert.Equal(Transformation.Scaling(-1, 1, -1), t, MatrixComparer);
         }
 
         [Fact]
@@ -215,7 +218,7 @@ namespace RayTracer.Tests
             var to = new  Point(0, 0, 0);
             var up = new Vector(0, 1, 0);
             var t = Transformation.ViewTransform(from, to, up);
-            Assert.True(t.Equals(Transformation.Translation(0, 0, -8)));
+            Assert.Equal(Transformation.Translation(0, 0, -8), t, MatrixComparer);
         }
 
         [Fact]
@@ -225,12 +228,13 @@ namespace RayTracer.Tests
             var to = new Point(4, -2, 8);
             var up = new Vector(1, 1, 0);
             var t = Transformation.ViewTransform(from, to, up);
-            Assert.True(t.Equals(new Matrix(new double[,] { 
+            var expected = new Matrix(new double[,] { 
                 {-0.50709, 0.50709, 0.67612, -2.36643},
                 {0.76772, 0.60609, 0.12122, -2.82843},
                 {-0.35857, 0.59761, -0.71714, 0.00000},
                 {0.00000, 0.00000, 0.00000, 1.00000}
-                })));
+                });
+            Assert.Equal(expected, t, MatrixComparer);
         }
     }
 }
