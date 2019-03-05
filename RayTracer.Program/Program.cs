@@ -15,7 +15,7 @@ namespace RayTracer.Program
             World world;
             Camera camera;
 
-            (world, camera) = new Cover().Setup(200, 200);
+            (world, camera) = new CoverScene().Setup(400, 400, 0.785);
 
             var pixels = 200*200;
             var sw = new Stopwatch();
@@ -23,7 +23,7 @@ namespace RayTracer.Program
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/Cover.ppm";
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Cover.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

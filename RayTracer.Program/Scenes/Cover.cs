@@ -7,17 +7,17 @@ namespace RayTracer.Program
 {
     class CoverScene
     {
-        public (World, Camera) Setup(int width, int height)
+        public (World, Camera) Setup(int width, int height, double fov)
         {
             // ======================================================
             // the camera
             // ======================================================
 
-            var camera = new Camera(width, height, 0.785) 
+            var camera = new Camera(width, height, fov) 
             {
                 Transform = Transformation.ViewTransform(
-                                new Point(-6, 6, -10),    // view from
-                                new Point(6, 0, 6 ),      // view to
+                                new Point(-10, 10, -15),    // view from
+                                new Point(6, 0, 6),      // view to
                                 new Vector(-0.45, 1, 0)), // vector up
             };
 
@@ -80,16 +80,16 @@ namespace RayTracer.Program
                 Transformation.Translation(1, -1, 1);
 
             var large_object = 
-                standard_transform *
-                Transformation.Scaling(3.5, 3.5, 3.5);
+                Transformation.Scaling(3.5, 3.5, 3.5) *
+                Transformation.Translation(1, -1, 1);
 
             var medium_object = 
-                standard_transform *
-                Transformation.Scaling(3, 3, 3);
+                Transformation.Scaling(3, 3, 3) *
+                Transformation.Translation(1, -1, 1);
 
             var small_object = 
-                standard_transform *
-                Transformation.Scaling(2, 2, 2);
+                Transformation.Scaling(2, 2, 2) *
+                Transformation.Translation(1, -1, 1);
 
             // ======================================================
             // a white backdrop for the scene
@@ -124,143 +124,145 @@ namespace RayTracer.Program
                     Transparency = 0.7,
                     RefractiveIndex = 1.5
                 },
-                Transform = large_object,
+                Transform = 
+                    Transformation.Translation(0, 0, 0) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj2 = new Cube()
             {
                 Material = white_material,
                 Transform = 
-                    medium_object * 
-                    Transformation.Translation(4, 0, 0),
+                    Transformation.Translation(8, 0, 0) *
+                    Transformation.Scaling(3, 3, 3),
             };
 
             var obj3 = new Cube()
             {
-                Material = blue_material,
+                Material = red_material,
                 Transform = 
-                    large_object *
-                    Transformation.Translation(8.5, 1.5, -0.5),
+                    Transformation.Translation(0, 0, 8) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj4 = new Cube()
             {
-                Material = red_material,
+                Material = blue_material,
                 Transform = 
-                    large_object * 
-                    Transformation.Translation(0, 0, 4),
+                    Transformation.Translation(16, 1.5, -0.5) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj5 = new Cube()
             {
                 Material = white_material,
                 Transform = 
-                    small_object *
-                    Transformation.Translation(4, 0, 4),
+                    Transformation.Translation(8, 0, 8) *
+                    Transformation.Scaling(2, 2, 2),
             };
 
             var obj6 = new Cube()
             {
                 Material = purple_material,
                 Transform = 
-                    medium_object *
-                    Transformation.Translation(7.5, 0.5, 4),
+                    Transformation.Translation(16, 0, 8) *
+                    Transformation.Scaling(3, 3, 3),
             };
 
             var obj7 = new Cube()
             {
                 Material = white_material,
                 Transform = 
-                    medium_object * 
-                    Transformation.Translation(-0.25, 0.25, 8),
+                    Transformation.Translation(-0.25, 0.25, 16) *
+                    Transformation.Scaling(3, 3, 3),
             };
 
             var obj8 = new Cube()
             {
                 Material = blue_material,
                 Transform = 
-                    large_object *
-                    Transformation.Translation(4, 1, 7.5),
+                    Transformation.Translation(8, 2, 16) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj9 = new Cube()
             {
                 Material = red_material,
                 Transform = 
-                    medium_object *
-                    Transformation.Translation(10, 2, 7.5),
+                    Transformation.Translation(18, 4, 16) *
+                    Transformation.Scaling(3, 3, 3),
             };
 
             var obj10 = new Cube()
             {
                 Material = white_material,
                 Transform = 
-                    small_object *
-                    Transformation.Translation(8, 2, 12),
+                    Transformation.Translation(16, 4, 30) *
+                    Transformation.Scaling(2, 2, 2),
             };
 
             var obj11 = new Cube()
             {
                 Material = white_material,
                 Transform = 
-                    small_object *
-                    Transformation.Translation(20, 1, 9),
+                    Transformation.Translation(40, 3, 18) *
+                    Transformation.Scaling(2, 2, 2),
             };
 
             var obj12 = new Cube()
             {
                 Material = blue_material,
                 Transform = 
-                    large_object *
-                    Transformation.Translation(-0.5, -5, 0.25),
+                    Transformation.Translation(-0.5, -9, 0.25) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj13 = new Cube()
             {
                 Material = red_material,
                 Transform = 
-                    large_object *
-                    Transformation.Translation(4, -4, 0),
+                    Transformation.Translation(8, -8, 0) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj14 = new Cube()
             {
                 Material = white_material,
                 Transform =
-                    large_object *
-                    Transformation.Translation(8.5, -4, 0),
+                    Transformation.Translation(16, -8, 0) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj15 = new Cube()
             {
                 Material = white_material,
                 Transform = 
-                    large_object *
-                    Transformation.Translation(0, -4, 4),
+                    Transformation.Translation(0, -8, 8) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj16 = new Cube()
             {
                 Material = purple_material,
                 Transform = 
-                    large_object *
-                    Transformation.Translation(-0.5, -4.5, 8),
+                    Transformation.Translation(-0.5, -8.5, 16) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj17 = new Cube()
             {
                 Material = white_material,
                 Transform = 
-                    large_object *
-                    Transformation.Translation(0, -8, 4),
+                    Transformation.Translation(0, -16, 8) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             var obj18 = new Cube()
             {
                 Material = white_material,
                 Transform = 
-                    large_object *
-                    Transformation.Translation(-0.5, -8.5, 8),
+                    Transformation.Translation(-1, -17, 16) *
+                    Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             World world = new World();
