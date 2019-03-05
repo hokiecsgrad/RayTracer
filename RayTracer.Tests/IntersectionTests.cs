@@ -11,7 +11,13 @@ namespace RayTracer.Tests
 
         static readonly IEqualityComparer<Color> ColorComparer =
             Color.GetEqualityComparer(EPSILON);
-        
+
+        static readonly IEqualityComparer<Point> PointComparer =
+            Point.GetEqualityComparer(EPSILON);
+
+        static readonly IEqualityComparer<Vector> VectorComparer =
+            Vector.GetEqualityComparer(EPSILON);
+
         [Fact]
         public void CreatingIntersection_ShouldWork()
         {
@@ -30,9 +36,9 @@ namespace RayTracer.Tests
             var comps = i.PrepareComputations(r, new List<Intersection>());
             Assert.Equal(i.Time, comps.Time);
             Assert.Equal(i.Object, comps.Object);
-            Assert.True(comps.Point.Equals(new Point(0, 0, -1)));
-            Assert.True(comps.Eye.Equals(new Vector(0, 0, -1)));
-            Assert.True(comps.Normal.Equals(new Vector(0, 0, -1)));
+            Assert.Equal(new Point(0, 0, -1), comps.Point, PointComparer);
+            Assert.Equal(new Vector(0, 0, -1), comps.Eye, VectorComparer);
+            Assert.Equal(new Vector(0, 0, -1), comps.Normal, VectorComparer);
         }
 
         [Fact]
@@ -52,10 +58,10 @@ namespace RayTracer.Tests
             var shape = new Sphere();
             var i = new Intersection(1, shape);
             var comps = i.PrepareComputations(r, new List<Intersection>());
-            Assert.True(comps.Point.Equals(new Point(0, 0, 1)));
-            Assert.True(comps.Eye.Equals(new Vector(0, 0, -1)));
+            Assert.Equal(new Point(0, 0, 1), comps.Point, PointComparer);
+            Assert.Equal(new Vector(0, 0, -1), comps.Eye, VectorComparer);
             Assert.True(comps.Inside);
-            Assert.True(comps.Normal.Equals(new Vector(0, 0, -1)));
+            Assert.Equal(new Vector(0, 0, -1), comps.Normal, VectorComparer);
         }
 
         [Fact]

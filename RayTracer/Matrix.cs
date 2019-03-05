@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace RayTracer
 {
@@ -147,17 +148,8 @@ namespace RayTracer
             return inverted;
         }
 
-        public bool Equals(Matrix other)
-        {
-            if (Rows != other.Rows || Cols != other.Cols)
-                return false;
-
-            for (int row = 0; row < Rows; row++)
-                for (int col = 0; col < Cols; col++)
-                    if (Math.Abs(other[row, col] - Data[row, col]) > EPSILON) return false;
-
-            return true;
-        }
+        public static IEqualityComparer<Matrix> GetEqualityComparer(double epsilon = 0.0) =>
+            new ApproxMatrixEqualityComparer(epsilon);
 
         public override string ToString() 
         {
@@ -171,4 +163,38 @@ namespace RayTracer
             return output;
         }
     }
+
+    internal class ApproxMatrixEqualityComparer : ApproxEqualityComparer<Matrix>
+    {
+        public ApproxMatrixEqualityComparer(double epsilon = 0.0)
+            : base(epsilon)
+        {
+        }
+
+        public override bool Equals(Matrix a, Matrix b)
+        {
+            if (a.Rows != b.Rows || a.Cols != b.Cols)
+                return false;
+
+            for (int row = 0; row < a.Rows; row++)
+                for (int col = 0; col < a.Cols; col++)
+                    if (!this.ApproxEqual(a[row,col], b[row,col])) return false;
+
+            return true;
+        }
+
+        public override int GetHashCode(Matrix obj)
+        {
+            unchecked
+            {
+                int hash = 17;
+
+                for (int row = 0; row < obj.Rows; row++)
+                    for (int col = 0; col < obj.Cols; col++)
+                        hash = hash * 23 + obj[row, col].GetHashCode();
+
+                return hash;
+            }
+        }        
+    }    
 }

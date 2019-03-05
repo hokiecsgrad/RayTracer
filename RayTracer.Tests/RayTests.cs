@@ -12,6 +12,7 @@ namespace RayTracer.Tests
 
         static readonly IEqualityComparer<Point> PointComparer =
             Point.GetEqualityComparer(epsilon);
+
         static readonly IEqualityComparer<Vector> VectorComparer =
             Vector.GetEqualityComparer(epsilon);
 
@@ -29,10 +30,10 @@ namespace RayTracer.Tests
         public void ComputingPointFromADistance_ShouldWork()
         {
             var ray = new Ray(new Point(2, 3, 4), new Vector(1, 0, 0));
-            Assert.True(ray.Position(0).Equals(new Point(2, 3, 4)));
-            Assert.True(ray.Position(1).Equals(new Point(3, 3, 4)));
-            Assert.True(ray.Position(-1).Equals(new Point(1, 3, 4)));
-            Assert.True(ray.Position(2.5).Equals(new Point(4.5, 3, 4)));
+            Assert.Equal(new Point(2, 3, 4), ray.Position(0), PointComparer);
+            Assert.Equal(new Point(3, 3, 4), ray.Position(1), PointComparer);
+            Assert.Equal(new Point(1, 3, 4), ray.Position(-1), PointComparer);
+            Assert.Equal(new Point(4.5, 3, 4), ray.Position(2.5), PointComparer);
         }
 
         [Fact]

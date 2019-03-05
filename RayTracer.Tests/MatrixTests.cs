@@ -1,10 +1,20 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Xunit;
 
 namespace RayTracer.Tests
 {
     public class MatrixTests
     {
+        const double epsilon = 0.00001;
+
+        static readonly IEqualityComparer<Point> PointComparer =
+            Point.GetEqualityComparer(epsilon);
+
+        static readonly IEqualityComparer<Matrix> MatrixComparer =
+            Matrix.GetEqualityComparer(epsilon);
+
         [Fact]
         public void Constructing4x4Matrix_ShouldWork()
         {
@@ -42,7 +52,7 @@ namespace RayTracer.Tests
         {
             var matrix1 = new Matrix(new double[,] { {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 8, 7, 6}, {5, 4, 3, 2} });
             var matrix2 = new Matrix(new double[,] { {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 8, 7, 6}, {5, 4, 3, 2} });
-            Assert.True(matrix1.Equals(matrix2));
+            Assert.Equal(matrix1, matrix2, MatrixComparer);
         }
 
         [Fact]
@@ -58,8 +68,9 @@ namespace RayTracer.Tests
         {
             var matrix1 = new Matrix(new double[,] { {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 8, 7, 6}, {5, 4, 3, 2} });
             var matrix2 = new Matrix(new double[,] { {-2, 1, 2, 3}, {3, 2, 1, -1}, {4, 3, 6, 5}, {1, 2, 7, 8} });
-            Matrix result = matrix1 * matrix2;
-            Assert.True(result.Equals(new Matrix(new double[,] { {20, 22, 50, 48}, {44, 54, 114, 108}, {40, 58, 110, 102}, {16, 26, 46, 42} })));
+            var result = matrix1 * matrix2;
+            var expected = new Matrix(new double[,] { {20, 22, 50, 48}, {44, 54, 114, 108}, {40, 58, 110, 102}, {16, 26, 46, 42} });
+            Assert.Equal(expected, result, MatrixComparer);
         }
 
         [Fact]
@@ -67,8 +78,8 @@ namespace RayTracer.Tests
         {
             var matrix = new Matrix(new double[,] { {1, 2, 3, 4}, {2, 4, 4, 2}, {8, 6, 4, 1}, {0, 0, 0, 1} });
             var tuple = new Point(1, 2, 3);
-            Point result = matrix * tuple;
-            Assert.True(result.Equals(new Point(18, 24, 33)));
+            var result = matrix * tuple;
+            Assert.Equal(new Point(18, 24, 33), result, PointComparer);
         }
 
         [Fact]
@@ -76,8 +87,8 @@ namespace RayTracer.Tests
         {
             var matrix = new Matrix(new double[,] { {0, 1, 2, 4}, {1, 2, 4, 8}, {2, 4, 8, 16}, {4, 8, 16, 32} });
             var identity = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
-            Matrix result = matrix * identity;
-            Assert.True(result.Equals(new Matrix(new double[,] { {0, 1, 2, 4}, {1, 2, 4, 8}, {2, 4, 8, 16}, {4, 8, 16, 32} })));
+            var result = matrix * identity;
+            Assert.Equal(new Matrix(new double[,] { {0, 1, 2, 4}, {1, 2, 4, 8}, {2, 4, 8, 16}, {4, 8, 16, 32} }), result, MatrixComparer);
         }
 
         [Fact]
@@ -85,24 +96,26 @@ namespace RayTracer.Tests
         {
             var identity = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
             var point = new Point(1, 2, 3);
-            Point result = identity * point;
-            Assert.True(result.Equals(new Point(1, 2, 3)));
+            var result = identity * point;
+            Assert.Equal(new Point(1, 2, 3), result, PointComparer);
         }
 
         [Fact]
         public void TransposeRegularMatrix_ShouldWork()
         {
             var matrix = new Matrix(new double[,] { {0, 9, 3, 0}, {9, 8, 0, 8}, {1, 8, 5, 3}, {0, 0, 5, 8} });
-            Matrix result = matrix.Transpose();
-            Assert.True(result.Equals(new Matrix(new double[,] { {0, 9, 1, 0}, {9, 8, 8, 0}, {3, 0, 5, 5}, {0, 8, 3, 8} })));
+            var result = matrix.Transpose();
+            var expected = new Matrix(new double[,] { {0, 9, 1, 0}, {9, 8, 8, 0}, {3, 0, 5, 5}, {0, 8, 3, 8} });
+            Assert.Equal(expected, result, MatrixComparer);
         }
 
         [Fact]
         public void TransposeIdentityMatrix_ShouldReturnIdentityMatrix()
         {
             var identity = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
-            Matrix result = identity.Transpose();
-            Assert.True(result.Equals(new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} })));
+            var result = identity.Transpose();
+            var expected = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            Assert.Equal(expected, result, MatrixComparer);
         }
 
         [Fact]
@@ -117,7 +130,8 @@ namespace RayTracer.Tests
         {
             var matrix = new Matrix(new double[,] { {1, 5, 0}, {-3, 2, 7}, {0, 6, -2} });
             var result = matrix.Submatrix(0, 2);
-            Assert.True(result.Equals(new Matrix(new double[,] { {-3, 2}, {0, 6} })));
+            var expected = new Matrix(new double[,] { {-3, 2}, {0, 6} });
+            Assert.Equal(expected, result, MatrixComparer);
         }
 
         [Fact]
@@ -125,7 +139,8 @@ namespace RayTracer.Tests
         {
             var matrix = new Matrix(new double[,] { {-6, 1, 1, 6}, {-8, 5, 8, 6}, {-1, 0, 8, 2}, {-7, 1, -1, 1} });
             var result = matrix.Submatrix(2, 1);
-            Assert.True(result.Equals(new Matrix(new double[,] { {-6, 1, 6}, {-8, 8, 6}, {-7, -1, 1} })));
+            var expected = new Matrix(new double[,] { {-6, 1, 6}, {-8, 8, 6}, {-7, -1, 1} });
+            Assert.Equal(expected, result, MatrixComparer);
         }
 
         [Fact]
@@ -191,33 +206,40 @@ namespace RayTracer.Tests
             Assert.Equal(-160.0/532.0, inverseMatrix[3,2]);
             Assert.Equal(105, matrix.Cofactor(3, 2));
             Assert.Equal(105.0/532.0, inverseMatrix[2,3]);
-            Assert.True(inverseMatrix.Equals(new Matrix(new double[,] 
+            Assert.Equal(
+                new Matrix(new double[,] 
                 { {0.21805, 0.45113, 0.24060, -0.04511},
                   {-0.80827, -1.45677, -0.44361, 0.52068},
                   {-0.07895, -0.22368, -0.05263, 0.19737},
-                  {-0.52256, -0.81391, -0.30075, 0.30639} })));
+                  {-0.52256, -0.81391, -0.30075, 0.30639} }), 
+                  
+                inverseMatrix, 
+                
+                MatrixComparer);
         }
 
         [Fact]
         public void CalculatingInverseOfAnotherMatrix_ShouldWork()
         {
             var matrix = new Matrix(new double[,] { {8, -5, 9, 2}, {7, 5, 6, 1}, {-6, 0, 9, 6}, {-3, 0, -9, -4} });
-            Assert.True(matrix.Inverse().Equals(new Matrix(new double[,]
+            var result = new Matrix(new double[,]
                 { {-0.15385, -0.15385, -0.28205, -0.53846}, 
                   {-0.07692, 0.12308, 0.02564, 0.03077},
                   {0.35897, 0.35897, 0.43590, 0.92308},
-                  {-0.69231, -0.69231, -0.76923, -1.92308} })));
+                  {-0.69231, -0.69231, -0.76923, -1.92308} });
+            Assert.Equal(result, matrix.Inverse(), MatrixComparer);
         }
 
         [Fact]
         public void CalculatingInverseOfYetAnotherMatrix_ShouldWork()
         {
             var matrix = new Matrix(new double[,] { {9, 3, 0, 9}, {-5, -2, -6, -3}, {-4, 9, 6, 4}, {-7, 6, 6, 2} });
-            Assert.True(matrix.Inverse().Equals(new Matrix(new double[,]
+            var expected = new Matrix(new double[,]
                 { {-0.04074, -0.07778, 0.14444, -0.22222}, 
                   {-0.07778, 0.03333, 0.36667, -0.33333},
                   {-0.02901, -0.14630, -0.10926, 0.12963},
-                  {0.17778, 0.06667, -0.26667, 0.33333} })));
+                  {0.17778, 0.06667, -0.26667, 0.33333} });
+            Assert.Equal(expected, matrix.Inverse(), MatrixComparer);
         }
 
         [Fact]
@@ -227,7 +249,7 @@ namespace RayTracer.Tests
             var matrix2 = new Matrix(new double[,] { {8, 2, 2, 2}, {3, -1, 7, 0}, {7, 0, 5, 4}, {6, -2, 0, 5} });
             var product = matrix1 * matrix2;
             var result = product * matrix2.Inverse();
-            Assert.True(result.Equals(matrix1));
+            Assert.Equal(matrix1, result, MatrixComparer);
         }
     }
 }
