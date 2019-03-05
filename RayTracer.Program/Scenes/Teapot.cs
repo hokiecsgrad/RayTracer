@@ -43,10 +43,32 @@ namespace RayTracer.Program
             var parser = new ObjParser(objData);
             parser.Parse();            
             var teapot = new Group();
+            teapot.Material = new Material()
+            {
+                Color = new Color(0.9, 0.9, 1),
+                Ambient = 0.1,
+                Diffuse = 0.6,
+                Specular = 0.4,
+                Shininess = 5,
+                Reflective = 0.1,
+            };
             teapot.AddShapes(parser.Groups);
 
+            var floor = new Plane()
+            {
+                Material = new Material()
+                {
+                    Pattern = new Checkers(Color.White, Color.Black),
+                    Ambient = 0.9,
+                    Diffuse = 0.2,
+                    Specular = 0.0,
+                },
+            };
+
+
+
             World world = new World();
-            world.Shapes = new List<Shape> {teapot};
+            world.Shapes = new List<Shape> {floor, teapot};
             world.Lights = new List<PointLight> {light};
 
             return (world, camera);

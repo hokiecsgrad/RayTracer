@@ -33,6 +33,9 @@ namespace RayTracer.Tests
     {
         const double epsilon = 0.00001;
 
+        static readonly IEqualityComparer<Color> ColorComparer =
+            Color.GetEqualityComparer(epsilon);
+
         static readonly IEqualityComparer<Vector> VectorComparer =
             Vector.GetEqualityComparer(epsilon);
 
@@ -290,6 +293,25 @@ namespace RayTracer.Tests
             Assert.Contains(s1, subgroup0.Shapes);
             Assert.Contains(s2, subgroup1.Shapes);
             Assert.Contains(s3, subgroup1.Shapes);
+        }
+
+        [Fact]
+        public void SettingMaterialOnGroup_ShouldSetMaterialOnAllChildren()
+        {
+            var s1 = new Sphere();
+            s1.Transform = Transformation.Translation(-2, -2, 0);
+            var s2 = new Sphere();
+            s2.Transform = Transformation.Translation(-2, 2, 0);
+            var s3 = new Sphere();
+            s3.Transform = Transformation.Scaling(4, 4, 4);
+            var g = new Group();
+            g.AddShape(s1);
+            g.AddShape(s2);
+            g.AddShape(s3);
+            g.Material = new Material() { Color = new Color(1, 0, 0) };
+            Assert.Equal(new Color(1, 0, 0), g[0].Material.Color, ColorComparer);
+            Assert.Equal(new Color(1, 0, 0), g[1].Material.Color, ColorComparer);
+            Assert.Equal(new Color(1, 0, 0), g[2].Material.Color, ColorComparer);
         }
     }
 }
