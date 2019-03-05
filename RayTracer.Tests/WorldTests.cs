@@ -24,7 +24,7 @@ namespace RayTracer.Tests
         {
             var w = new World();
             w.CreateDefaultWorld();
-            Assert.True(w.Light != null);
+            Assert.True(w.Lights != null);
             // w contains s1
             // w contains s2
         }
@@ -61,7 +61,7 @@ namespace RayTracer.Tests
         {
             var w = new World();
             w.CreateDefaultWorld();
-            w.Light = new PointLight(new Point(0, 0.25, 0), new Color(1, 1, 1));
+            w.Lights = new List<PointLight> {new PointLight(new Point(0, 0.25, 0), new Color(1, 1, 1))};
             var r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
             var shape = w.Shapes[1];
             var i = new Intersection(0.5, shape);
@@ -110,7 +110,7 @@ namespace RayTracer.Tests
             var w = new World();
             w.CreateDefaultWorld();
             var p = new Point(0, 10, 0);
-            Assert.False(w.IsShadowed(p));
+            Assert.False(w.IsShadowed(p, w.Lights[0]));
         }
 
         [Fact]
@@ -119,7 +119,7 @@ namespace RayTracer.Tests
             var w = new World();
             w.CreateDefaultWorld();
             var p = new Point(10, -10, 10);
-            Assert.True(w.IsShadowed(p));
+            Assert.True(w.IsShadowed(p, w.Lights[0]));
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace RayTracer.Tests
             var w = new World();
             w.CreateDefaultWorld();
             var p = new Point(-20, 20, -20);
-            Assert.False(w.IsShadowed(p));
+            Assert.False(w.IsShadowed(p, w.Lights[0]));
         }
 
         [Fact]
@@ -137,14 +137,14 @@ namespace RayTracer.Tests
             var w = new World();
             w.CreateDefaultWorld();
             var p = new Point(-2, 2, -2);
-            Assert.False(w.IsShadowed(p));
+            Assert.False(w.IsShadowed(p, w.Lights[0]));
         }
 
         [Fact]
         public void WhenShadeHitIsGivenAnIntersectionInShadow_ShouldJustCalcAmbient()
         {
             var w = new World();
-            w.Light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
+            w.Lights = new List<PointLight> {new PointLight(new Point(0, 0, -10), new Color(1, 1, 1))};
             var s1 = new Sphere();
             var s2 = new Sphere();
             s2.Transform = Transformation.Translation(0, 0, 10);
@@ -190,7 +190,7 @@ namespace RayTracer.Tests
         public void ColorAtWithMutuallyReflectiveSurfaces_ShouldTerminateWithoutInfinteLoop()
         {
             var w = new World();
-            w.Light = new PointLight(new Point(0, 0, 0), new Color(1, 1, 1));
+            w.Lights = new List<PointLight> {new PointLight(new Point(0, 0, 0), new Color(1, 1, 1))};
             var lower = new Plane();
             lower.Material.Reflective = 1;
             lower.Transform = Transformation.Translation(0, -1, 0);

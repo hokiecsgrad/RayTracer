@@ -8,14 +8,14 @@ namespace RayTracer
 {
     public class World
     {
-        public PointLight Light { get; set; }
+        public List<PointLight> Lights { get; set; }
         public List<Shape> Shapes { get; set; }
 
         public World() {}
 
         public void CreateDefaultWorld()
         {
-            Light = new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1));
+            this.Lights = new List<PointLight> { new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1)) };
             var s1 = new Sphere();
             var m = new Material(new Color(0.8, 1.0, 0.6), 0.1, 0.7, 0.2, 200.0);
             s1.Material = m;
@@ -35,21 +35,34 @@ namespace RayTracer
 
         public Color ShadeHit(Comps comps, int remaining = 5)
         {
-            var shadowed = this.IsShadowed(comps.OverPoint);
-            // TODO: For multiple world level lights, loop over the lights and call this multiple times
-            var surface = comps.Object.Material.Lighting(comps.Object, this.Light, comps.OverPoint, comps.Eye, comps.Normal, shadowed);
-            
-            var reflected = this.ReflectedColor(comps, remaining);
-            var refracted = this.RefractedColor(comps, remaining);
+            var result = Color.Black;
 
-            var material = comps.Object.Material;
-            if (material.Reflective > 0 && material.Transparency > 0)
+            foreach (var light in this.Lights)
             {
-                var reflectance = comps.Schlick();
-                return surface + reflected * reflectance + refracted * (1 - reflectance);
-            } 
-            else
-                return surface + reflected + refracted;
+                var shadowed = this.IsShadowed(comps.OverPoint, light);
+
+                var surface = comps.Object.Material.Lighting(
+                    comps.Object, 
+                    light, 
+                    comps.OverPoint, 
+                    comps.Eye, 
+                    comps.Normal, 
+                    shadowed);
+            
+                var reflected = this.ReflectedColor(comps, remaining);
+                var refracted = this.RefractedColor(comps, remaining);
+
+                var material = comps.Object.Material;
+                if (material.Reflective > 0 && material.Transparency > 0)
+                {
+                    var reflectance = comps.Schlick();
+                    result += surface + reflected * reflectance + refracted * (1 - reflectance);
+                } 
+                else
+                    result += surface + reflected + refracted;
+            }
+
+            return result;
         }
 
         public Color ReflectedColor(Comps comps, int remaining = 5)
@@ -100,10 +113,10 @@ namespace RayTracer
             return ShadeHit(comps, remaining);
         }
 
-        public bool IsShadowed(Point point)
+        public bool IsShadowed(Point point, PointLight light)
         {
             Interlocked.Increment(ref Stats.ShadowRays);
-            var v = this.Light.Position - point;
+            var v = light.Position - point;
             var distance = v.Magnitude();
             var direction = v.Normalize();
             var r = new Ray(point, direction);

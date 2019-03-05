@@ -18,7 +18,7 @@ namespace RayTracer
             HSize = hsize;
             VSize = vsize;
             FieldOfView = fov;
-            Transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            Transform = Matrix.Identity;
             CalculatePixelSize();
         }
 

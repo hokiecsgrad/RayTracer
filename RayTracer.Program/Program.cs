@@ -15,9 +15,11 @@ namespace RayTracer.Program
             World world;
             Camera camera;
 
-            (world, camera) = new CoverScene().Setup(400, 400, 0.785);
+            var width = 200;
+            var height = 200;
+            (world, camera) = new CoverScene().Setup(width, height, 0.785);
 
-            var pixels = 200*200;
+            var pixels = width*height;
             var sw = new Stopwatch();
             sw.Start();
 
