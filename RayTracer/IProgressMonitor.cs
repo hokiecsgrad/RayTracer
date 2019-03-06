@@ -1,3 +1,8 @@
+/*
+    Code originally authored by @basp on Github
+    https://github.com/basp/pixie.net/blob/master/src/Pixie.Core/IProgressMonitor.cs
+*/
+
 namespace RayTracer
 {
     public interface IProgressMonitor

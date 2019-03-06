@@ -1,3 +1,8 @@
+/*
+    Code originally authored by @basp on Github
+    https://github.com/basp/pixie.net/blob/master/src/Pixie.Core/Stats.cs
+*/
+
 using System;
 
 namespace RayTracer
