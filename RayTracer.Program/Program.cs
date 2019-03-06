@@ -15,9 +15,9 @@ namespace RayTracer.Program
             World world;
             Camera camera;
 
-            var width = 200;
-            var height = 200;
-            (world, camera) = new TeapotScene().Setup(width, height, Math.PI / 2);
+            var width = 600;
+            var height = 600;
+            (world, camera) = new CoverScene().Setup(width, height, 0.785);
 
             var pixels = width*height;
             var sw = new Stopwatch();
@@ -25,8 +25,8 @@ namespace RayTracer.Program
 
             Canvas canvas = camera.Render(world);
 
-            //var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Cover.ppm";
-            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/teapot.ppm";
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Cover.ppm";
+            //var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/teapot.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

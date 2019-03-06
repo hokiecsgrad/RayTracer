@@ -19,6 +19,8 @@ namespace RayTracer.Program
                                 new Point(-10, 10, -15),    // view from
                                 new Point(6, 0, 6),      // view to
                                 new Vector(-0.45, 1, 0)), // vector up
+                
+                ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
 
             // ======================================================
@@ -267,7 +269,7 @@ namespace RayTracer.Program
 
             World world = new World();
             world.Shapes = new List<Shape> {backdrop, obj1, obj2, obj3, obj4, obj5, obj6, obj7, obj8, obj9, obj10, obj11, obj12, obj13, obj14, obj15, obj16, obj17, obj18 };
-            world.Lights = new List<PointLight> {light, light2};
+            world.Lights = new List<PointLight> {light};
 
             return (world, camera);
         }
