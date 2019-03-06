@@ -308,7 +308,7 @@ namespace RayTracer.Tests
             g.AddShape(s1);
             g.AddShape(s2);
             g.AddShape(s3);
-            g.Material = new Material() { Color = new Color(1, 0, 0) };
+            g.SetMaterial(new Material() { Color = new Color(1, 0, 0) });
             Assert.Equal(new Color(1, 0, 0), g[0].Material.Color, ColorComparer);
             Assert.Equal(new Color(1, 0, 0), g[1].Material.Color, ColorComparer);
             Assert.Equal(new Color(1, 0, 0), g[2].Material.Color, ColorComparer);
