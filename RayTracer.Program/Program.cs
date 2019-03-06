@@ -15,15 +15,16 @@ namespace RayTracer.Program
             World world;
             Camera camera;
 
-            var width = 600;
-            var height = 600;
+            var width = 640;
+            var height = 480;
+            var pixels = width*height;
+
             (world, camera) = new RefractionScene().Setup(width, height, 1.152);
 
-            var pixels = width*height;
             var sw = new Stopwatch();
             sw.Start();
 
-            Canvas canvas = camera.Render(world);
+            Canvas canvas = camera.Render(world, new AntiAliasSampler(camera));
 
             //var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Cover.ppm";
             var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/refraction.ppm";
