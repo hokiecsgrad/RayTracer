@@ -313,5 +313,27 @@ namespace RayTracer.Tests
             Assert.Equal(new Color(1, 0, 0), g[1].Material.Color, ColorComparer);
             Assert.Equal(new Color(1, 0, 0), g[2].Material.Color, ColorComparer);
         }
+
+        [Fact]
+        public void SettingMaterialOnGroup_ShouldCascadeDownThroughOtherGroups()
+        {
+            var s1 = new Sphere();
+            s1.Transform = Transformation.Translation(-2, -2, 0);
+            var s2 = new Sphere();
+            s2.Transform = Transformation.Translation(-2, 2, 0);
+            var s3 = new Sphere();
+            s3.Transform = Transformation.Scaling(4, 4, 4);
+            var g = new Group();
+            var sub = new Group();
+            g.AddShape(s1);
+            sub.AddShape(s2);
+            sub.AddShape(s3);
+            g.AddShape(sub);
+            g.SetMaterial(new Material() { Color = new Color(1, 0, 0) });
+            var subgroup = (object)g[1] as Group;
+            Assert.Equal(new Color(1, 0, 0), g[0].Material.Color, ColorComparer);
+            Assert.Equal(new Color(1, 0, 0), subgroup[0].Material.Color, ColorComparer);
+            Assert.Equal(new Color(1, 0, 0), subgroup[1].Material.Color, ColorComparer);
+        }
     }
 }

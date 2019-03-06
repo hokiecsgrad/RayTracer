@@ -32,18 +32,21 @@ namespace RayTracer
 
         public int Count => this._shapes.Count;
 
-        new public Material Material 
+        public void SetMaterial(Material material)
         {
-            get { return Material; }
-            set 
+            foreach (var shape in this._shapes)
             {
-                foreach (var shape in this._shapes)
-                    shape.Material = value;
+                if ((object)shape as Group == null)
+                {
+                    shape.Material = material;
+                }
+                else
+                {
+                    var group = (object)shape as Group;
+                    group.SetMaterial(material);
+                }
             }
         }
-
-
-
 
 
         public void AddShape(Shape shape)
