@@ -8,6 +8,8 @@ namespace RayTracer
 {
     public class Camera
     {
+        private static readonly Random rng = new Random();
+
         public int HSize { get; }
 
         public int VSize { get; }
@@ -89,29 +91,35 @@ namespace RayTracer
         public List<Ray> RaysForPixel(double px, double py)
         {
             var rays = new List<Ray>();
+            var inv = this.TransformInverse;
+            var origin = inv * new Point(0, 0, 0);
 
-            for (var x = -1; x <= 1; x++)
-                for (var y = -1; y <= 1; y++)
-                {
-                    // the offset from the edge of the canvas to the pixel's center
-                    double xoffset = (px + x + 0.5) * this.PixelSize;
-                    double yoffset = (py + y + 0.5) * this.PixelSize;
+            var pixelSize = this.PixelSize;
+            var halfWidth = this.HalfWidth;
+            var halfHeight = this.HalfHeight;
 
-                    // the untransformed coordinates of the pixel in world-space.
-                    // (remember that the camera looks toward -z, so +x is to the *left*.)
-                    double world_x = this.HalfWidth - xoffset;
-                    double world_y = this.HalfHeight - yoffset;
+            for (var i = 0; i < 4; i++)
+            {
+                var xOffset = (px + 0.5);
+                var yOffset = (py + 0.5);
 
-                    // using the camera matrix, transform the canvas point and the origin,
-                    // and then compute the ray's direction vector.
-                    // (remember that the canvas is at z=-1)
-                    Point pixel = this.TransformInverse * new Point(world_x, world_y, -1);
-                    Point origin = this.TransformInverse * new Point(0, 0, 0);
-                    Vector direction = (pixel - origin).Normalize();
+                var rx = rng.NextDouble();
+                var ry = rng.NextDouble();
 
-                    rays.Add( new Ray(origin, direction) );
-                }
-                
+                xOffset += (0.5 - rx);
+                yOffset += (0.5 - ry);
+
+                xOffset *= pixelSize;
+                yOffset *= pixelSize;
+
+                var worldX = halfWidth - xOffset;
+                var worldY = halfHeight - yOffset;
+
+                var pixel = inv * new Point(worldX, worldY, -1);
+                var direction = (pixel - origin).Normalize();
+
+                rays.Add(new Ray(origin, direction));
+            }
             return rays;
         }
 
@@ -133,7 +141,7 @@ namespace RayTracer
                         Interlocked.Increment(ref Stats.PrimaryRays);
                         color += world.ColorAt(ray);
                     }
-                    color = color * 0.111111111;
+                    color = color * 0.25;
                     image.SetPixel(x, y, color);
                 }
 
