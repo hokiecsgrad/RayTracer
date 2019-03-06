@@ -15,6 +15,8 @@ namespace RayTracer
 
         protected Matrix _transpose = Matrix.Identity;
 
+        public Matrix Transpose => this._transpose;
+
         public Matrix Transform
         {
             get => this._transform;
@@ -40,7 +42,7 @@ namespace RayTracer
         public List<Intersection> Intersect(Ray r)
         {
             Interlocked.Increment(ref Stats.Tests);
-            Ray transformedRay = r.Transform(this._inverse);
+            Ray transformedRay = r.Transform(this.Inverse);
             return LocalIntersect(transformedRay);
         }
 
@@ -60,12 +62,12 @@ namespace RayTracer
             if (this.HasParent)
                 point = this.Parent.ConverWorldPointToObjectPoint(point);
 
-            return this._inverse * point;
+            return this.Inverse * point;
         }
 
         public Vector NormalToWorld(Vector normal)
         {
-            normal = this._transpose * normal;
+            normal = this.Transpose * normal;
             normal.w = 0;
             normal = normal.Normalize();
 
