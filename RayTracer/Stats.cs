@@ -9,13 +9,13 @@ namespace RayTracer
 {
     public class Stats
     {
-        public static int Tests = 0;
+        public static long Tests = 0;
 
-        public static int PrimaryRays = 0;
+        public static long PrimaryRays = 0;
 
-        public static int SecondaryRays = 0;
+        public static long SecondaryRays = 0;
 
-        public static int ShadowRays = 0;
+        public static long ShadowRays = 0;
 
         public static void Reset()
         {
