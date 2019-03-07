@@ -12,31 +12,26 @@ namespace RayTracer.Program
     {
         public static void Render()
         {
+            var scene = new RefractionScene();
+            var width = 400;
+            var height = 300;
+            var fov = Math.PI/3;
+            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/refraction.ppm";
+
             World world;
             Camera camera;
-
-            var width = 640;
-            var height = 480;
-            var pixels = width*height;
-
-            (world, camera) = new RefractionScene().Setup(width, height, 1.152);
 
             var sw = new Stopwatch();
             sw.Start();
 
-            Canvas canvas = camera.Render(world, new AntiAliasSampler(camera));
+            (world, camera) = scene.Setup(width, height, fov);
+            Canvas canvas = camera.Render(world, new DefaultSampler(camera));
 
-            //var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Cover.ppm";
-            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/refraction.ppm";
-            if (File.Exists(filename))
-                File.Delete(filename);
-            FileStream stream = File.OpenWrite(filename);
-            StreamWriter writer = new StreamWriter(stream);
-            PpmWriter.WriteCanvasToPpm(writer, canvas);
-            writer.Close();
+            Program.SaveCanvasToFile(canvas, filename);
 
             sw.Stop();
 
+            var pixels = width*height;
             Console.WriteLine($"{sw.Elapsed}");
             Console.WriteLine($"{(double)pixels / sw.ElapsedMilliseconds}px/ms");
             Console.WriteLine($"Intersection tests: {Stats.Tests}");
@@ -46,6 +41,17 @@ namespace RayTracer.Program
             //Console.WriteLine($"Super sampling:     {args.N}x");
             //Console.WriteLine($"Output:             {Path.GetFullPath("out.ppm")}");
         }
+
+        private static void SaveCanvasToFile(Canvas canvas, string filename)
+        {
+            if (File.Exists(filename))
+                File.Delete(filename);
+            FileStream stream = File.OpenWrite(filename);
+            StreamWriter writer = new StreamWriter(stream);
+            PpmWriter.WriteCanvasToPpm(writer, canvas);
+            writer.Close();
+        }
+
 
         static void Main(string[] args)
         {
