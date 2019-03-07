@@ -15,7 +15,7 @@ namespace RayTracer
             Math.Min(a, Math.Min(b, c));
 
 
-        private (double, double) CheckAxis(double origin, double direction)
+        private (double min, double max) CheckAxis(double origin, double direction)
         {
             var tmin_numerator = -1 - origin;
             var tmax_numerator = 1 - origin;
@@ -49,8 +49,8 @@ namespace RayTracer
             var ytVals = CheckAxis(ray.Origin.y, ray.Direction.y);
             var ztVals = CheckAxis(ray.Origin.z, ray.Direction.z);
 
-            var tmin = Max(xtVals.Item1, ytVals.Item1, ztVals.Item1);
-            var tmax = Min(xtVals.Item2, ytVals.Item2, ztVals.Item2);
+            var tmin = Max(xtVals.min, ytVals.min, ztVals.min);
+            var tmax = Min(xtVals.max, ytVals.max, ztVals.max);
 
             if (tmin > tmax) return new List<Intersection>();
 

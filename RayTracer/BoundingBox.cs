@@ -75,7 +75,7 @@ namespace RayTracer
             return new_bbox;
         }
 
-        private (double, double) CheckAxis(double origin, double direction, double min, double max)
+        private (double min, double max) CheckAxis(double origin, double direction, double min, double max)
         {
             var tmin_numerator = (min - origin);
             var tmax_numerator = (max - origin);
@@ -103,8 +103,8 @@ namespace RayTracer
             var xtVals = CheckAxis(ray.Origin.x, ray.Direction.x, Min.x, Max.x);
             var ytVals = CheckAxis(ray.Origin.y, ray.Direction.y, Min.y, Max.y);
             var ztVals = CheckAxis(ray.Origin.z, ray.Direction.z, Min.z, Max.z);
-            var tmin = Math.Max(xtVals.Item1, Math.Max(ytVals.Item1, ztVals.Item1));
-            var tmax = Math.Min(xtVals.Item2, Math.Min(ytVals.Item2, ztVals.Item2));
+            var tmin = Math.Max(xtVals.min, Math.Max(ytVals.min, ztVals.min));
+            var tmax = Math.Min(xtVals.max, Math.Min(ytVals.max, ztVals.max));
             if (tmin > tmax) return false;
             return true;
         }
