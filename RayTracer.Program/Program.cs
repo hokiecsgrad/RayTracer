@@ -16,7 +16,7 @@ namespace RayTracer.Program
             var width = 400;
             var height = 300;
             var fov = Math.PI/3;
-            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/refraction.ppm";
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/refraction.ppm";
 
             World world;
             Camera camera;
@@ -25,7 +25,7 @@ namespace RayTracer.Program
             sw.Start();
 
             (world, camera) = scene.Setup(width, height, fov);
-            Canvas canvas = camera.Render(world, new DefaultSampler(camera));
+            Canvas canvas = camera.Render(world, new FocalBlurSampler(camera, 4.2, 0.05, 16));
 
             Program.SaveCanvasToFile(canvas, filename);
 

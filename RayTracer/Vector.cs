@@ -65,6 +65,9 @@ namespace RayTracer
             throw new InvalidOperationException("Cannot subtract a Point from a Vector.");
         }
 
+        public static Vector operator *(double multiplier, Vector a) =>
+            a * multiplier;
+            
         public static Vector operator *(Vector a, double multiplier) =>
             new Vector(
                     a.x * multiplier, 
