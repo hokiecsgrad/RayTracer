@@ -35,15 +35,16 @@ namespace RayTracer.Program
             // describe the elements of the scene
             // ======================================================
 
-            //var objFile = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/models/utah_teapot_hires.obj";
-            var objFile = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/Scenes/teapot.obj";
+            var objFile = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/teapot.obj";
+            //var objFile = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/Scenes/teapot.obj";
             FileStream instream = File.OpenRead(objFile);
             StreamReader reader = new StreamReader(instream);
             var objData = reader.ReadToEnd();
             var parser = new ObjParser(objData);
-            parser.Parse();            
+            parser.Parse();
+
             var teapot = new Group();
-            teapot.Material = new Material()
+            var material = new Material()
             {
                 Color = new Color(0.9, 0.9, 1),
                 Ambient = 0.1,
@@ -53,6 +54,7 @@ namespace RayTracer.Program
                 Reflective = 0.1,
             };
             teapot.AddShapes(parser.Groups);
+            teapot.SetMaterial(material);
 
             var floor = new Plane()
             {
@@ -63,9 +65,8 @@ namespace RayTracer.Program
                     Diffuse = 0.2,
                     Specular = 0.0,
                 },
+                Transform = Transformation.Translation(0, -1, 0),
             };
-
-
 
             World world = new World();
             world.Shapes = new List<Shape> {floor, teapot};
