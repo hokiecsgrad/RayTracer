@@ -19,7 +19,7 @@ namespace RayTracer.Tests.Smoke
             var parser = new ObjParser(objData);
             parser.Parse();            
             var teapot = new Group();
-            teapot.AddShapes(parser.ObjToGroup());
+            teapot.AddShapes(parser.Groups);
             teapot.Divide(200);
 
             World world = new World();
@@ -29,7 +29,7 @@ namespace RayTracer.Tests.Smoke
             // light sources
             // ======================================================
 
-            world.Light = new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1));
+            world.Lights = new List<ILight> { new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1)) };
 
             // ======================================================
             // the camera

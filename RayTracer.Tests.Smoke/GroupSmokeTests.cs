@@ -63,7 +63,7 @@ namespace RayTracer.Tests.Smoke
             // light sources
             // ======================================================
 
-            world.Light = new PointLight(new Point(0, 6.9, -5), new Color(1, 1, 0.9));
+            world.Lights = new List<ILight> { new PointLight(new Point(0, 6.9, -5), new Color(1, 1, 0.9)) };
 
             // ======================================================
             // the camera

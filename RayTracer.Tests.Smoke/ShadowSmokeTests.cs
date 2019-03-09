@@ -54,7 +54,7 @@ namespace RayTracer.Tests.Smoke
 
             World world = new World();
             world.Shapes = new List<Shape> {left, right, middle, floor, left_wall, right_wall};
-            world.Light = new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1));
+            world.Lights = new List<ILight> { new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1)) };
 
             Camera camera = new Camera(200, 120, Math.PI/3);
             camera.Transform = Transformation.ViewTransform(new Point(0, 1.5, -5),
