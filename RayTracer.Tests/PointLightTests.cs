@@ -77,6 +77,7 @@ namespace RayTracer.Tests
             var v1 = new Vector(2, 0, 0);
             var v2 = new Vector(0, 0, 1);
             var light = new AreaLight(corner, v1, 4, v2, 2, Color.White);
+            light.JitterBy = new Sequence(new List<double> {0.5});
             var pt = light.PointOnLight(u, v);
             Assert.Equal(result, pt, PointComparer);
         }
@@ -105,6 +106,7 @@ namespace RayTracer.Tests
             var v1 = new Vector(1, 0, 0);
             var v2 = new Vector(0, 1, 0);
             var light = new AreaLight(corner, v1, 2, v2, 2, Color.White);
+            light.JitterBy = new Sequence(new List<double> {0.5});
             var pt = point;
             var intensity = light.IntensityAt(pt, w);
             Assert.Equal(result, intensity);

@@ -14,8 +14,8 @@ namespace RayTracer.Program
         {
             var scene = new AreaLightScene();
             var width = 400;
-            var height = 300;
-            var fov = Math.PI/3;
+            var height = 160;
+            var fov = Math.PI/4;
             var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/arealight.ppm";
 
             World world;
@@ -26,6 +26,7 @@ namespace RayTracer.Program
 
             (world, camera) = scene.Setup(width, height, fov);
             Canvas canvas = camera.Render(world, new DefaultSampler(camera));
+            //Canvas canvas = camera.Render(world, new AntiAliasSampler(camera, 8));
 
             Program.SaveCanvasToFile(canvas, filename);
 

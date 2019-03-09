@@ -62,7 +62,7 @@ namespace RayTracer
             RefractiveIndex = 1.0;
         }
 
-        public Color Lighting(Shape shape, ILight light, Point point, Vector eye, Vector normal, double intensity = 0.0)
+        public Color Lighting(Shape shape, ILight light, Point point, Vector eye, Vector normal, double intensity = 1.0)
         {
             Color ambient;
             Color diffuse;
@@ -76,42 +76,46 @@ namespace RayTracer
 
             // combine the surface color with the light's color/intensity
             var effective_color = color * light.Color;
-            // find the direction to the light source
-            var lightv = (light.Position - point).Normalize();
             // compute the ambient contribution
             ambient = effective_color * this.Ambient;
-            // light_dot_normal represents the cosine of the angle between the
-            // light vector and the normal vector. A negative number means the
-            // light is on the other side of the surface.
-            var light_dot_normal = lightv.Dot(normal);
-            if (light_dot_normal < 0)
+
+            var sum = Color.Black;
+            foreach (Point sample in light.Sample())
             {
-                diffuse = new Color(0, 0, 0);
-                specular = new Color(0, 0, 0);
-            } 
-            else 
-            {
-                // compute the diffuse contribution
-                diffuse = effective_color * this.Diffuse * light_dot_normal;
-                // reflect_dot_eye represents the cosine of the angle between the
-                // reflection vector and the eye vector. A negative number means the
-                // light reflects away from the eye.
-                var reflect = -lightv.Reflect(normal);
-                var reflect_dot_eye = reflect.Dot(eye);
-                if (reflect_dot_eye <= 0)
-                    specular = new Color(0, 0, 0);
-                else
+                // find the direction to the light source
+                var lightv = (sample - point).Normalize();
+                // light_dot_normal represents the cosine of the angle between the
+                // light vector and the normal vector. A negative number means the
+                // light is on the other side of the surface.
+                var light_dot_normal = lightv.Dot(normal);
+                if (light_dot_normal < 0)
                 {
-                    // compute the specular contribution
-                    var factor = Math.Pow(reflect_dot_eye, this.Shininess);
-                    specular = light.Color * this.Specular * factor;
+                    diffuse = new Color(0, 0, 0);
+                    specular = new Color(0, 0, 0);
+                } 
+                else 
+                {
+                    // compute the diffuse contribution
+                    diffuse = effective_color * this.Diffuse * light_dot_normal;
+                    // reflect_dot_eye represents the cosine of the angle between the
+                    // reflection vector and the eye vector. A negative number means the
+                    // light reflects away from the eye.
+                    var reflect = -lightv.Reflect(normal);
+                    var reflect_dot_eye = reflect.Dot(eye);
+                    if (reflect_dot_eye <= 0)
+                        specular = new Color(0, 0, 0);
+                    else
+                    {
+                        // compute the specular contribution
+                        var factor = Math.Pow(reflect_dot_eye, this.Shininess);
+                        specular = light.Color * this.Specular * factor;
+                    }
                 }
+                sum = sum + diffuse;
+                sum = sum + specular;
             }
-            // Add the three contributions together to get the final shading
-            if (intensity == 0.0)
-                return ambient;
-            else
-                return ambient + diffuse*intensity + specular*intensity;
+
+            return ambient + (sum / light.Samples) * intensity;
         }
 
         public bool Equals(Material other) =>

@@ -16,7 +16,7 @@ namespace RayTracer.Tests
 
     public class MaterialTests
     {
-        const double epsilon = 0.0001;
+        const double epsilon = 0.001;
 
         static readonly IEqualityComparer<Color> ColorComparer =
             Color.GetEqualityComparer(epsilon);
@@ -109,8 +109,8 @@ namespace RayTracer.Tests
             var eye = new Vector(0, 0, -1);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
-            var in_shadow = 1.0;
-            var result = m.Lighting(s, light, position, eye, normal, in_shadow);
+            var intensity = 0.0;
+            var result = m.Lighting(s, light, position, eye, normal, intensity);
             Assert.Equal(new Color(0.1, 0.1, 0.1), result, ColorComparer);
         }
 
@@ -185,6 +185,39 @@ namespace RayTracer.Tests
             };
 
             return allData;
-        }    
+        }
+
+        [Theory]
+        [MemberData(nameof(GetAreaLightData))]
+        public void Lighting_ShouldSampleAreaLights(Point point, Color result)
+        {
+            var corner = new Point(-0.5, -0.5, -5);
+            var v1 = new Vector(1, 0, 0);
+            var v2 = new Vector(0, 1, 0);
+            var light = new AreaLight(corner, v1, 2, v2, 2, Color.White);
+            light.JitterBy = new Sequence(new List<double> {0.5});
+            var shape = new Sphere();
+            shape.Material.Ambient = 0.1;
+            shape.Material.Diffuse = 0.9;
+            shape.Material.Specular = 0;
+            shape.Material.Color = Color.White;
+            var eye = new Point(0, 0, -5);
+            var pt = point;
+            var eyev = (eye - pt).Normalize();
+            var normalv = new Vector(pt.x, pt.y, pt.z);
+            var r = shape.Material.Lighting(shape, light, pt, eyev, normalv, 1.0);
+            Assert.Equal(result, r, ColorComparer);
+        }
+
+        public static IEnumerable<object[]> GetAreaLightData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(0, 0, -1), new Color(0.9965, 0.9965, 0.9965) },
+                new object[] { new Point(0, 0.7071, -0.7071), new Color(0.6232, 0.6232, 0.6232) },
+            };
+
+            return allData;
+        }
     }
 }

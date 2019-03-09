@@ -13,9 +13,19 @@ namespace RayTracer
     public class AntiAliasSampler : ISampler
     {
         private static readonly Random rng = new Random();
+        private int NumSamples { get; set; }
+
+        public AntiAliasSampler(Camera camera, int numSamples) :
+            base(camera)
+        {
+            this.NumSamples = numSamples;
+        }
 
         public AntiAliasSampler(Camera camera) :
-            base(camera) {}
+            base(camera) 
+        {
+            this.NumSamples = 4;
+        }
 
         public List<Ray> RaysForPixel(double px, double py)
         {
@@ -27,7 +37,7 @@ namespace RayTracer
             var halfWidth = this.Camera.HalfWidth;
             var halfHeight = this.Camera.HalfHeight;
 
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < this.NumSamples; i++)
             {
                 var xOffset = (px + 0.5);
                 var yOffset = (py + 0.5);
@@ -60,7 +70,7 @@ namespace RayTracer
                 Interlocked.Increment(ref Stats.PrimaryRays);
                 color += world.ColorAt(ray);
             }
-            color = color * 0.25;
+            color = color * (1 / this.NumSamples);
             return color;
         }
     }

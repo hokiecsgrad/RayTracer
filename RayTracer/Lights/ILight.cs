@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 
 namespace RayTracer
 {
     public interface ILight
     {
-        Point Position { get; }
         Color Color { get; }
+        int Samples { get; }
 
         double IntensityAt(Point point, World world);
+        IEnumerable<Point> Sample();
     } 
 }

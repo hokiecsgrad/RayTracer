@@ -48,6 +48,15 @@ namespace RayTracer
 
         public static Color operator *(double multiplier, Color a) => a * multiplier;
 
+        public static Color operator /(Color a, double divisor) =>
+            new Color(
+                a.Red / divisor, 
+                a.Green / divisor, 
+                a.Blue / divisor);
+
+        public static Color operator /(double divisor, Color a) => a / divisor;
+
+
         public static IEqualityComparer<Color> GetEqualityComparer(double epsilon = 0.0) =>
             new ApproxColorEqualityComparer(epsilon);
 

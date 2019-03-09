@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace RayTracer
 {
@@ -13,7 +14,7 @@ namespace RayTracer
         public Vector FullVVec;
         public Vector VVec;
         public int VSteps;
-        public int Samples;
+        public int Samples { get; }
         public ISequence JitterBy { get; set; }
 
         public AreaLight(
@@ -57,6 +58,13 @@ namespace RayTracer
             }
 
             return total / this.Samples;
+        }
+
+        public IEnumerable<Point> Sample()
+        {
+            for (var v = 0; v < this.VSteps; v++)
+                for (var u = 0; u < this.USteps; u++)
+                    yield return this.PointOnLight(u, v);
         }
     }
 }

@@ -24,13 +24,23 @@ namespace RayTracer
             Shapes = new List<Shape> {s1, s2};
         }
 
-        public List<Intersection> Intersect(Ray ray)
+
+        /* 
+            Really struggled to get shadows working AND proper area lights working
+            while casting shadows AND handling reflectsions at the same time.  Eventually
+            stole this method from @basp on github.
+            https://github.com/basp/pixie.net/blob/master/src/Pixie.Core/World.cs#L14
+        */
+        public List<Intersection> Intersect(Ray ray) =>
+            this.Intersect(ray, obj => true);
+
+        public List<Intersection> Intersect(Ray ray, Func<Shape, bool> predicate)
         {
-            List<Intersection> intersections = new List<Intersection>();
-            foreach (var shape in Shapes)
-                intersections.AddRange(shape.Intersect(ray));
-            intersections = intersections.OrderBy(i => i.Time).ToList();
-            return intersections;
+            Interlocked.Increment(ref Stats.Tests);
+            var xs = this.Shapes
+                .Where(predicate)
+                .SelectMany(x => x.Intersect(ray));
+            return xs.OrderBy(i => i.Time).ToList();
         }
 
         public Color ShadeHit(Comps comps, int remaining = 5)
@@ -39,8 +49,6 @@ namespace RayTracer
 
             foreach (var light in this.Lights)
             {
-                var shadowed = this.IsShadowed(comps.OverPoint, light.Position);
-
                 var surface = comps.Object.Material.Lighting(
                     comps.Object, 
                     light, 
@@ -120,10 +128,10 @@ namespace RayTracer
             var distance = v.Magnitude();
             var direction = v.Normalize();
             var r = new Ray(origin, direction);
-            var intersections = this.Intersect(r);
+            var intersections = this.Intersect(r, obj => obj.CastsShadow);
             var h = r.Hit(intersections);
             
-            if (h != null && h.Time < distance && h.Object.CastsShadow)
+            if (h != null && h.Time < distance)
                 return true;
             else
                 return false;
