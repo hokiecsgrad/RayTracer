@@ -70,7 +70,7 @@ namespace RayTracer.Program
 
             World world = new World();
             world.Shapes = new List<Shape> {floor, teapot};
-            world.Lights = new List<PointLight> {light};
+            world.Lights = new List<ILight> {light};
 
             return (world, camera);
         }

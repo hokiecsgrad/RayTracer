@@ -217,7 +217,7 @@ namespace RayTracer.Program
 
             World world = new World();
             world.Shapes = new List<Shape> {floor, ceiling, westWall, eastWall, northWall, southWall, bgGroup1, bgGroup2, fgGroup};
-            world.Lights = new List<PointLight> {light};
+            world.Lights = new List<ILight> {light};
 
             return (world, camera);
        }

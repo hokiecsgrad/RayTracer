@@ -62,7 +62,7 @@ namespace RayTracer
             RefractiveIndex = 1.0;
         }
 
-        public Color Lighting(Shape shape, PointLight light, Point point, Vector eye, Vector normal, bool in_shadow = false)
+        public Color Lighting(Shape shape, ILight light, Point point, Vector eye, Vector normal, double intensity = 0.0)
         {
             Color ambient;
             Color diffuse;
@@ -75,7 +75,7 @@ namespace RayTracer
                 color = this.Color;
 
             // combine the surface color with the light's color/intensity
-            var effective_color = color * light.Intensity;
+            var effective_color = color * light.Color;
             // find the direction to the light source
             var lightv = (light.Position - point).Normalize();
             // compute the ambient contribution
@@ -104,14 +104,14 @@ namespace RayTracer
                 {
                     // compute the specular contribution
                     var factor = Math.Pow(reflect_dot_eye, this.Shininess);
-                    specular = light.Intensity * this.Specular * factor;
+                    specular = light.Color * this.Specular * factor;
                 }
             }
             // Add the three contributions together to get the final shading
-            if (in_shadow)
+            if (intensity == 0.0)
                 return ambient;
             else
-                return ambient + diffuse + specular;
+                return ambient + diffuse*intensity + specular*intensity;
         }
 
         public bool Equals(Material other) =>

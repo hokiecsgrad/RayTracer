@@ -12,11 +12,11 @@ namespace RayTracer.Program
     {
         public static void Render()
         {
-            var scene = new RefractionScene();
+            var scene = new AreaLightScene();
             var width = 400;
             var height = 300;
             var fov = Math.PI/3;
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/refraction.ppm";
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/arealight.ppm";
 
             World world;
             Camera camera;
@@ -25,7 +25,7 @@ namespace RayTracer.Program
             sw.Start();
 
             (world, camera) = scene.Setup(width, height, fov);
-            Canvas canvas = camera.Render(world, new FocalBlurSampler(camera, 4.2, 0.05, 16));
+            Canvas canvas = camera.Render(world, new DefaultSampler(camera));
 
             Program.SaveCanvasToFile(canvas, filename);
 

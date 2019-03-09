@@ -8,14 +8,14 @@ namespace RayTracer
 {
     public class World
     {
-        public List<PointLight> Lights { get; set; }
+        public List<ILight> Lights { get; set; }
         public List<Shape> Shapes { get; set; }
 
         public World() {}
 
         public void CreateDefaultWorld()
         {
-            this.Lights = new List<PointLight> { new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1)) };
+            this.Lights = new List<ILight> { new PointLight(new Point(-10, 10, -10), new Color(1, 1, 1)) };
             var s1 = new Sphere();
             var m = new Material(new Color(0.8, 1.0, 0.6), 0.1, 0.7, 0.2, 200.0);
             s1.Material = m;
@@ -39,7 +39,7 @@ namespace RayTracer
 
             foreach (var light in this.Lights)
             {
-                var shadowed = this.IsShadowed(comps.OverPoint, light);
+                var shadowed = this.IsShadowed(comps.OverPoint, light.Position);
 
                 var surface = comps.Object.Material.Lighting(
                     comps.Object, 
@@ -47,7 +47,7 @@ namespace RayTracer
                     comps.OverPoint, 
                     comps.Eye, 
                     comps.Normal, 
-                    shadowed);
+                    light.IntensityAt(comps.OverPoint, this));
             
                 var reflected = this.ReflectedColor(comps, remaining);
                 var refracted = this.RefractedColor(comps, remaining);
@@ -113,13 +113,13 @@ namespace RayTracer
             return ShadeHit(comps, remaining);
         }
 
-        public bool IsShadowed(Point point, PointLight light)
+        public bool IsShadowed(Point origin, Point light)
         {
             Interlocked.Increment(ref Stats.ShadowRays);
-            var v = light.Position - point;
+            var v = light - origin;
             var distance = v.Magnitude();
             var direction = v.Normalize();
-            var r = new Ray(point, direction);
+            var r = new Ray(origin, direction);
             var intersections = this.Intersect(r);
             var h = r.Hit(intersections);
             

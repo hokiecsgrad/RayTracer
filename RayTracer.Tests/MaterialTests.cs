@@ -109,7 +109,7 @@ namespace RayTracer.Tests
             var eye = new Vector(0, 0, -1);
             var normal = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
-            var in_shadow = true;
+            var in_shadow = 1.0;
             var result = m.Lighting(s, light, position, eye, normal, in_shadow);
             Assert.Equal(new Color(0.1, 0.1, 0.1), result, ColorComparer);
         }
@@ -126,8 +126,8 @@ namespace RayTracer.Tests
             var eyev = new Vector(0, 0, -1);
             var normalv = new Vector(0, 0, -1);
             var light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
-            var c1 = m.Lighting(s, light, new Point(0.9, 0, 0), eyev, normalv, false);
-            var c2 = m.Lighting(s, light, new Point(1.1, 0, 0), eyev, normalv, false);
+            var c1 = m.Lighting(s, light, new Point(0.9, 0, 0), eyev, normalv);
+            var c2 = m.Lighting(s, light, new Point(1.1, 0, 0), eyev, normalv);
             Assert.Equal(Color.White, c1, ColorComparer);
             Assert.Equal(Color.Black, c2, ColorComparer);
         }
@@ -155,5 +155,36 @@ namespace RayTracer.Tests
             Assert.Equal(1.0, s.Material.Transparency);
             Assert.Equal(1.5, s.Material.RefractiveIndex);
         }
+
+        [Theory]
+        [MemberData(nameof(GetLightIntensityForColorData))]
+        public void LightingMethod_ShouldUseLightIntensityToAttenuateColor(double intensity, Color result)
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            w.Lights = new List<ILight> { new PointLight(new Point(0, 0, -10), new Color(1, 1, 1)) };
+            var shape = w.Shapes[0];
+            shape.Material.Ambient = 0.1;
+            shape.Material.Diffuse = 0.9;
+            shape.Material.Specular = 0;
+            shape.Material.Color = new Color(1, 1, 1);
+            var pt = new Point(0, 0, -1);
+            var eyev = new Vector(0, 0, -1);
+            var normalv = new Vector(0, 0, -1);
+            var r = shape.Material.Lighting(shape, w.Lights[0], pt, eyev, normalv, intensity);
+            Assert.Equal(result, r);
+        }
+
+        public static IEnumerable<object[]> GetLightIntensityForColorData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { 1.0, new Color(1, 1, 1) },
+                new object[] { 0.5, new Color(0.55, 0.55, 0.55) },
+                new object[] { 0.0, new Color(0.1, 0.1, 0.1) },
+            };
+
+            return allData;
+        }    
     }
 }

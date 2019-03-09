@@ -61,7 +61,7 @@ namespace RayTracer.Tests
         {
             var w = new World();
             w.CreateDefaultWorld();
-            w.Lights = new List<PointLight> {new PointLight(new Point(0, 0.25, 0), new Color(1, 1, 1))};
+            w.Lights = new List<ILight> {new PointLight(new Point(0, 0.25, 0), new Color(1, 1, 1))};
             var r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
             var shape = w.Shapes[1];
             var i = new Intersection(0.5, shape);
@@ -105,46 +105,10 @@ namespace RayTracer.Tests
         }
 
         [Fact]
-        public void WhenNothingIsCollinearWithPointAndLight_ShouldBeNoShadow()
-        {
-            var w = new World();
-            w.CreateDefaultWorld();
-            var p = new Point(0, 10, 0);
-            Assert.False(w.IsShadowed(p, w.Lights[0]));
-        }
-
-        [Fact]
-        public void WhenAnObjectIsBetweenThePointAndTheLight_ShouldBeInShadow()
-        {
-            var w = new World();
-            w.CreateDefaultWorld();
-            var p = new Point(10, -10, 10);
-            Assert.True(w.IsShadowed(p, w.Lights[0]));
-        }
-
-        [Fact]
-        public void WhenAnObjectIsBehindTheLight_ShouldBeNoShadow()
-        {
-            var w = new World();
-            w.CreateDefaultWorld();
-            var p = new Point(-20, 20, -20);
-            Assert.False(w.IsShadowed(p, w.Lights[0]));
-        }
-
-        [Fact]
-        public void WhenAnObjectIsBehindThePoint_ShouldBeNoShadow()
-        {
-            var w = new World();
-            w.CreateDefaultWorld();
-            var p = new Point(-2, 2, -2);
-            Assert.False(w.IsShadowed(p, w.Lights[0]));
-        }
-
-        [Fact]
         public void WhenShadeHitIsGivenAnIntersectionInShadow_ShouldJustCalcAmbient()
         {
             var w = new World();
-            w.Lights = new List<PointLight> {new PointLight(new Point(0, 0, -10), new Color(1, 1, 1))};
+            w.Lights = new List<ILight> {new PointLight(new Point(0, 0, -10), new Color(1, 1, 1))};
             var s1 = new Sphere();
             var s2 = new Sphere();
             s2.Transform = Transformation.Translation(0, 0, 10);
@@ -190,7 +154,7 @@ namespace RayTracer.Tests
         public void ColorAtWithMutuallyReflectiveSurfaces_ShouldTerminateWithoutInfinteLoop()
         {
             var w = new World();
-            w.Lights = new List<PointLight> {new PointLight(new Point(0, 0, 0), new Color(1, 1, 1))};
+            w.Lights = new List<ILight> {new PointLight(new Point(0, 0, 0), new Color(1, 1, 1))};
             var lower = new Plane();
             lower.Material.Reflective = 1;
             lower.Transform = Transformation.Translation(0, -1, 0);
@@ -311,6 +275,29 @@ namespace RayTracer.Tests
             var comps = xs[0].PrepareComputations(r, xs);
             var color = w.ShadeHit(comps, 5);
             Assert.Equal(new Color(0.93642, 0.68642, 0.68642), color, Comparer);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetLightOcclusionData))]
+        public void IsShadowMethod_ShouldTestForOcclusionBetweenTwoPoints(Point point, bool result)
+        {
+            var w = new World();
+            w.CreateDefaultWorld();
+            var light_position = new Point(-10, -10, -10);
+            Assert.Equal(result, w.IsShadowed(light_position, point));
+        }
+
+        public static IEnumerable<object[]> GetLightOcclusionData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(-10, -10, 10), false },
+                new object[] { new Point(10, 10, 10), true },
+                new object[] { new Point(-20, -20, -20), false },
+                new object[] { new Point(-5, -5, -5), false },
+            };
+
+            return allData;
         }
     }
 }
