@@ -26,7 +26,7 @@ namespace RayTracer.Program
 
             (world, camera) = scene.Setup(width, height, fov);
             Canvas canvas = camera.Render(world, new DefaultSampler(camera));
-            //Canvas canvas = camera.Render(world, new AntiAliasSampler(camera, 8));
+            //Canvas canvas = camera.Render(world, new AntiAliasSampler(camera, 4));
 
             Program.SaveCanvasToFile(canvas, filename);
 

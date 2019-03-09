@@ -36,6 +36,8 @@ namespace RayTracer.Program
                 new Color(1.5, 1.5, 1.5)
             );
 
+            var light2 = new PointLight(new Point(-1, 2, 4), Color.White);
+
             var cube = new Cube()
             {
                 Material = new Material()

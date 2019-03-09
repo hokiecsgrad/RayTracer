@@ -70,7 +70,7 @@ namespace RayTracer
                 Interlocked.Increment(ref Stats.PrimaryRays);
                 color += world.ColorAt(ray);
             }
-            color = color * (1 / this.NumSamples);
+            color *= 0.25;
             return color;
         }
     }
