@@ -24,12 +24,6 @@ namespace RayTracer.Tests.Smoke
                                 Transformation.Rotation_y(-Math.PI/6) *
                                 Transformation.Rotation_z(-Math.PI/2) *
                                 Transformation.Scaling(0.25, 1, 0.25);
-            /*
-            edge.Transform = Transformation.Scaling(0.25, 1, 0.25) * 
-                                Transformation.Rotation_z(-Math.PI/2) *
-                                Transformation.Rotation_y(-Math.PI/6) *
-                                Transformation.Translation(0, 0, -1);
-            */
             return edge;
         }
 
@@ -49,6 +43,27 @@ namespace RayTracer.Tests.Smoke
                 var side = hexagon_side();
                 side.Transform = Transformation.Rotation_y(n*Math.PI/3);
                 hex.AddShape(side);
+                if (n == 4)
+                {
+                    var boundingBoxMaterial = new Material()
+                    {
+                        Color = new Color(1, 1, 0),
+                        Ambient = 0.2,
+                        Diffuse = 0.0,
+                        Specular = 0.0,
+                        Shininess = 0,
+                        Reflective = 0.0,
+                        Transparency = 0.8,
+                        RefractiveIndex = 1,
+                    };
+                    var box = new Cube(side.GetBounds().Min, side.GetBounds().Max)
+                    {
+                        Material = boundingBoxMaterial,
+                        CastsShadow = false,
+                        HitBySecondaryRays = false,
+                    };
+                    hex.AddShape(box);
+                }
             }
             return hex;
         }

@@ -17,9 +17,11 @@ namespace RayTracer.Program
             var camera = new Camera(width, height, fov) 
             {
                 Transform = Transformation.ViewTransform(
-                                new Point(1, 0.5, -1),    // view from
+                                new Point(0, 0.5, -2),    // view from
                                 new Point(0, 0, 0),      // view to
                                 new Vector(0, 1, 0)), // vector up
+                
+                ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
 
             // ======================================================
@@ -35,7 +37,7 @@ namespace RayTracer.Program
             // describe the elements of the scene
             // ======================================================
 
-            var objFile = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/teapot.obj";
+            var objFile = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Models/teapot-low.obj";
             //var objFile = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/Scenes/teapot.obj";
             FileStream instream = File.OpenRead(objFile);
             StreamReader reader = new StreamReader(instream);
@@ -44,6 +46,7 @@ namespace RayTracer.Program
             parser.Parse();
 
             var teapot = new Group();
+            teapot.Transform = Transformation.Rotation_x(-Math.PI/2);
             var material = new Material()
             {
                 Color = new Color(0.9, 0.9, 1),
@@ -55,6 +58,26 @@ namespace RayTracer.Program
             };
             teapot.AddShapes(parser.Groups);
             teapot.SetMaterial(material);
+
+            var boundingBoxMaterial = new Material()
+            {
+                Color = new Color(1, 1, 0),
+                Ambient = 0.2,
+                Diffuse = 0.0,
+                Specular = 0.0,
+                Shininess = 0,
+                Reflective = 0.0,
+                Transparency = 0.8,
+                RefractiveIndex = 1,
+            };
+            var box = new Cube(teapot.GetBounds().Min, teapot.GetBounds().Max)
+            {
+                Material = boundingBoxMaterial,
+                CastsShadow = false,
+                HitBySecondaryRays = false,
+            };
+            Console.WriteLine(teapot.GetBounds().Min);
+            Console.WriteLine(teapot.GetBounds().Max);
 
             var floor = new Plane()
             {
@@ -69,7 +92,7 @@ namespace RayTracer.Program
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> {floor, teapot};
+            world.Shapes = new List<Shape> {floor, teapot, box};
             world.Lights = new List<ILight> {light};
 
             return (world, camera);

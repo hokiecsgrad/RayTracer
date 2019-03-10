@@ -50,11 +50,18 @@ namespace RayTracer
                     && (Min.z <= point.z && point.z <= Max.z));
         }
 
-        public bool Contains(BoundingBox box)
-        {
-            return ((Min.x <= box.Min.x && Min.y <= box.Min.y && Min.z <= box.Min.z)
-                && (Max.x >= box.Max.x && Max.y >= box.Max.y && Max.z >= box.Max.z));
-        }
+        public bool Contains(BoundingBox box) =>
+            (
+                (
+                Min.x <= box.Min.x && 
+                Min.y <= box.Min.y && 
+                Min.z <= box.Min.z
+                ) && (
+                Max.x >= box.Max.x && 
+                Max.y >= box.Max.y && 
+                Max.z >= box.Max.z
+                )
+            );
 
         public static BoundingBox Transform(BoundingBox box, Matrix matrix)
         {

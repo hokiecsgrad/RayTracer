@@ -1,3 +1,8 @@
+/*
+    Code originally authored by @basp on Github
+    https://github.com/basp/pixie.net/blob/master/src/Pixie.Cmd/ConsoleProgressMonitor.cs
+*/
+
 using System;
 using System.Diagnostics;
 using RayTracer;

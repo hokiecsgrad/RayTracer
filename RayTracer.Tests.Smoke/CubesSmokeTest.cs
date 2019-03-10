@@ -182,9 +182,9 @@ namespace RayTracer.Tests.Smoke
             // the camera
             // ======================================================
 
-            Camera camera = new Camera(400, 200, 0.785);
+            Camera camera = new Camera(600, 300, 0.785);
             camera.Transform = Transformation.ViewTransform(
-                                new Point(8, 6, -8), // view from
+                                new Point(5, 6, -8), // view from
                                 new Point(0, 3, 0),// view to
                                 new Vector(0, 1, 0));    // vector up
 

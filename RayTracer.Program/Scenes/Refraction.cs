@@ -136,6 +136,25 @@ namespace RayTracer.Program
             };
             bgGroup1.AddShape(bg2);
 
+            var boundingBoxMaterial = new Material()
+            {
+                Color = new Color(1, 1, 0),
+                Ambient = 0.2,
+                Diffuse = 0.0,
+                Specular = 0.0,
+                Shininess = 0,
+                Reflective = 0.0,
+                Transparency = 0.8,
+                RefractiveIndex = 1,
+            };
+
+            var boxGroup1 = new Cube(bgGroup1.GetBounds().Min, bgGroup1.GetBounds().Max)
+            {
+                Material = boundingBoxMaterial,
+                CastsShadow = false,
+                HitBySecondaryRays = false,
+            };
+
             var bgGroup2 = new Group();
             var bg3 = new Sphere()
             {
@@ -160,6 +179,12 @@ namespace RayTracer.Program
                 },
             };
             bgGroup2.AddShape(bg4);
+            var boxGroup2 = new Cube(bgGroup2.GetBounds().Min, bgGroup2.GetBounds().Max)
+            {
+                Material = boundingBoxMaterial,
+                CastsShadow = false,
+                HitBySecondaryRays = false,
+            };
 
             // ----------------------
             // foreground balls
@@ -214,9 +239,15 @@ namespace RayTracer.Program
                 },
             };
             fgGroup.AddShape(greenGlassSphere);
+            var boxFgGroup = new Cube(fgGroup.GetBounds().Min, fgGroup.GetBounds().Max)
+            {
+                Material = boundingBoxMaterial,
+                CastsShadow = false,
+                HitBySecondaryRays = false,
+            };
 
             World world = new World();
-            world.Shapes = new List<Shape> {floor, ceiling, westWall, eastWall, northWall, southWall, bgGroup1, bgGroup2, fgGroup};
+            world.Shapes = new List<Shape> {floor, ceiling, westWall, eastWall, northWall, southWall, bgGroup1, boxGroup1, bgGroup2, boxGroup2, fgGroup, boxFgGroup};
             world.Lights = new List<ILight> {light};
 
             return (world, camera);
