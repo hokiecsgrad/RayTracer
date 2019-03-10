@@ -11,11 +11,21 @@ namespace RayTracer
 
         public Vector Direction { get; }
 
+        public bool IsSecondary { get; set; }
+
 
         public Ray(Point origin, Vector direction)
         {
             this.Origin = origin;
             this.Direction = direction;
+            this.IsSecondary = false;
+        }
+
+        public Ray(Point origin, Vector direction, bool isSecondary)
+        {
+            this.Origin = origin;
+            this.Direction = direction;
+            this.IsSecondary = isSecondary;
         }
 
         public Point Position(double t) =>
