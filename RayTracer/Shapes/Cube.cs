@@ -7,18 +7,32 @@ namespace RayTracer
     public class Cube : Shape
     {
         private const double EPSILON = 0.00001;
+        public Point Min { get; set; }
+        public Point Max { get; set; }
 
-        private static double Max(double a, double b, double c) =>
+
+        private static double GetMax(double a, double b, double c) =>
             Math.Max(a, Math.Max(b, c));
 
-        private static double Min(double a, double b, double c) =>
+        private static double GetMin(double a, double b, double c) =>
             Math.Min(a, Math.Min(b, c));
 
-
-        private (double min, double max) CheckAxis(double origin, double direction)
+        public Cube()
         {
-            var tmin_numerator = -1 - origin;
-            var tmax_numerator = 1 - origin;
+            this.Min = new Point(-1, -1, -1);
+            this.Max = new Point(1, 1, 1);
+        }
+        
+        public Cube(Point min, Point max)
+        {
+            this.Min = min;
+            this.Max = max;
+        }
+
+        private (double min, double max) CheckAxis(double origin, double direction, double min = -1, double max = 1)
+        {
+            var tmin_numerator = min - origin;
+            var tmax_numerator = max - origin;
 
             var tmin = Double.PositiveInfinity;
             var tmax = 0.0;
@@ -45,12 +59,12 @@ namespace RayTracer
 
         public override List<Intersection> LocalIntersect(Ray ray)
         {
-            var xtVals = CheckAxis(ray.Origin.x, ray.Direction.x);
-            var ytVals = CheckAxis(ray.Origin.y, ray.Direction.y);
-            var ztVals = CheckAxis(ray.Origin.z, ray.Direction.z);
+            var xtVals = CheckAxis(ray.Origin.x, ray.Direction.x, this.Min.x, this.Max.x);
+            var ytVals = CheckAxis(ray.Origin.y, ray.Direction.y, this.Min.y, this.Max.y);
+            var ztVals = CheckAxis(ray.Origin.z, ray.Direction.z, this.Min.z, this.Max.z);
 
-            var tmin = Max(xtVals.min, ytVals.min, ztVals.min);
-            var tmax = Min(xtVals.max, ytVals.max, ztVals.max);
+            var tmin = GetMax(xtVals.min, ytVals.min, ztVals.min);
+            var tmax = GetMin(xtVals.max, ytVals.max, ztVals.max);
 
             if (tmin > tmax) return new List<Intersection>();
 
@@ -61,7 +75,7 @@ namespace RayTracer
 
         public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
         {
-            var maxc = Max(
+            var maxc = GetMax(
                         Math.Abs(local_point.x),
                         Math.Abs(local_point.y), 
                         Math.Abs(local_point.z)

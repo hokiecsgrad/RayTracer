@@ -79,7 +79,7 @@ namespace RayTracer
                 return new Color(0, 0, 0);
 
             Interlocked.Increment(ref Stats.SecondaryRays);
-            var reflectRay = new Ray(comps.OverPoint, comps.Reflect);
+            var reflectRay = new Ray(comps.OverPoint, comps.Reflect, true);
             var color = this.ColorAt(reflectRay, remaining - 1);
             return color * comps.Object.Material.Reflective;
         }
@@ -105,7 +105,7 @@ namespace RayTracer
             // Compute the direction of the refracted ray
             var direction = comps.Normal * (n_ratio * cos_i - cos_t) - comps.Eye * n_ratio;
             // Create the refracted ray
-            var refract_ray = new Ray(comps.UnderPoint, direction);
+            var refract_ray = new Ray(comps.UnderPoint, direction, true);
             // Find the color of the refracted ray, making sure to multiply
             // by the transparency value to account for any opacity
             return this.ColorAt(refract_ray, remaining - 1) * comps.Object.Material.Transparency;
@@ -113,10 +113,16 @@ namespace RayTracer
 
         public Color ColorAt(Ray ray, int remaining = 5)
         {
-            var intersections = this.Intersect(ray);
+            var intersections = new List<Intersection>();
+            if ( ray.IsSecondary )
+                intersections = this.Intersect(ray, obj => obj.HitBySecondaryRays);
+            else
+                intersections = this.Intersect(ray);
             if (intersections.Count == 0) return new Color(0,0,0);
+
             var hit = ray.Hit(intersections);
             if (hit == null) return new Color(0,0,0);
+
             var comps = hit.PrepareComputations(ray, intersections);
             return ShadeHit(comps, remaining);
         }

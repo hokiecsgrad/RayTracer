@@ -35,6 +35,8 @@ namespace RayTracer
         public bool HasParent => this.Parent != null;
 
         public bool CastsShadow = true;
+        
+        public bool HitBySecondaryRays = true;
 
 
         public abstract List<Intersection> LocalIntersect(Ray r);
