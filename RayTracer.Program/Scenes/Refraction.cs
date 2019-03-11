@@ -151,8 +151,7 @@ namespace RayTracer.Program
             var boxGroup1 = new Cube(bgGroup1.GetBounds().Min, bgGroup1.GetBounds().Max)
             {
                 Material = boundingBoxMaterial,
-                CastsShadow = false,
-                HitBySecondaryRays = false,
+                HitBy = RayType.Primary,
             };
 
             var bgGroup2 = new Group();
@@ -182,8 +181,7 @@ namespace RayTracer.Program
             var boxGroup2 = new Cube(bgGroup2.GetBounds().Min, bgGroup2.GetBounds().Max)
             {
                 Material = boundingBoxMaterial,
-                CastsShadow = false,
-                HitBySecondaryRays = false,
+                HitBy = RayType.Primary,
             };
 
             // ----------------------
@@ -242,8 +240,7 @@ namespace RayTracer.Program
             var boxFgGroup = new Cube(fgGroup.GetBounds().Min, fgGroup.GetBounds().Max)
             {
                 Material = boundingBoxMaterial,
-                CastsShadow = false,
-                HitBySecondaryRays = false,
+                HitBy = RayType.Primary,
             };
 
             World world = new World();

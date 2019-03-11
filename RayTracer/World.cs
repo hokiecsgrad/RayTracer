@@ -25,20 +25,11 @@ namespace RayTracer
         }
 
 
-        /* 
-            Really struggled to get shadows working AND proper area lights working
-            while casting shadows AND handling reflectsions at the same time.  Eventually
-            stole this method from @basp on github.
-            https://github.com/basp/pixie.net/blob/master/src/Pixie.Core/World.cs#L14
-        */
-        public List<Intersection> Intersect(Ray ray) =>
-            this.Intersect(ray, obj => true);
-
-        public List<Intersection> Intersect(Ray ray, Func<Shape, bool> predicate)
+        public List<Intersection> Intersect(Ray ray)
         {
             Interlocked.Increment(ref Stats.Tests);
             var xs = this.Shapes
-                .Where(predicate)
+                .Where(obj => (obj.HitBy & ray.Type) != 0)
                 .SelectMany(x => x.Intersect(ray));
             return xs.OrderBy(i => i.Time).ToList();
         }
@@ -79,7 +70,7 @@ namespace RayTracer
                 return new Color(0, 0, 0);
 
             Interlocked.Increment(ref Stats.SecondaryRays);
-            var reflectRay = new Ray(comps.OverPoint, comps.Reflect, true);
+            var reflectRay = new Ray(comps.OverPoint, comps.Reflect, RayType.Reflection);
             var color = this.ColorAt(reflectRay, remaining - 1);
             return color * comps.Object.Material.Reflective;
         }
@@ -105,7 +96,7 @@ namespace RayTracer
             // Compute the direction of the refracted ray
             var direction = comps.Normal * (n_ratio * cos_i - cos_t) - comps.Eye * n_ratio;
             // Create the refracted ray
-            var refract_ray = new Ray(comps.UnderPoint, direction, true);
+            var refract_ray = new Ray(comps.UnderPoint, direction, RayType.Refraction);
             // Find the color of the refracted ray, making sure to multiply
             // by the transparency value to account for any opacity
             return this.ColorAt(refract_ray, remaining - 1) * comps.Object.Material.Transparency;
@@ -114,10 +105,7 @@ namespace RayTracer
         public Color ColorAt(Ray ray, int remaining = 5)
         {
             var intersections = new List<Intersection>();
-            if ( ray.IsSecondary )
-                intersections = this.Intersect(ray, obj => obj.HitBySecondaryRays);
-            else
-                intersections = this.Intersect(ray);
+            intersections = this.Intersect(ray);
             if (intersections.Count == 0) return new Color(0,0,0);
 
             var hit = ray.Hit(intersections);
@@ -133,8 +121,8 @@ namespace RayTracer
             var v = light - origin;
             var distance = v.Magnitude();
             var direction = v.Normalize();
-            var r = new Ray(origin, direction);
-            var intersections = this.Intersect(r, obj => obj.CastsShadow);
+            var r = new Ray(origin, direction, RayType.Shadow);
+            var intersections = this.Intersect(r);
             var h = r.Hit(intersections);
             
             if (h != null && h.Time < distance)

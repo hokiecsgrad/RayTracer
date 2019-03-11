@@ -12,11 +12,11 @@ namespace RayTracer.Program
     {
         public static void Render()
         {
-            var scene = new TeapotScene();
+            var scene = new RefractionScene();
             var width = 400;
             var height = 300;
-            var fov = Math.PI/2;
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/teapot.ppm";
+            var fov = Math.PI/3;
+            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/refraction.ppm";
 
             World world;
             Camera camera;

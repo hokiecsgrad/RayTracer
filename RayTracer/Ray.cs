@@ -5,27 +5,34 @@ using System.Linq;
 
 namespace RayTracer
 {
+    public enum RayType
+    {
+        Primary = 0x01,
+        Shadow = 0x02,
+        Reflection = 0x04,
+        Refraction = 0x08,
+    }
+
     public class Ray
     {
         public Point Origin { get; }
 
         public Vector Direction { get; }
 
-        public bool IsSecondary { get; set; }
+        public RayType Type { get; set; } = RayType.Primary;
 
 
         public Ray(Point origin, Vector direction)
         {
             this.Origin = origin;
             this.Direction = direction;
-            this.IsSecondary = false;
         }
 
-        public Ray(Point origin, Vector direction, bool isSecondary)
+        public Ray(Point origin, Vector direction, RayType type)
         {
             this.Origin = origin;
             this.Direction = direction;
-            this.IsSecondary = isSecondary;
+            this.Type = type;
         }
 
         public Point Position(double t) =>

@@ -57,7 +57,7 @@ namespace RayTracer
                 var pixel = inv * new Point(worldX, worldY, -1);
                 var direction = (pixel - origin).Normalize();
 
-                rays.Add(new Ray(origin, direction));
+                rays.Add(new Ray(origin, direction, RayType.Primary));
             }
             return rays;
         }

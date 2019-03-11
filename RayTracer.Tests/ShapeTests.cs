@@ -536,5 +536,15 @@ namespace RayTracer.Tests
             var comps = i.PrepareComputations(r, xs);
             Assert.Equal(new Vector(-0.5547, 0.83205, 0), comps.Normal, VectorComparer);
         }
+
+        [Fact]
+        public void ContructingAnyShape_ShouldDefaultToBeHitByAllRayTypes()
+        {
+            var s = new Sphere();
+            Assert.Equal(RayType.Primary, s.HitBy & RayType.Primary);
+            Assert.Equal(RayType.Shadow, s.HitBy & RayType.Shadow);
+            Assert.Equal(RayType.Reflection, s.HitBy & RayType.Reflection);
+            Assert.Equal(RayType.Refraction, s.HitBy & RayType.Refraction);
+        }
     }
 }

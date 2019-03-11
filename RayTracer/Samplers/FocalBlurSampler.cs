@@ -45,7 +45,7 @@ namespace RayTracer
             Point origin = this.Camera.TransformInverse * new Point(0, 0, 0);
             Vector direction = (pixel - origin).Normalize();
 
-            return new Ray(origin, direction);
+            return new Ray(origin, direction, RayType.Primary);
         }
 
         // It was definitely not a good idea to have this static
@@ -79,7 +79,7 @@ namespace RayTracer
                 // and pointing at the focal point.
                 var origin = ray.Origin + offset;
                 var direction = (focalPoint - origin).Normalize();
-                var secondaryRay = new Ray(origin, direction);
+                var secondaryRay = new Ray(origin, direction, RayType.Primary);
 
                 // We probably should count these "secondary" rays
                 // as primary rays for stats purposes; this is consistent

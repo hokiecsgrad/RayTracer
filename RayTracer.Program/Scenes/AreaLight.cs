@@ -52,7 +52,7 @@ namespace RayTracer.Program
                 Transform = 
                     Transformation.Translation(0, 3, 4) *
                     Transformation.Scaling(1, 1, 0.01),
-                CastsShadow = false,
+                HitBy = RayType.Primary | RayType.Reflection | RayType.Refraction,
             };
 
             var plane = new Plane()

@@ -34,10 +34,12 @@ namespace RayTracer
 
         public bool HasParent => this.Parent != null;
 
-        public bool CastsShadow = true;
-        
-        public bool HitBySecondaryRays = true;
-
+        public RayType HitBy { get; set; } = 
+            RayType.Primary | 
+            RayType.Shadow |
+            RayType.Reflection | 
+            RayType.Refraction;
+            
 
         public abstract List<Intersection> LocalIntersect(Ray r);
 

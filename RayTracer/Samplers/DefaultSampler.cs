@@ -26,7 +26,7 @@ namespace RayTracer
             Point origin = this.Camera.TransformInverse * new Point(0, 0, 0);
             Vector direction = (pixel - origin).Normalize();
 
-            return new Ray(origin, direction);
+            return new Ray(origin, direction, RayType.Primary);
         }
 
         public override Color Sample(int x, int y, World world)

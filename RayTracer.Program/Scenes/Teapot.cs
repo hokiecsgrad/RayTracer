@@ -73,11 +73,8 @@ namespace RayTracer.Program
             var box = new Cube(teapot.GetBounds().Min, teapot.GetBounds().Max)
             {
                 Material = boundingBoxMaterial,
-                CastsShadow = false,
-                HitBySecondaryRays = false,
+                HitBy = RayType.Primary,
             };
-            Console.WriteLine(teapot.GetBounds().Min);
-            Console.WriteLine(teapot.GetBounds().Max);
 
             var floor = new Plane()
             {
