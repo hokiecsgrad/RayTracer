@@ -236,5 +236,31 @@ v 4 4 4";
             Assert.Equal(new Point(-1, -1, -1), parser.Min, PointComparer);
             Assert.Equal(new Point(1, 1, 1), parser.Max, PointComparer);
         }
+
+        [Fact]
+        public void ParserWithMulitpleGroups_ShouldPutFacesIntoGroupsAndCorrectCalcBounds()
+        {
+            var file =
+@"v 0 0 0
+v 0 0 4
+v 0 4 0
+v 0 4 4
+v 4 0 0
+v 4 4 0
+v 4 0 4
+v 4 4 4
+g subgroup1
+f 1 2 3
+g subgroup2
+f 1 2 4";
+
+            var parser = new ObjParser(file);
+            parser.Parse();
+            parser.Normalize();
+            var group = new Group();
+            group.AddShapes(parser.Groups);
+            Assert.Equal(new Point(-1, -1, -1), group.GetBounds().Min, PointComparer);
+            Assert.Equal(new Point(-1, 1, 1), group.GetBounds().Max, PointComparer);
+        }
     }
 }

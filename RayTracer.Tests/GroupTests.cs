@@ -178,6 +178,27 @@ namespace RayTracer.Tests
         }
 
         [Fact]
+        public void GroupHasBoundingBoxThatContainsItsSubgroups_ShouldWork()
+        {
+            var s = new Sphere();
+            s.Transform = Transformation.Translation(2, 5, -3) * Transformation.Scaling(2, 2, 2);
+            var sphereGroup = new Group();
+            sphereGroup.AddShape(s);
+            var c = new Cylinder();
+            c.Minimum = -2;
+            c.Maximum = 2;
+            c.Transform = Transformation.Translation(-4, -1, 4) * Transformation.Scaling(0.5, 1, 0.5);
+            var cylGroup = new Group();
+            cylGroup.AddShape(c);
+            var group = new Group();
+            group.AddShape(sphereGroup);
+            group.AddShape(cylGroup);
+            var box = group.GetBounds();
+            Assert.Equal(new Point(-4.5, -3, -5), box.Min, PointComparer);
+            Assert.Equal(new Point(4, 7, 4.5), box.Max, PointComparer);
+        }
+
+        [Fact]
         public void IntersectingGroupWithRay_ShouldNotTestChildrenIfBoxIsMissed()
         {
             var child = new TestShape();

@@ -20,6 +20,7 @@ namespace RayTracer
 
         public List<Shape> Groups { get; } = new List<Shape>();
 
+        private bool IsDirty { get; set; } = true;
 
         public ObjParser(string obj) 
         { 
@@ -75,6 +76,8 @@ namespace RayTracer
                             var pz = double.Parse(commands[3]);
 
                             this.Vertices.Add(new Point(px, py, pz)); 
+
+                            this.IsDirty = true;
 
                             break;
 
@@ -141,6 +144,7 @@ namespace RayTracer
         private void CalculateMinAndMax()
         {
             if (!this.Vertices.Any()) return;
+            if (!this.IsDirty) return;
 
             var minX = this.Vertices.Min(point => point.x);
             var minY = this.Vertices.Min(point => point.y);
@@ -155,6 +159,8 @@ namespace RayTracer
 
         public void Normalize()
         {
+            if (! this.IsDirty) return;
+
             var sx = this.Max.x - this.Min.x;
             var sy = this.Max.y - this.Min.y;
             var sz = this.Max.z - this.Min.z;
@@ -169,6 +175,7 @@ namespace RayTracer
             }
 
             this.CalculateMinAndMax();
+            this.IsDirty = false;
         }
     }
 }
