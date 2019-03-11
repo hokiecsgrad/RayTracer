@@ -52,9 +52,16 @@ namespace RayTracer
                     this.n1 * (1 - hit.u - hit.v);
         }
 
-        public override BoundingBox GetBounds() =>
-            new BoundingBox();
+        public override BoundingBox GetBounds()
+        {
+            var box = new BoundingBox();
 
+            box.Add(this.p1);
+            box.Add(this.p2);
+            box.Add(this.p3);
+
+            return box;
+        }
         public override void Divide(int threshold) { }
     }
 }
