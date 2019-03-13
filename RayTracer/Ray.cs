@@ -11,6 +11,7 @@ namespace RayTracer
         Shadow = 0x02,
         Reflection = 0x04,
         Refraction = 0x08,
+        NoShadows = Primary | Reflection | Refraction,
     }
 
     public class Ray
