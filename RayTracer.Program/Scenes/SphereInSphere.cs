@@ -45,7 +45,7 @@ namespace RayTracer.Program
                     Transparency = 1,
                     RefractiveIndex = 1.00029,
                 },
-                CastsShadow = false,
+                HitBy = RayType.NoShadows,
             };
 
             var outerSphere = new Sphere()
@@ -60,7 +60,7 @@ namespace RayTracer.Program
                     Transparency = 1,
                     RefractiveIndex = 1.52,
                 },
-                CastsShadow = false,
+                HitBy = RayType.NoShadows,
             };
 
             World world = new World();

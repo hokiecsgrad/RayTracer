@@ -21,7 +21,7 @@ namespace RayTracer.Tests.Smoke
             floor.Material.Shininess = 200;
 
             var innerSphere = new Sphere();
-            innerSphere.CastsShadow = false;
+            innerSphere.HitBy = RayType.Primary | RayType.Reflection | RayType.Refraction;
             innerSphere.Transform = Transformation.Scaling(0.5, 0.5, 0.5);
             innerSphere.Material = new Material();
             innerSphere.Material.Ambient = 0;
@@ -33,7 +33,7 @@ namespace RayTracer.Tests.Smoke
             innerSphere.Material.RefractiveIndex = 1.00029;
 
             var outerSphere = new Sphere();
-            outerSphere.CastsShadow = false;
+            innerSphere.HitBy = RayType.Primary | RayType.Reflection | RayType.Refraction;
             outerSphere.Material = new Material();
             outerSphere.Material.Ambient = 0;
             outerSphere.Material.Diffuse = 0.1;

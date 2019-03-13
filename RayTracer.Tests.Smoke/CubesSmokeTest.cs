@@ -87,7 +87,7 @@ namespace RayTracer.Tests.Smoke
             // glass cube
             var glassCube = new Cube();
             glassCube.Transform = Transformation.Translation(0, 3.45001, 0) * Transformation.Rotation_y(0.2) * Transformation.Scaling(0.25, 0.25, 0.25);
-            glassCube.CastsShadow = false;
+            glassCube.HitBy = RayType.Primary | RayType.Reflection | RayType.Refraction;
             glassCube.Material = new Material();
             glassCube.Material.Color = new Color(1, 1, 0.8);
             glassCube.Material.Ambient = 0;
