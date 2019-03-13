@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Xunit;
 
 namespace RayTracer.Tests
@@ -15,6 +17,11 @@ namespace RayTracer.Tests
 
     public class PatternTests
     {
+        const double epsilon = 0.0001;
+
+        static readonly IEqualityComparer<Color> ColorComparer =
+            Color.GetEqualityComparer(epsilon);
+
         Color black;
         Color white;
 
@@ -139,6 +146,55 @@ namespace RayTracer.Tests
             Assert.Equal(white, pattern.PatternAt(new Point(0, 0, 0)));
             Assert.Equal(white, pattern.PatternAt(new Point(0, 0, 0.99)));
             Assert.Equal(white, pattern.PatternAt(new Point(0, 0, 1.01)));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetUvData))]
+        public void CheckerPatternIn2d_ShouldBeDefined(double u, double v, Color expected)
+        {
+            var checkers = new UvCheckers(2, 2, Color.Black, Color.White);
+            var color = checkers.UvPatternAt(u, v);
+            Assert.Equal(expected, color, ColorComparer);
+        }
+
+        public static IEnumerable<object[]> GetUvData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { 0.0, 0.0, Color.Black },
+                new object[] { 0.5, 0.0, Color.White },
+                new object[] { 0.0, 0.5, Color.White },
+                new object[] { 0.5, 0.5, Color.Black },
+                new object[] { 1.0, 1.0, Color.Black },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetUvMappingData))]
+        public void UsingSphericalMappingOn3dPoint_ShouldTranslateFrom3dTo2d(Point point, double expectedU, double expectedV)
+        {
+            var checkers = new UvCheckers(2, 2, Color.Black, Color.White);
+            var (u, v) = checkers.SphericalMap(point);
+            Assert.Equal(expectedU, u);
+            Assert.Equal(expectedV, v);
+        }
+
+        public static IEnumerable<object[]> GetUvMappingData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(0, 0, -1), 0.0, 0.5 },
+                new object[] { new Point(1, 0, 0), 0.25, 0.5 },
+                new object[] { new Point(0, 0, 1), 0.5, 0.5 },
+                new object[] { new Point(-1, 0, 0), 0.75, 0.5 },
+                new object[] { new Point(0, 1, 0), 0.5, 1.0 },
+                new object[] { new Point(0, -1, 0), 0.5, 0.0 },
+                new object[] { new Point(Math.Sqrt(2)/2, Math.Sqrt(2)/2, 0), 0.25, 0.75 },
+            };
+
+            return allData;
         }
     }
 }
