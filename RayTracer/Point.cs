@@ -72,6 +72,10 @@ namespace RayTracer
                     a.y / divisor, 
                     a.z / divisor);
 
+        public double Magnitude() =>
+            Math.Sqrt(x*x + y*y + z*z);
+            
+
         public static IEqualityComparer<Point> GetEqualityComparer(double epsilon = 0.0) =>
             new ApproxPointEqualityComparer(epsilon);
 
