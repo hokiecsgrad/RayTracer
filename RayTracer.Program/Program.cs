@@ -12,11 +12,11 @@ namespace RayTracer.Program
     {
         public static void Render()
         {
-            var scene = new RefractionScene();
+            var scene = new TextureMapScene();
             var width = 400;
             var height = 300;
-            var fov = Math.PI/3;
-            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/refraction.ppm";
+            var fov = 0.5;
+            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/texturemap.ppm";
 
             World world;
             Camera camera;

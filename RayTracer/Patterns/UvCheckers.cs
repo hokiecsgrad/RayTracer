@@ -34,9 +34,9 @@ namespace RayTracer
             // -π < theta <= π
             // angle increases clockwise as viewed from above,
             // which is opposite of what we want, but we'll fix it later.
-            var theta = Math.Atan2(point.x, point.y);
+            var theta = Math.Atan2(point.x, point.z);
 
-            var radius = (new Point(0,0,0) - point).Magnitude();
+            var radius = point.Magnitude();
 
             // compute the polar angle
             // 0 <= phi <= π
@@ -53,7 +53,37 @@ namespace RayTracer
             // we want v to be 0 at the south pole of the sphere,
             // and 1 at the north pole, so we have to "flip it over"
             // by subtracting it from 1.
-            var v = 1 - phi / Math.PI;
+            var v = 1 - (phi / Math.PI);
+
+            return (u, v);
+        }
+
+
+        // So, C#'s Mod operator (%) is actually a "remainder" 
+        // operator.  This method is the correct formula for
+        // calculating Modulus, which was important here.
+        private double Modulus(double a, double b)
+        {
+            return a - b * Math.Floor(a / b);
+        }
+        
+        public (double, double) PlanarMap(Point point)
+        {
+            var u = Modulus(point.x, 1.0);
+            var v = Modulus(point.z, 1.0);
+
+            return (u, v);
+        }
+
+        public (double, double) CylindricalMap(Point point)
+        {
+            // compute the azimuthal angle, same as with SphericalMap()
+            var theta = Math.Atan2(point.x, point.z);
+            var raw_u = theta / (2 * Math.PI);
+            var u = 1 - (raw_u + 0.5);
+
+            // let v go from 0 to 1 between whole units of y
+            var v = Modulus(point.y, 1);
 
             return (u, v);
         }
