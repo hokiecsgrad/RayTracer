@@ -12,11 +12,11 @@ namespace RayTracer.Program
     {
         public static void Render()
         {
-            var scene = new TextureMapScene();
+            var scene = new BasicCoordTestScene();
             var width = 400;
-            var height = 300;
-            var fov = 0.5;
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/texturemap.ppm";
+            var height = 400;
+            var fov = 1.57;
+            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/positiontests.ppm";
 
             World world;
             Camera camera;

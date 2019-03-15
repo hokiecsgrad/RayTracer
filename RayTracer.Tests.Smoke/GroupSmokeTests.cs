@@ -43,24 +43,28 @@ namespace RayTracer.Tests.Smoke
                 var side = hexagon_side();
                 side.Transform = Transformation.Rotation_y(n*Math.PI/3);
                 hex.AddShape(side);
-                if (n == 4)
+                if (true)
                 {
                     var boundingBoxMaterial = new Material()
                     {
                         Color = new Color(1, 1, 0),
                         Ambient = 0.2,
-                        Diffuse = 0.0,
-                        Specular = 0.0,
-                        Shininess = 0,
+                        Diffuse = 0.2,
+                        Specular = 0.8,
+                        Shininess = 50,
                         Reflective = 0.0,
-                        Transparency = 0.8,
+                        Transparency = 0.9,
                         RefractiveIndex = 1,
                     };
-                    var box = new Cube(side.GetBounds().Min, side.GetBounds().Max)
+                    var EPSILON = 0.00000000;
+                    var minPoint = side.GetBounds().Min;
+                    var newMinPoint = new Point(minPoint.x - EPSILON, minPoint.y - EPSILON, minPoint.z - EPSILON);
+                    var maxPoint = side.GetBounds().Max;
+                    var newMaxPoint = new Point(maxPoint.x + EPSILON, maxPoint.y + EPSILON, maxPoint.z + EPSILON);
+                    var box = new Cube(newMinPoint, newMaxPoint)
                     {
                         Material = boundingBoxMaterial,
-                        CastsShadow = false,
-                        HitBySecondaryRays = false,
+                        HitBy = RayType.Primary | RayType.Shadow | RayType.Refraction,
                     };
                     hex.AddShape(box);
                 }
@@ -71,8 +75,24 @@ namespace RayTracer.Tests.Smoke
         [Fact]
         public void RenderBasicScene()
         {
+            var cube = new Cube(new Point(-1, -1, -1), new Point(1, 1, 1))
+            {
+                Transform = Transformation.Translation(0, 0, 0),
+                Material = new Material()
+                {
+                    Color = new Color(1, 0, 0),
+                    Ambient = 0.2,
+                    Diffuse = 0.1,
+                    Specular = 0.9,
+                    Shininess = 50,
+                    Transparency = 0.9,
+                    Reflective = 0.2,
+                    RefractiveIndex = 1.0,
+                },
+            };
+
             World world = new World();
-            world.Shapes = new List<Shape> { hexagon() };
+            world.Shapes = new List<Shape> { hexagon(), cube };
 
             // ======================================================
             // light sources
@@ -84,15 +104,15 @@ namespace RayTracer.Tests.Smoke
             // the camera
             // ======================================================
 
-            Camera camera = new Camera(400, 200, 0.785);
+            Camera camera = new Camera(640, 480, 0.785);
             camera.Transform = Transformation.ViewTransform(
-                                new Point(5, 4, 0), // view from
+                                new Point(4, 3, 0), // view from
                                 new Point(0, 0, 0),// view to
                                 new Vector(0, 1, 0));    // vector up
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/Group.ppm";
+            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Tests.Smoke/Group.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

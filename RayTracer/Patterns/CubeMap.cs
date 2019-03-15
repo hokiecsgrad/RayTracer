@@ -23,7 +23,39 @@ namespace RayTracer
 
         public override Color PatternAt(Point point)
         {
-            return Color.Black;
+            var face = TextureMapper.FaceFromPoint(point);
+            var (u, v) = (0.0, 0.0);
+            var color = Color.Black;
+
+            switch (face)
+            {
+                case CubeFace.Front :
+                    (u, v) = TextureMapper.CubeUvFront(point);
+                    color = this.Front.UvPatternAt(u, v);
+                    break;
+                case CubeFace.Back :
+                    (u, v) = TextureMapper.CubeUvFront(point);
+                    color = this.Back.UvPatternAt(u, v);
+                    break;
+                case CubeFace.Left :
+                    (u, v) = TextureMapper.CubeUvFront(point);
+                    color = this.Left.UvPatternAt(u, v);
+                    break;
+                case CubeFace.Right :
+                    (u, v) = TextureMapper.CubeUvFront(point);
+                    color = this.Right.UvPatternAt(u, v);
+                    break;
+                case CubeFace.Up :
+                    (u, v) = TextureMapper.CubeUvFront(point);
+                    color = this.Up.UvPatternAt(u, v);
+                    break;
+                case CubeFace.Down :
+                    (u, v) = TextureMapper.CubeUvFront(point);
+                    color = this.Down.UvPatternAt(u, v);
+                    break;
+            }
+
+            return color;
         }
     }
 }
