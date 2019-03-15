@@ -13,10 +13,10 @@ namespace RayTracer.Program
         public static void Render()
         {
             var scene = new BasicCoordTestScene();
-            var width = 400;
+            var width = 800;
             var height = 400;
-            var fov = 1.57;
-            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/positiontests.ppm";
+            var fov = 0.8;
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/positiontests.ppm";
 
             World world;
             Camera camera;

@@ -34,23 +34,23 @@ namespace RayTracer
                     color = this.Front.UvPatternAt(u, v);
                     break;
                 case CubeFace.Back :
-                    (u, v) = TextureMapper.CubeUvFront(point);
+                    (u, v) = TextureMapper.CubeUvBack(point);
                     color = this.Back.UvPatternAt(u, v);
                     break;
                 case CubeFace.Left :
-                    (u, v) = TextureMapper.CubeUvFront(point);
+                    (u, v) = TextureMapper.CubeUvLeft(point);
                     color = this.Left.UvPatternAt(u, v);
                     break;
                 case CubeFace.Right :
-                    (u, v) = TextureMapper.CubeUvFront(point);
+                    (u, v) = TextureMapper.CubeUvRight(point);
                     color = this.Right.UvPatternAt(u, v);
                     break;
                 case CubeFace.Up :
-                    (u, v) = TextureMapper.CubeUvFront(point);
+                    (u, v) = TextureMapper.CubeUvUp(point);
                     color = this.Up.UvPatternAt(u, v);
                     break;
                 case CubeFace.Down :
-                    (u, v) = TextureMapper.CubeUvFront(point);
+                    (u, v) = TextureMapper.CubeUvDown(point);
                     color = this.Down.UvPatternAt(u, v);
                     break;
             }
