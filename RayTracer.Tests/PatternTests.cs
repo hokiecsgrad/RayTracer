@@ -176,7 +176,7 @@ namespace RayTracer.Tests
         public void UsingSphericalMappingOn3dPoint_ShouldTranslateFrom3dTo2d(Point point, double expectedU, double expectedV)
         {
             var checkers = new UvCheckers(2, 2, Color.Black, Color.White);
-            var (u, v) = checkers.SphericalMap(point);
+            var (u, v) = TextureMapper.SphericalMap(point);
             Assert.Equal(expectedU, u);
             Assert.Equal(expectedV, v);
         }
@@ -202,7 +202,7 @@ namespace RayTracer.Tests
         public void TextureMapPattern_ShouldMapToSphereUsingSphereMap(Point point, Color expected)
         {
             var checkers = new UvCheckers(16, 8, Color.Black, Color.White);
-            var pattern = new TextureMap(checkers);
+            var pattern = new TextureMap(checkers, TextureMapper.SphericalMap);
             Assert.Equal(expected, pattern.PatternAt(point));
         }
 
@@ -229,9 +229,7 @@ namespace RayTracer.Tests
         [MemberData(nameof(GetUvPlaneMappingData))]
         public void UsingPlanarMappingOn3dPoint_ShouldTranslateFrom3dTo2d(Point point, double expectedU, double expectedV)
         {
-            var p = point;
-            var checkers = new UvCheckers(1, 1, Color.Black, Color.White);
-            var (u, v) = checkers.PlanarMap(point);
+            var (u, v) = TextureMapper.PlanarMap(point);
             Assert.Equal(expectedU, u);
             Assert.Equal(expectedV, v);
         }
@@ -256,9 +254,7 @@ namespace RayTracer.Tests
         [MemberData(nameof(GetUvCylinderMappingData))]
         public void UsingCylindricalMappingOn3dPoint_ShouldTranslateFrom3dTo2d(Point point, double expectedU, double expectedV)
         {
-            var p = point;
-            var checkers = new UvCheckers(1, 1, Color.Black, Color.White);
-            var (u, v) = checkers.CylindricalMap(point);
+            var (u, v) = TextureMapper.CylindricalMap(point);
             Assert.Equal(expectedU, u);
             Assert.Equal(expectedV, v);
         }
@@ -305,6 +301,211 @@ namespace RayTracer.Tests
                 new object[] { 0.9, 0.9, new Color(1, 1, 0) },
                 new object[] { 0.1, 0.1, new Color(0, 1, 0) },
                 new object[] { 0.9, 0.1, new Color(0, 1, 1) },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCubeFaceMappingData))]
+        public void PointOnCube_ShouldIdentifyTheFaceOfTheCube(Point point, CubeFace expected)
+        {
+            var face = TextureMapper.FaceFromPoint(point);
+            Assert.Equal(expected, face);
+        }
+
+        public static IEnumerable<object[]> GetCubeFaceMappingData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(-1, 0.5, -0.25), CubeFace.Left },
+                new object[] { new Point(1.1, -0.75, 0.8), CubeFace.Right },
+                new object[] { new Point(0.1, 0.6, 0.9), CubeFace.Front },
+                new object[] { new Point(-0.7, 0, -2), CubeFace.Back },
+                new object[] { new Point(0.5, 1, 0.9), CubeFace.Up },
+                new object[] { new Point(-0.2, -1.3, 1.1), CubeFace.Down },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCubeFrontFaceMappingData))]
+        public void GivenPointOnFrontOfCube_ShouldReturnCorrectUvMapping(Point point, double expectedU, double expectedV)
+        {
+            var (u, v) = TextureMapper.CubeUvFront(point);
+            Assert.Equal(expectedU, u);
+            Assert.Equal(expectedV, v);
+        }
+
+        public static IEnumerable<object[]> GetCubeFrontFaceMappingData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(-0.5, 0.5, 1), 0.25, 0.75 },
+                new object[] { new Point(0.5, -0.5, 1), 0.75, 0.25 },
+            };
+
+            return allData;
+        }
+
+
+        [Theory]
+        [MemberData(nameof(GetCubeBackFaceMappingData))]
+        public void GivenPointOnBackOfCube_ShouldReturnCorrectUvMapping(Point point, double expectedU, double expectedV)
+        {
+            var (u, v) = TextureMapper.CubeUvBack(point);
+            Assert.Equal(expectedU, u);
+            Assert.Equal(expectedV, v);
+        }
+
+        public static IEnumerable<object[]> GetCubeBackFaceMappingData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(0.5, 0.5, -1), 0.25, 0.75 },
+                new object[] { new Point(-0.5, -0.5, -1), 0.75, 0.25 },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCubeLeftFaceMappingData))]
+        public void GivenPointOnLeftOfCube_ShouldReturnCorrectUvMapping(Point point, double expectedU, double expectedV)
+        {
+            var (u, v) = TextureMapper.CubeUvLeft(point);
+            Assert.Equal(expectedU, u);
+            Assert.Equal(expectedV, v);
+        }
+
+        public static IEnumerable<object[]> GetCubeLeftFaceMappingData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(-1, 0.5, -0.5), 0.25, 0.75 },
+                new object[] { new Point(-1, -0.5, 0.5), 0.75, 0.25 },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCubeRightFaceMappingData))]
+        public void GivenPointOnRightOfCube_ShouldReturnCorrectUvMapping(Point point, double expectedU, double expectedV)
+        {
+            var (u, v) = TextureMapper.CubeUvRight(point);
+            Assert.Equal(expectedU, u);
+            Assert.Equal(expectedV, v);
+        }
+
+        public static IEnumerable<object[]> GetCubeRightFaceMappingData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(1, 0.5, 0.5), 0.25, 0.75 },
+                new object[] { new Point(1, -0.5, -0.5), 0.75, 0.25 },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCubeUpFaceMappingData))]
+        public void GivenPointOnUpOfCube_ShouldReturnCorrectUvMapping(Point point, double expectedU, double expectedV)
+        {
+            var (u, v) = TextureMapper.CubeUvUp(point);
+            Assert.Equal(expectedU, u);
+            Assert.Equal(expectedV, v);
+        }
+
+        public static IEnumerable<object[]> GetCubeUpFaceMappingData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(-0.5, 1, -0.5), 0.25, 0.75 },
+                new object[] { new Point(0.5, 1, 0.5), 0.75, 0.25 },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCubeDownFaceMappingData))]
+        public void GivenPointOnDownOfCube_ShouldReturnCorrectUvMapping(Point point, double expectedU, double expectedV)
+        {
+            var (u, v) = TextureMapper.CubeUvDown(point);
+            Assert.Equal(expectedU, u);
+            Assert.Equal(expectedV, v);
+        }
+
+        public static IEnumerable<object[]> GetCubeDownFaceMappingData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(-0.5, -1, 0.5), 0.25, 0.75 },
+                new object[] { new Point(0.5, -1, -0.5), 0.75, 0.25 },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCubeColorMappingData))]
+        public void FindingTheColorsOnMappedCube_ShouldWork(Point point, Color expected)
+        {
+            var red = new Color(1, 0, 0);
+            var yellow = new Color(1, 1, 0);
+            var brown = new Color(1, 0.5, 0);
+            var green = new Color(0, 1, 0);
+            var cyan = new Color(0, 1, 1);
+            var blue = new Color(0, 0, 1);
+            var purple = new Color(1, 0, 1);
+            var white = new Color(1, 1, 1);
+            var left = new UvAlignCheck(yellow, cyan, red, blue, brown);
+            var front = new UvAlignCheck(cyan, red, yellow, brown, green);
+            var right = new UvAlignCheck(red, yellow, purple, green, white);
+            var back = new UvAlignCheck(green, purple, cyan, white, blue);
+            var up = new UvAlignCheck(brown, cyan, purple, red, yellow);
+            var down = new UvAlignCheck(purple, brown, green, blue, white);
+            var pattern = new CubeMap(left, front, right, back, up, down);
+            Assert.Equal(expected, pattern.PatternAt(point));
+        }
+
+        public static IEnumerable<object[]> GetCubeColorMappingData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { new Point(-1, 0, 0), yellow },
+                new object[] { new Point(-1, 0.9, -0.9), cyan },
+                new object[] { new Point(-1, 0.9, 0.9), red },
+                new object[] { new Point(-1, -0.9, -0.9), blue },
+                new object[] { new Point(-1, -0.9, 0.9), brown },
+                new object[] { new Point(0, 0, 1), cyan },
+                new object[] { new Point(-0.9, 0.9, 1), red },
+                new object[] { new Point(0.9, 0.9, 1), yellow },
+                new object[] { new Point(-0.9, -0.9, 1), brown },
+                new object[] { new Point(0.9, -0.9, 1), green },
+                new object[] { new Point(1, 0, 0), red },
+                new object[] { new Point(1, 0.9, 0.9), yellow },
+                new object[] { new Point(1, 0.9, -0.9), purple },
+                new object[] { new Point(1, -0.9, 0.9), green },
+                new object[] { new Point(1, -0.9, -0.9), white },
+                new object[] { new Point(0, 0, -1), green },
+                new object[] { new Point(0.9, 0.9, -1), purple },
+                new object[] { new Point(-0.9, 0.9, -1), cyan },
+                new object[] { new Point(0.9, -0.9, -1), white },
+                new object[] { new Point(-0.9, -0.9, -1), blue },
+                new object[] { new Point(0, 1, 0), brown },
+                new object[] { new Point(-0.9, 1, -0.9), cyan },
+                new object[] { new Point(0.9, 1, -0.9), purple },
+                new object[] { new Point(-0.9, 1, 0.9), red },
+                new object[] { new Point(0.9, 1, 0.9), yellow },
+                new object[] { new Point(0, -1, 0), purple },
+                new object[] { new Point(-0.9, -1, 0.9), brown },
+                new object[] { new Point(0.9, -1, 0.9), green },
+                new object[] { new Point(-0.9, -1, -0.9), blue },
+                new object[] { new Point(0.9, -1, -0.9), white },
             };
 
             return allData;

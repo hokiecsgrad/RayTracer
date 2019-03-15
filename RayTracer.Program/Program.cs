@@ -16,7 +16,7 @@ namespace RayTracer.Program
             var width = 400;
             var height = 300;
             var fov = 0.5;
-            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Program/texturemap.ppm";
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/texturemap.ppm";
 
             World world;
             Camera camera;

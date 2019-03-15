@@ -16,7 +16,7 @@ namespace RayTracer.Program
             var camera = new Camera(width, height, fov) 
             {
                 Transform = Transformation.ViewTransform(
-                                new Point(0, 0, -10), // view from
+                                new Point(-10, 0, 0), // view from
                                 new Point(0, 0, 0),// view to
                                 new Vector(0, 1, 0)),   // vector up
                 
@@ -34,10 +34,12 @@ namespace RayTracer.Program
 
             var sphere = new Sphere()
             {
+                Transform = Transformation.Translation(0, 0, -2),
                 Material = new Material()
                 {
                     Pattern = new TextureMap(
-                        new UvCheckers(20, 10, new Color(0, 0.5, 0), new Color(1, 1, 1))
+                        new UvCheckers(20, 10, new Color(0, 0.5, 0), new Color(1, 1, 1)),
+                        TextureMapper.SphericalMap
                     ),
                     Ambient = 0.1,
                     Specular = 0.4,
@@ -51,21 +53,8 @@ namespace RayTracer.Program
                 Material = new Material()
                 {
                     Pattern = new TextureMap(
-                        new UvCheckers(2, 2, new Color(0, 0.5, 0), new Color(1, 1, 1))
-                    ),
-                    Ambient = 0.1,
-                    Specular = 0.0,
-                    Shininess = 10,
-                    Diffuse = 0.9,
-                }
-            };
-
-            var alignCheck = new Plane()
-            {
-                Material = new Material()
-                {
-                    Pattern = new TextureMap(
-                        new UvAlignCheck(new Color(1,1,1), new Color(1,0,0), new Color(1,1,0), new Color(0,0,1), new Color(0, 1, 1)),
+                        new UvCheckers(2, 2, new Color(0, 0.5, 0), new Color(1, 1, 1)),
+                        TextureMapper.PlanarMap
                     ),
                     Ambient = 0.1,
                     Specular = 0.0,
@@ -84,7 +73,8 @@ namespace RayTracer.Program
                 Material = new Material()
                 {
                     Pattern = new TextureMap(
-                        new UvCheckers(16, 8, new Color(0, 0.5, 0), new Color(1, 1, 1))
+                        new UvCheckers(16, 8, new Color(0, 0.5, 0), new Color(1, 1, 1)),
+                        TextureMapper.CylindricalMap
                     ),
                     Ambient = 0.1,
                     Specular = 0.6,
@@ -94,7 +84,7 @@ namespace RayTracer.Program
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> {cyl};
+            world.Shapes = new List<Shape> {cyl, sphere};
             world.Lights = new List<ILight> {light};
 
             return (world, camera);

@@ -4,6 +4,16 @@ using System.Collections.Generic;
 
 namespace RayTracer
 {
+    public enum CubeFace
+    {
+        Front,
+        Back,
+        Left,
+        Right,
+        Up,
+        Down
+    }
+
     public class Cube : Shape
     {
         private const double EPSILON = 0.00001;

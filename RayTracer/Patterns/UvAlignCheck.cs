@@ -35,7 +35,5 @@ namespace RayTracer
 
             return this.Main;
        }
-
-
     }
 }
