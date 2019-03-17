@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using Xunit;
@@ -506,6 +507,45 @@ namespace RayTracer.Tests
                 new object[] { new Point(0.9, -1, 0.9), new Color(0, 1, 0) },
                 new object[] { new Point(-0.9, -1, -0.9), new Color(0, 0, 1) },
                 new object[] { new Point(0.9, -1, -0.9), new Color(1, 1, 1) },
+            };
+
+            return allData;
+        }
+
+        [Theory]
+        [MemberData(nameof(GetCanvasImageData))]
+        public void ReadingCheckerPatternFromPpmFile_ShouldReturnCanvas(double u, double v, Color expected)
+        {
+            var file = 
+@"P3
+10 10
+10
+0 0 0  1 1 1  2 2 2  3 3 3  4 4 4  5 5 5  6 6 6  7 7 7  8 8 8  9 9 9
+1 1 1  2 2 2  3 3 3  4 4 4  5 5 5  6 6 6  7 7 7  8 8 8  9 9 9  0 0 0
+2 2 2  3 3 3  4 4 4  5 5 5  6 6 6  7 7 7  8 8 8  9 9 9  0 0 0  1 1 1
+3 3 3  4 4 4  5 5 5  6 6 6  7 7 7  8 8 8  9 9 9  0 0 0  1 1 1  2 2 2
+4 4 4  5 5 5  6 6 6  7 7 7  8 8 8  9 9 9  0 0 0  1 1 1  2 2 2  3 3 3
+5 5 5  6 6 6  7 7 7  8 8 8  9 9 9  0 0 0  1 1 1  2 2 2  3 3 3  4 4 4
+6 6 6  7 7 7  8 8 8  9 9 9  0 0 0  1 1 1  2 2 2  3 3 3  4 4 4  5 5 5
+7 7 7  8 8 8  9 9 9  0 0 0  1 1 1  2 2 2  3 3 3  4 4 4  5 5 5  6 6 6
+8 8 8  9 9 9  0 0 0  1 1 1  2 2 2  3 3 3  4 4 4  5 5 5  6 6 6  7 7 7
+9 9 9  0 0 0  1 1 1  2 2 2  3 3 3  4 4 4  5 5 5  6 6 6  7 7 7  8 8 8";
+
+            var reader = new StringReader(file);
+            var canvas = PpmReader.ReadCanvasFromPpm(reader);
+            var pattern = new UvImage(canvas);
+            var color = pattern.UvPatternAt(u, v);
+            Assert.Equal(expected, color);
+        }
+ 
+        public static IEnumerable<object[]> GetCanvasImageData()
+        {
+            var allData = new List<object[]>
+            {
+                new object[] { 0, 0, new Color(0.9, 0.9, 0.9) },
+                new object[] { 0.3, 0, new Color(0.2, 0.2, 0.2) },
+                new object[] { 0.6, 0.3, new Color(0.1, 0.1, 0.1) },
+                new object[] { 1, 1, new Color(0.9, 0.9, 0.9) },
             };
 
             return allData;
