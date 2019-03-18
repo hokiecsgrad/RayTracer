@@ -75,6 +75,9 @@ namespace RayTracer.Program
             stream = File.OpenRead("/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Textures/earthspec1k.ppm");
             reader = new StreamReader(stream);
             var earthSpecMap = PpmReader.ReadCanvasFromPpm(reader);
+            stream = File.OpenRead("/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Textures/earthbump1k.ppm");
+            reader = new StreamReader(stream);
+            var earthBumpMap = PpmReader.ReadCanvasFromPpm(reader);
             var earth = new Sphere()
             {
                 Transform = 
@@ -88,6 +91,10 @@ namespace RayTracer.Program
                     ),
                     SpecularMap = new TextureMap(
                         new UvImage(earthSpecMap),
+                        TextureMapper.SphericalMap
+                    ),
+                    BumpMap = new TextureMap(
+                        new UvImage(earthBumpMap),
                         TextureMapper.SphericalMap
                     ),
                     Ambient = 0.3,

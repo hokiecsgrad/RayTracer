@@ -73,18 +73,23 @@ namespace RayTracer
             Color ambient;
             Color diffuse;
             Color specular;
-            Color specColor;
-            Color color;
+
+            Color specColor = Color.Black;
+            Vector bumpVec = new Vector(0, 0, 0);
+            Color color = this.Color;
 
             if (this.Pattern != null)
-            {
                 color = this.Pattern.PatternAtShape(shape, point);
+            if (this.SpecularMap != null)
                 specColor = this.SpecularMap.PatternAtShape(shape, point);
-            }
-            else
+            if (this.BumpMap != null)
             {
-                color = this.Color;
-                specColor = Color.Black;
+                var bumpColor = this.BumpMap.PatternAtShape(shape, point);
+                var newX = (bumpColor.Red / 0.5) - 1;
+                var newY = (bumpColor.Green / 0.5) - 1;
+                var newZ = (bumpColor.Blue / 0.5) - 1;
+                bumpVec = new Vector(newX, newY, newZ).Normalize();
+                normal = normal + bumpVec;
             }
 
             // combine the surface color with the light's color/intensity
