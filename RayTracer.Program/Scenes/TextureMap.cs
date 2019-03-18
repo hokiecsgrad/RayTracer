@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -16,8 +17,8 @@ namespace RayTracer.Program
             var camera = new Camera(width, height, fov) 
             {
                 Transform = Transformation.ViewTransform(
-                                new Point(-10, 0, 0), // view from
-                                new Point(0, 0, 0),// view to
+                                new Point(1, 2, -7), // view from
+                                new Point(0, 1, 0),// view to
                                 new Vector(0, 1, 0)),   // vector up
                 
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
@@ -28,63 +29,101 @@ namespace RayTracer.Program
             // ======================================================
 
             var light = new PointLight(
-                new Point(-10, 10, -10),
+                new Point(-100, 100, -100),
                 new Color(1, 1, 1)
             );
+            var areaLight = new AreaLight(
+                new Point(-100, 100, -100),
+                new Vector(4, 0, 0),
+                6,
+                new Vector(0, 4, 0),
+                6,
+                new Color(1.0, 1.0, 1.0)
+            );
 
-            var sphere = new Sphere()
-            {
-                Transform = Transformation.Translation(0, 0, -2),
-                Material = new Material()
-                {
-                    Pattern = new TextureMap(
-                        new UvCheckers(20, 10, new Color(0, 0.5, 0), new Color(1, 1, 1)),
-                        TextureMapper.SphericalMap
-                    ),
-                    Ambient = 0.1,
-                    Specular = 0.4,
-                    Shininess = 10,
-                    Diffuse = 0.6,
-                },
-            };
 
             var floor = new Plane()
             {
                 Material = new Material()
                 {
-                    Pattern = new TextureMap(
-                        new UvCheckers(2, 2, new Color(0, 0.5, 0), new Color(1, 1, 1)),
-                        TextureMapper.PlanarMap
-                    ),
+                    Color = Color.White,
                     Ambient = 0.1,
+                    Diffuse = 0.1,
                     Specular = 0.0,
-                    Shininess = 10,
-                    Diffuse = 0.9,
-                }
-            };
-
-            var cyl = new Cylinder()
-            {
-                Minimum = 0,
-                Maximum = 1,
-                Transform = 
-                    Transformation.Translation(0, -0.5, 0) * 
-                    Transformation.Scaling(1, 3.1415, 1),
-                Material = new Material()
-                {
-                    Pattern = new TextureMap(
-                        new UvCheckers(16, 8, new Color(0, 0.5, 0), new Color(1, 1, 1)),
-                        TextureMapper.CylindricalMap
-                    ),
-                    Ambient = 0.1,
-                    Specular = 0.6,
-                    Shininess = 15,
-                    Diffuse = 0.8,
+                    Reflective = 0.4,
                 },
             };
 
+            var pedestal = new Cylinder()
+            {
+                Minimum = 0.0,
+                Maximum = 0.1,
+                IsClosed = true,
+                Material = new Material()
+                {
+                    Color = Color.White,
+                    Ambient = 0.1,
+                    Diffuse = 0.2,
+                    Specular = 0.0,
+                    Reflective = 0.1,
+                },
+            };
+
+            FileStream stream = File.OpenRead("/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Textures/earthmap1k.ppm");
+            StreamReader reader = new StreamReader(stream);
+            var earthTexture = PpmReader.ReadCanvasFromPpm(reader);
+            stream = File.OpenRead("/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Textures/earthspec1k.ppm");
+            reader = new StreamReader(stream);
+            var earthSpecMap = PpmReader.ReadCanvasFromPpm(reader);
+            var earth = new Sphere()
+            {
+                Transform = 
+                    Transformation.Translation(0, 1.1, 0) * 
+                    Transformation.Rotation_y(1.9),
+                Material = new Material()
+                {
+                    Pattern = new TextureMap(
+                        new UvImage(earthTexture),
+                        TextureMapper.SphericalMap
+                    ),
+                    SpecularMap = new TextureMap(
+                        new UvImage(earthSpecMap),
+                        TextureMapper.SphericalMap
+                    ),
+                    Ambient = 0.3,
+                    Diffuse = 0.9,
+                    Specular = 0.0,
+                    Shininess = 300,
+                    Reflective = 0.7,
+                },
+            };
+
+            stream = File.OpenRead("/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Textures/earthcloudmap.ppm");
+            reader = new StreamReader(stream);
+            var cloudTexture = PpmReader.ReadCanvasFromPpm(reader);
+            var clouds = new Sphere()
+            {
+                Transform = 
+                    Transformation.Translation(0, 1.1, 0) * 
+                    Transformation.Scaling(1.1, 1.1, 1.1),
+                Material = new Material()
+                {
+                    Pattern = new TextureMap(
+                        new UvImage(cloudTexture),
+                        TextureMapper.SphericalMap
+                    ),
+                    Diffuse = 0.1,
+                    Specular = 0.0,
+                    Shininess = 100,
+                    Ambient = 0.1,
+                    Transparency = 1.0,
+                },
+                HitBy = RayType.NoShadows,
+            };
+
+
             World world = new World();
-            world.Shapes = new List<Shape> {cyl, sphere};
+            world.Shapes = new List<Shape> {floor, pedestal, earth};
             world.Lights = new List<ILight> {light};
 
             return (world, camera);

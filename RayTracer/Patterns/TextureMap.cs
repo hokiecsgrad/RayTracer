@@ -4,10 +4,10 @@ namespace RayTracer
 {
     public class TextureMap : Pattern
     {
-        public UvCheckers Texture { get; set; }
+        public IUvPattern Texture { get; set; }
         public Func<Point, (double, double)> Mapper { get; set; }
 
-        public TextureMap(UvCheckers texture, Func<Point, (double, double)> mapper)
+        public TextureMap(IUvPattern texture, Func<Point, (double, double)> mapper)
         {
             this.Texture = texture;
             this.Mapper = mapper;

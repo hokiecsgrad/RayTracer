@@ -67,12 +67,16 @@ namespace RayTracer
         public Color ReflectedColor(Comps comps, int remaining = 5)
         {
             if (remaining < 1 || comps.Object.Material.Reflective == 0)
-                return new Color(0, 0, 0);
+                return Color.Black;
+            
+            var specularComp = Color.White;
+            if (comps.Object.Material.SpecularMap != null)
+                specularComp = comps.Object.Material.SpecularMap.PatternAtShape(comps.Object, comps.OverPoint);
 
             Interlocked.Increment(ref Stats.SecondaryRays);
             var reflectRay = new Ray(comps.OverPoint, comps.Reflect, RayType.Reflection);
             var color = this.ColorAt(reflectRay, remaining - 1);
-            return color * comps.Object.Material.Reflective;
+            return color * comps.Object.Material.Reflective * specularComp;
         }
 
         public Color RefractedColor(Comps comps, int remaining = 5)

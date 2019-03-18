@@ -2,7 +2,7 @@ using System;
 
 namespace RayTracer
 {
-    public class UvAlignCheck
+    public class UvAlignCheck : IUvPattern
     {
         public Color Main { get; set; } = Color.White;
         public Color Ul { get; set; } = Color.Black;

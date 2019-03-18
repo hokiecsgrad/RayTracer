@@ -7,6 +7,8 @@ namespace RayTracer
         public Color Color { get; set; }
 
         public Pattern Pattern { get; set; }
+        public Pattern SpecularMap { get; set; }
+        public Pattern BumpMap { get; set; }
 
         public double Ambient { get; set; }
 
@@ -27,6 +29,8 @@ namespace RayTracer
         {
             Color = Color.White;
             Pattern = null;
+            SpecularMap = null;
+            BumpMap = null;
             Ambient = 0.1;
             Diffuse = 0.9;
             Specular = 0.9;
@@ -40,6 +44,8 @@ namespace RayTracer
         {
             Color = color;
             Pattern = null;
+            SpecularMap = null;
+            BumpMap = null;
             Ambient = ambient;
             Diffuse = diffuse;
             Specular = specular;
@@ -67,12 +73,19 @@ namespace RayTracer
             Color ambient;
             Color diffuse;
             Color specular;
+            Color specColor;
             Color color;
 
             if (this.Pattern != null)
+            {
                 color = this.Pattern.PatternAtShape(shape, point);
+                specColor = this.SpecularMap.PatternAtShape(shape, point);
+            }
             else
+            {
                 color = this.Color;
+                specColor = Color.Black;
+            }
 
             // combine the surface color with the light's color/intensity
             var effective_color = color * light.Color;
@@ -90,8 +103,8 @@ namespace RayTracer
                 var light_dot_normal = lightv.Dot(normal);
                 if (light_dot_normal < 0)
                 {
-                    diffuse = new Color(0, 0, 0);
-                    specular = new Color(0, 0, 0);
+                    diffuse = Color.Black;
+                    specular = Color.Black;
                 } 
                 else 
                 {
@@ -103,12 +116,15 @@ namespace RayTracer
                     var reflect = -lightv.Reflect(normal);
                     var reflect_dot_eye = reflect.Dot(eye);
                     if (reflect_dot_eye <= 0)
-                        specular = new Color(0, 0, 0);
+                        specular = Color.Black;
                     else
                     {
                         // compute the specular contribution
                         var factor = Math.Pow(reflect_dot_eye, this.Shininess);
-                        specular = light.Color * this.Specular * factor;
+                        if (this.SpecularMap != null)
+                            specular = light.Color * this.Specular * specColor * factor;
+                        else 
+                            specular = light.Color * this.Specular * factor;
                     }
                 }
                 sum = sum + diffuse;

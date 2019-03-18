@@ -2,7 +2,7 @@ using System;
 
 namespace RayTracer
 {
-    public class UvImage
+    public class UvImage : IUvPattern
     {
         public Canvas Image { get; set; }
 

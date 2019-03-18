@@ -2,7 +2,7 @@ using System;
 
 namespace RayTracer
 {
-    public class UvCheckers
+    public class UvCheckers : IUvPattern
     {
         public int Width { get; set; } = 0;
         public int Height { get; set; } = 0;

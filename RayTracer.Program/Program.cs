@@ -12,11 +12,11 @@ namespace RayTracer.Program
     {
         public static void Render()
         {
-            var scene = new BasicCoordTestScene();
+            var scene = new TextureMapScene();
             var width = 800;
             var height = 400;
             var fov = 0.8;
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/positiontests.ppm";
+            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/texturemap.ppm";
 
             World world;
             Camera camera;
@@ -26,7 +26,7 @@ namespace RayTracer.Program
 
             (world, camera) = scene.Setup(width, height, fov);
             Canvas canvas = camera.Render(world, new DefaultSampler(camera));
-            //Canvas canvas = camera.Render(world, new AntiAliasSampler(camera, 4));
+            //Canvas canvas = camera.Render(world, new AntiAliasSampler(camera, 8));
 
             Program.SaveCanvasToFile(canvas, filename);
 
