@@ -20,6 +20,10 @@ namespace RayTracer
 
         public Color GetPixel(int width, int height)
         {
+            if (width < 0) width = 0;
+            if (width >= this.Width) width = this.Width - 1;
+            if (height < 0) height = 0;
+            if (height >= this.Height) height = this.Height - 1;
             return this._pixels[width, height];
         }
 
