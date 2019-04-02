@@ -92,11 +92,11 @@ namespace RayTracer.Program
                     SpecularMap = new TextureMap(
                         new UvImage(earthSpecMap),
                         TextureMapper.SphericalMap
-                    ),
+                    ), /*
                     BumpMap = new TextureMap(
                         new UvImage(earthBumpMap),
                         TextureMapper.SphericalMap
-                    ),
+                    ), */
                     Ambient = 0.3,
                     Diffuse = 0.9,
                     Specular = 0.0,

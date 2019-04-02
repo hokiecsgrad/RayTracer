@@ -8,7 +8,7 @@ namespace RayTracer
 
         public Pattern Pattern { get; set; }
         public Pattern SpecularMap { get; set; }
-        public Pattern BumpMap { get; set; }
+        public Pattern NormalMap { get; set; }
 
         public double Ambient { get; set; }
 
@@ -30,7 +30,7 @@ namespace RayTracer
             Color = Color.White;
             Pattern = null;
             SpecularMap = null;
-            BumpMap = null;
+            NormalMap = null;
             Ambient = 0.1;
             Diffuse = 0.9;
             Specular = 0.9;
@@ -45,7 +45,7 @@ namespace RayTracer
             Color = color;
             Pattern = null;
             SpecularMap = null;
-            BumpMap = null;
+            NormalMap = null;
             Ambient = ambient;
             Diffuse = diffuse;
             Specular = specular;
@@ -59,6 +59,8 @@ namespace RayTracer
         {
             Color = color;
             Pattern = pattern;
+            SpecularMap = null;
+            NormalMap = null;
             Ambient = ambient;
             Diffuse = diffuse;
             Specular = specular;
@@ -82,14 +84,11 @@ namespace RayTracer
                 color = this.Pattern.PatternAtShape(shape, point);
             if (this.SpecularMap != null)
                 specColor = this.SpecularMap.PatternAtShape(shape, point);
-            if (this.BumpMap != null)
+            if (this.NormalMap != null)
             {
-                var bumpColor = this.BumpMap.PatternAtShape(shape, point);
-                var newX = (bumpColor.Red / 0.5) - 1;
-                var newY = (bumpColor.Green / 0.5) - 1;
-                var newZ = (bumpColor.Blue / 0.5) - 1;
-                bumpVec = new Vector(newX, newY, newZ).Normalize();
-                normal = normal + bumpVec;
+                var bumpColor = this.NormalMap.PatternAtShape(shape, point);
+                bumpVec = new Vector(bumpColor.Red, bumpColor.Blue, bumpColor.Green).Normalize();
+                normal = normal + bumpVec * 10.0;
             }
 
             // combine the surface color with the light's color/intensity
