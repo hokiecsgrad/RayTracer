@@ -6,7 +6,7 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class BasicRefractionSmokeTests
+    public class BasicRefractionSmokeTests : TestBase
     {
         [Fact]
         public void RenderBasicScene()
@@ -173,7 +173,8 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/BasicRefraction.ppm";
+
+            string filename = imagePath.ToString() + "BasicRefraction.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

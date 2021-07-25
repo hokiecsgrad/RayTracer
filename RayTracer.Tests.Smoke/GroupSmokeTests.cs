@@ -6,7 +6,7 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class GroupSmokeTests
+    public class GroupSmokeTests : TestBase
     {
         private Shape hexagon_corner()
         {
@@ -112,7 +112,8 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Tests.Smoke/Group.ppm";
+
+            string filename = imagePath.ToString() + "Group.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

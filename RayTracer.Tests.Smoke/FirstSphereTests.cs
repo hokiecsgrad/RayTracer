@@ -6,7 +6,7 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class SphereTests
+    public class SphereTests : TestBase
     {
         [Fact]
         public void ProjectSphereAgainstWall()
@@ -20,10 +20,6 @@ namespace RayTracer.Tests.Smoke
             Canvas canvas = new Canvas(canvas_pixels, canvas_pixels);
             Color color = new Color(1, 0, 0);
             Sphere shape = new Sphere();
-            //shape.Transform = Transformation.Scaling(1, 0.5, 1);
-            //shape.Transform = Transformation.Scaling(0.5, 1, 1);
-            //shape.Transform = Transformation.Rotation_z(Math.PI / 4) * Transformation.Scaling(0.5, 1, 1);
-            //shape.Transform = Transformation.Shearing(1, 0, 0, 0, 0, 0) * Transformation.Scaling(0.5, 1, 1);
 
             double pixel_size = wall_size / canvas_pixels;
             double half = wall_size / 2;
@@ -43,7 +39,8 @@ namespace RayTracer.Tests.Smoke
                 }
             }
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/FirstSphereSmokeTest.ppm";
+
+            string filename = imagePath.ToString() + "BasicSphere.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

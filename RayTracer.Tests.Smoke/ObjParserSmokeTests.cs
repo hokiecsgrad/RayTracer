@@ -6,16 +6,16 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class ObjParserSmokeTests
+    public class ObjParserSmokeTests : TestBase
     {
         [Fact]
         public void RenderBasicScene()
         {
-            var objFile = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/models/utah_teapot_hires.obj";
-            //var objFile = "/Users/ryan.hagan/Documents/VSCode Proejects/RayTracer/RayTracer.Tests.Smoke/models/utah_teapot_hires.obj";
+            var objFile = modelPath.ToString() + "utah_teapot_hires.obj";
             FileStream instream = File.OpenRead(objFile);
             StreamReader reader = new StreamReader(instream);
             var objData = reader.ReadToEnd();
+
             var parser = new ObjParser(objData);
             parser.Parse();            
             var teapot = new Group();
@@ -43,7 +43,8 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/SmoothTeapot.ppm";
+
+            string filename = imagePath.ToString() + "SmoothTeapot.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

@@ -16,7 +16,7 @@ namespace RayTracer.Tests.Smoke
         public Vector Wind { get; set; }
     }
 
-    public class ProjectileTests
+    public class ProjectileTests : TestBase
     {
         public Projectile Tick(Projectile proj, Environment env)
         {
@@ -48,11 +48,13 @@ namespace RayTracer.Tests.Smoke
                                           Wind = new Vector(-0.01, 0, 0) };
             var canvas = new Canvas(900, 550);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/ProjectileSmokeTest.ppm";
+
+            string filename = imagePath.ToString() + "Projectile.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);
             StreamWriter writer = new StreamWriter(stream);
+
 
             while (cannonBall.Position.y > 0)
             {

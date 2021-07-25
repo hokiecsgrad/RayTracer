@@ -1,25 +1,17 @@
 using System;
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class BasicReflectionSmokeTests
+    public class BasicReflectionSmokeTests : TestBase
     {
         [Fact]
         public void RenderBasicScene()
         {
-            /*
-            Plane backWall = new Plane();
-            backWall.Transform = Transformation.Rotation_x(Math.PI / 2) * Transformation.Translation(0, 5, 0);
-            backWall.Material = new Material();
-            backWall.Material.Pattern = new Stripe(new Color(1, 0, 0), new Color(0, 1, 0));
-            backWall.Material.Color = new Color(1, 0, 0);
-            backWall.Material.Specular = 0;
-            */
-
             Plane floor = new Plane();
             floor.Material = new Material();
             floor.Material.Reflective = 0.75;
@@ -55,7 +47,8 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/BasicReflection.ppm";
+
+            string filename = imagePath.ToString() + "BasicReflection.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

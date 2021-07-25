@@ -6,7 +6,7 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class ShadowTests
+    public class ShadowTests : TestBase
     {
         [Fact]
         public void RenderBasicScene()
@@ -63,7 +63,8 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/ShadowSmokeTest.ppm";
+
+            string filename = imagePath.ToString() + "Shadow.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

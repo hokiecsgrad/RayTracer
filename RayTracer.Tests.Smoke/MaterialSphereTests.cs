@@ -6,7 +6,7 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class SphereMaterialTests
+    public class SphereMaterialTests : TestBase
     {
         [Fact]
         public void ProjectSphereWithMaterialAgainstWall()
@@ -58,7 +58,8 @@ namespace RayTracer.Tests.Smoke
                 }
             }
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/SphereWithMaterialSmokeTest.ppm";
+
+            string filename = imagePath.ToString() + "SphereWithMaterial.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

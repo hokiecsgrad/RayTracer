@@ -6,7 +6,7 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class BasicSceneWithPlanesTests
+    public class BasicSceneWithPlanesTests : TestBase
     {
         [Fact]
         public void RenderBasicScene()
@@ -49,7 +49,8 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/BasicSceneWithPlanes.ppm";
+
+            string filename = imagePath.ToString() + "BasicSceneWithPlanes.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

@@ -6,20 +6,11 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class PatternsWithShapesTests
+    public class PatternsWithShapesTests : TestBase
     {
         [Fact]
         public void RenderBasicScene()
         {
-            /*
-            Plane backWall = new Plane();
-            backWall.Transform = Transformation.Rotation_x(Math.PI / 2) * Transformation.Translation(0, 5, 0);
-            backWall.Material = new Material();
-            backWall.Material.Pattern = new Stripe(new Color(1, 0, 0), new Color(0, 1, 0));
-            backWall.Material.Color = new Color(1, 0, 0);
-            backWall.Material.Specular = 0;
-            */
-
             Plane floor = new Plane();
             floor.Material = new Material();
             floor.Material.Pattern = new Checkers(new Color(0.85, 0, 0), new Color(0.85, 0.85, 0.85));
@@ -54,7 +45,8 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/PatternsWithShapes.ppm";
+
+            string filename = imagePath.ToString() + "PatternsWithShapes.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);

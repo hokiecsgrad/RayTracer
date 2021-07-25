@@ -6,7 +6,7 @@ using Xunit;
 
 namespace RayTracer.Tests.Smoke
 {
-    public class CubesSmokeTests
+    public class CubesSmokeTests : TestBase
     {
         [Fact]
         public void RenderBasicScene()
@@ -190,7 +190,8 @@ namespace RayTracer.Tests.Smoke
 
             Canvas canvas = camera.Render(world);
 
-            var filename = "/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Tests.Smoke/Cubes.ppm";
+
+            string filename = imagePath.ToString() + "Cubes.ppm";
             if (File.Exists(filename))
                 File.Delete(filename);
             FileStream stream = File.OpenWrite(filename);
