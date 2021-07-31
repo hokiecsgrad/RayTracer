@@ -2,22 +2,31 @@
 using System.IO;
 using System.Diagnostics;
 using System.Text;
+using PowerArgs;
 using RayTracer;
 
 namespace RayTracer.Program
 {
-    class Program
+    [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
+    public class Program
     {
-        static void Main(string[] args)
+        [HelpHook]
+        [ArgShortcut("-?")]
+        [ArgDescription("Shows this help")]
+        public static bool help { get; set; }
+
+        public static void Main(string[] args)
         {
+            RayTracerArgs arguments = Args.Parse<RayTracerArgs>(args);
+
+            string output = GetOutputImagePath() + arguments.filename;
+            int width = arguments.width;
+            int height = arguments.height;
+            double fov = arguments.fov;
+
             World world;
             Camera camera;
             Canvas canvas;
-
-            string output = GetOutputImagePath();
-            int width = 800;
-            int height = 600;
-            double fov = 0.8;
 
             (world, camera) = SetupWorld(width, height, fov);
             canvas = Render(world, camera, new SteppedSampler(camera, 5));
@@ -25,7 +34,7 @@ namespace RayTracer.Program
             //canvas = Render( world, camera, new AntiAliasSampler( camera, 8 ) );
             //canvas = Render( world, camera, new FocalBlurSampler( camera, 1.0, 0.1, 8 ) );
 
-            SaveCanvas(canvas, output + "bumpmap.ppm");
+            SaveCanvas(canvas, output);
         }
 
         public static (World, Camera) SetupWorld(int width, int height, double fov)
