@@ -41,15 +41,15 @@ namespace RayTracer.Tests
         public void CalculatingNormalOnPointOfSphereOnNonAxialPoint_ShouldWork()
         {
             var sphere = new Sphere();
-            var normal = sphere.NormalAt(new Point(Math.Sqrt(3)/3, Math.Sqrt(3)/3, Math.Sqrt(3)/3));
-            Assert.Equal(new Vector(Math.Sqrt(3)/3, Math.Sqrt(3)/3, Math.Sqrt(3)/3), normal, VectorComparer);
+            var normal = sphere.NormalAt(new Point(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3));
+            Assert.Equal(new Vector(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3), normal, VectorComparer);
         }
 
         [Fact]
         public void Normals_ShouldBeNormalizedVectors()
         {
             var sphere = new Sphere();
-            var normal = sphere.NormalAt(new Point(Math.Sqrt(3)/3, Math.Sqrt(3)/3, Math.Sqrt(3)/3));
+            var normal = sphere.NormalAt(new Point(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3));
             Assert.Equal(normal, normal.Normalize(), VectorComparer);
         }
 
@@ -66,9 +66,9 @@ namespace RayTracer.Tests
         public void CalculatingNormalsOnTransformedSphere_ShouldWork()
         {
             var s = new Sphere();
-            var m = Transformation.Scaling(1, 0.5, 1) * Transformation.Rotation_z(Math.PI/5);
+            var m = Transformation.Scaling(1, 0.5, 1) * Transformation.Rotation_z(Math.PI / 5);
             s.Transform = m;
-            var n = s.NormalAt(new Point(0, Math.Sqrt(2)/2, -Math.Sqrt(2)/2));
+            var n = s.NormalAt(new Point(0, Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2));
             Assert.Equal(new Vector(0, 0.97014, -0.24254), n, VectorComparer);
         }
 
@@ -126,7 +126,7 @@ namespace RayTracer.Tests
             var p = new Plane();
             var r = new Ray(new Point(0, 1, 0), new Vector(0, -1, 0));
             var xs = p.Intersect(r);
-            Assert.Equal(1, xs.Count);
+            Assert.Single(xs);
             Assert.Equal(1, xs[0].Time);
             Assert.True(xs[0].Object == p);
         }
@@ -137,7 +137,7 @@ namespace RayTracer.Tests
             var p = new Plane();
             var r = new Ray(new Point(0, -1, 0), new Vector(0, 1, 0));
             var xs = p.Intersect(r);
-            Assert.Equal(1, xs.Count);
+            Assert.Single(xs);
             Assert.Equal(1, xs[0].Time);
             Assert.True(xs[0].Object == p);
         }
@@ -176,7 +176,7 @@ namespace RayTracer.Tests
             var c = new Cube();
             var r = new Ray(origin, direction);
             var xs = c.LocalIntersect(r);
-            Assert.Equal(0, xs.Count);
+            Assert.Empty(xs);
         }
 
         public static IEnumerable<object[]> GetMissingCubeData()
@@ -186,7 +186,7 @@ namespace RayTracer.Tests
                 new object[] { new Point(-2, 0, 0), new Vector(0.2673, 0.5345, 0.8018) },
                 new object[] { new Point(0, -2, 0), new Vector(0.8018, 0.2673, 0.5345) },
                 new object[] { new Point(0, 0, -2), new Vector(0.5345, 0.8018, 0.2673) },
-                new object[] { new Point(2, 0, 2), new Vector(0, 0, -1) }, 
+                new object[] { new Point(2, 0, 2), new Vector(0, 0, -1) },
                 new object[] { new Point(0, 2, 2), new Vector(0, -1, 0) },
                 new object[] { new Point(2, 2, 0), new Vector(-1, 0, 0) },
             };
@@ -228,7 +228,7 @@ namespace RayTracer.Tests
             var dir = direction.Normalize();
             var r = new Ray(origin, direction);
             var xs = cyl.LocalIntersect(r);
-            Assert.Equal(0, xs.Count);
+            Assert.Empty(xs);
         }
 
         public static IEnumerable<object[]> GetMissingCylinderData()
@@ -382,7 +382,7 @@ namespace RayTracer.Tests
                 new object[] { new Point(0, 1, 0.5), new Vector(0, -1, 0) },
                 new object[] { new Point(0, 2, 0), new Vector(0, 1, 0) },
                 new object[] { new Point(0.5, 2, 0), new Vector(0, 1, 0) },
-                new object[] { new Point(0, 2, 0.5), new Vector(0, 1, 0) },       
+                new object[] { new Point(0, 2, 0.5), new Vector(0, 1, 0) },
             };
 
             return allData;
@@ -420,7 +420,7 @@ namespace RayTracer.Tests
             var direction = new Vector(0, 1, 1).Normalize();
             var r = new Ray(new Point(0, 0, -1), direction);
             var xs = shape.LocalIntersect(r);
-            Assert.Equal(1, xs.Count);
+            Assert.Single(xs);
             Assert.Equal(0.35355, xs[0].Time, 5);
         }
 

@@ -10,22 +10,22 @@ namespace RayTracer.Tests
     {
         public Ray SavedRay = null;
 
-        public override List<Intersection> LocalIntersect(Ray r) 
-        { 
-            SavedRay = r; 
-            return new List<Intersection>(); 
+        public override List<Intersection> LocalIntersect(Ray r)
+        {
+            SavedRay = r;
+            return new List<Intersection>();
         }
 
-        public override Vector LocalNormalAt(Point local_point, Intersection hit = null) 
-        { 
-            return new Vector(0, 0, 0); 
+        public override Vector LocalNormalAt(Point local_point, Intersection hit = null)
+        {
+            return new Vector(0, 0, 0);
         }
 
         public override BoundingBox GetBounds()
         {
             return new BoundingBox(new Point(-1, -1, -1), new Point(1, 1, 1));
         }
-    
+
         public override void Divide(int threshold) { }
     }
 
@@ -133,14 +133,14 @@ namespace RayTracer.Tests
         public void ConvertingNormalFromObjectToWorldSpace_ShouldWork()
         {
             var g1 = new Group();
-            g1.Transform = Transformation.Rotation_y(Math.PI/2);
+            g1.Transform = Transformation.Rotation_y(Math.PI / 2);
             var g2 = new Group();
-            g2.Transform = Transformation.Scaling(1,2,3);
+            g2.Transform = Transformation.Scaling(1, 2, 3);
             g1.AddShape(g2);
             var s = new Sphere();
             s.Transform = Transformation.Translation(5, 0, 0);
             g2.AddShape(s);
-            var n = s.NormalToWorld(new Vector(Math.Sqrt(3)/3, Math.Sqrt(3)/3, Math.Sqrt(3)/3));
+            var n = s.NormalToWorld(new Vector(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3));
             Assert.Equal(new Vector(0.28571, 0.42857, -0.85714), n, VectorComparer);
             //Assert.StrictEqual(n, new Vector(0.28571, 0.42857, -0.85714));
         }
@@ -149,7 +149,7 @@ namespace RayTracer.Tests
         public void FindingNormalOnChildObject_ShouldWork()
         {
             var g1 = new Group();
-            g1.Transform = Transformation.Rotation_y(Math.PI/2);
+            g1.Transform = Transformation.Rotation_y(Math.PI / 2);
             var g2 = new Group();
             g2.Transform = Transformation.Scaling(1, 2, 3);
             g1.AddShape(g2);
@@ -235,9 +235,9 @@ namespace RayTracer.Tests
             var (left, right) = g.PartitionChildren();
             Assert.Equal(1, g.Count);
             Assert.Contains(s3, g.Shapes);
-            Assert.Equal(1, left.Count);
+            Assert.Single(left);
             Assert.Contains(s1, left);
-            Assert.Equal(1, right.Count);
+            Assert.Single(right);
             Assert.Contains(s2, right);
         }
 
@@ -247,7 +247,7 @@ namespace RayTracer.Tests
             var s1 = new Sphere();
             var s2 = new Sphere();
             var g = new Group();
-            g.MakeSubgroup(new List<Shape> {s1, s2});
+            g.MakeSubgroup(new List<Shape> { s1, s2 });
             var subgroup = (object)g[0] as Group;
             Assert.Equal(1, g.Count);
             Assert.Contains(s1, subgroup.Shapes);
@@ -259,7 +259,7 @@ namespace RayTracer.Tests
         {
             var shape = new Sphere();
             shape.Divide(1);
-            Assert.IsType(typeof(Sphere), shape);
+            Assert.True(shape is Sphere);
         }
 
         [Fact]
@@ -278,7 +278,7 @@ namespace RayTracer.Tests
             g.Divide(1);
             Assert.StrictEqual(s3, g[0]);
             var subgroup = (object)g[1] as Group;
-            Assert.IsType(typeof(Group), subgroup);
+            Assert.True(subgroup is Group);
             Assert.Equal(2, subgroup.Count);
             var subgroupS1 = (object)subgroup[0] as Group;
             Assert.Equal(1, subgroupS1.Count);

@@ -67,7 +67,7 @@ namespace RayTracer.Tests
             Ray ray = new Ray(new Point(0, 2, -5), new Vector(0, 0, 1));
             Sphere sphere = new Sphere();
             List<Intersection> xs = sphere.Intersect(ray);
-            Assert.Equal(0, xs.Count);
+            Assert.Empty(xs);
         }
 
         [Fact]
@@ -119,7 +119,7 @@ namespace RayTracer.Tests
             Sphere sphere = new Sphere();
             List<Intersection> xs = new List<Intersection> { new Intersection(-2, sphere), new Intersection(-1, sphere) };
             Intersection hit = ray.Hit(xs);
-            Assert.Equal(null, hit);
+            Assert.Null(hit);
         }
 
         [Fact]
@@ -187,7 +187,7 @@ namespace RayTracer.Tests
             Sphere s = new Sphere();
             s.Transform = Transformation.Translation(5, 0, 0);
             List<Intersection> xs = s.Intersect(ray);
-            Assert.Equal(0, xs.Count);
+            Assert.Empty(xs);
         }
     }
 }

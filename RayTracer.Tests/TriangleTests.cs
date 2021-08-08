@@ -74,7 +74,7 @@ namespace RayTracer.Tests
             var t = new Triangle(new Point(0, 1, 0), new Point(-1, 0, 0), new Point(1, 0, 0));
             var r = new Ray(new Point(0, 0.5, -2), new Vector(0, 0, 1));
             var xs = t.LocalIntersect(r);
-            Assert.Equal(1, xs.Count);
+            Assert.Single(xs);
             Assert.Equal(2, xs[0].Time, 4);
         }
     }

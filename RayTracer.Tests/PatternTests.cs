@@ -8,7 +8,7 @@ namespace RayTracer.Tests
 {
     public class TestPattern : Pattern
     {
-        public TestPattern() {}
+        public TestPattern() { }
 
         public override Color PatternAt(Point point)
         {
@@ -23,13 +23,13 @@ namespace RayTracer.Tests
         static readonly IEqualityComparer<Color> ColorComparer =
             Color.GetEqualityComparer(epsilon);
 
-        Color black;
-        Color white;
+        Color black = Color.Black;
+        Color white = Color.White;
 
         public PatternTests()
         {
-            Color black = new Color(0,0,0);
-            Color white = new Color(1,1,1);
+            Color black = new Color(0, 0, 0);
+            Color white = new Color(1, 1, 1);
         }
 
         [Fact]
@@ -104,8 +104,8 @@ namespace RayTracer.Tests
         [Fact]
         public void GradientPattern_ShouldLinearlyInterpolateBetweenColors()
         {
-            var pattern = new Gradient(new Color(1,1,1), new Color(0,0,0));
-            Assert.Equal(new Color(1,1,1), pattern.PatternAt(new Point(0, 0, 0)));
+            var pattern = new Gradient(new Color(1, 1, 1), new Color(0, 0, 0));
+            Assert.Equal(new Color(1, 1, 1), pattern.PatternAt(new Point(0, 0, 0)));
             Assert.Equal(new Color(0.75, 0.75, 0.75), pattern.PatternAt(new Point(0.25, 0, 0)));
             Assert.Equal(new Color(0.5, 0.5, 0.5), pattern.PatternAt(new Point(0.5, 0, 0)));
             Assert.Equal(new Color(0.25, 0.25, 0.25), pattern.PatternAt(new Point(0.75, 0, 0)));
@@ -128,7 +128,7 @@ namespace RayTracer.Tests
             var pattern = new Checkers(white, black);
             Assert.Equal(white, pattern.PatternAt(new Point(0, 0, 0)));
             Assert.Equal(white, pattern.PatternAt(new Point(0.99, 0, 0)));
-            Assert.Equal(white, pattern.PatternAt(new Point(1.01, 0, 0)));
+            Assert.Equal(black, pattern.PatternAt(new Point(1.01, 0, 0)));
         }
 
         [Fact]
@@ -137,7 +137,7 @@ namespace RayTracer.Tests
             var pattern = new Checkers(white, black);
             Assert.Equal(white, pattern.PatternAt(new Point(0, 0, 0)));
             Assert.Equal(white, pattern.PatternAt(new Point(0, 0.99, 0)));
-            Assert.Equal(white, pattern.PatternAt(new Point(0, 1.01, 0)));
+            Assert.Equal(black, pattern.PatternAt(new Point(0, 1.01, 0)));
         }
 
         [Fact]
@@ -146,7 +146,7 @@ namespace RayTracer.Tests
             var pattern = new Checkers(white, black);
             Assert.Equal(white, pattern.PatternAt(new Point(0, 0, 0)));
             Assert.Equal(white, pattern.PatternAt(new Point(0, 0, 0.99)));
-            Assert.Equal(white, pattern.PatternAt(new Point(0, 0, 1.01)));
+            Assert.Equal(black, pattern.PatternAt(new Point(0, 0, 1.01)));
         }
 
         [Theory]
@@ -516,7 +516,7 @@ namespace RayTracer.Tests
         [MemberData(nameof(GetCanvasImageData))]
         public void ReadingCheckerPatternFromPpmFile_ShouldReturnCanvas(double u, double v, Color expected)
         {
-            var file = 
+            var file =
 @"P3
 10 10
 10
@@ -537,7 +537,7 @@ namespace RayTracer.Tests
             var color = pattern.UvPatternAt(u, v);
             Assert.Equal(expected, color);
         }
- 
+
         public static IEnumerable<object[]> GetCanvasImageData()
         {
             var allData = new List<object[]>
