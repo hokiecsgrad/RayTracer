@@ -29,17 +29,17 @@ namespace RayTracer.Program
             Canvas canvas;
 
             (world, camera) = SetupWorld(width, height, fov);
-            canvas = Render(world, camera, new SteppedSampler(camera, 5));
+            //canvas = Render(world, camera, new SteppedSampler(camera, 5));
             //canvas = Render(world, camera, new DefaultSampler(camera));
-            //canvas = Render( world, camera, new AntiAliasSampler( camera, 8 ) );
-            //canvas = Render( world, camera, new FocalBlurSampler( camera, 1.0, 0.1, 8 ) );
+            canvas = Render(world, camera, new AntiAliasSampler(camera, 4));
+            //canvas = Render(world, camera, new FocalBlurSampler(camera, 1.0, 0.1, 8));
 
             SaveCanvas(canvas, output);
         }
 
         public static (World, Camera) SetupWorld(int width, int height, double fov)
         {
-            var scene = new BumpMapScene();
+            var scene = new ClearCubeScene();
             return scene.Setup(width, height, fov);
         }
 

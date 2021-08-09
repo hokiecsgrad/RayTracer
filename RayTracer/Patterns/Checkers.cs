@@ -19,7 +19,7 @@ namespace RayTracer
             var y = Math.Floor(point.y);
             var z = Math.Floor(point.z);
 
-            if ( (x + y + z) % 2 == 0 )
+            if ((x + y + z) % 2 == 0)
                 return this.a;
             else
                 return this.b;

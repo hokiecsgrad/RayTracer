@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics;
-using RayTracer;
 
 namespace RayTracer.Program
 {
