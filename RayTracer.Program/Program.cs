@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Text;
 using PowerArgs;
 using RayTracer;
+using RayTracer.Program.Scenes;
+using System.Runtime.Remoting;
 
 namespace RayTracer.Program
 {
@@ -23,23 +25,27 @@ namespace RayTracer.Program
             int width = arguments.width;
             int height = arguments.height;
             double fov = arguments.fov;
+            string sceneName = arguments.scene;
 
             World world;
             Camera camera;
             Canvas canvas;
 
-            (world, camera) = SetupWorld(width, height, fov);
+            (world, camera) = SetupWorld(width, height, fov, sceneName);
             //canvas = Render(world, camera, new SteppedSampler(camera, 5));
-            //canvas = Render(world, camera, new DefaultSampler(camera));
-            canvas = Render(world, camera, new AntiAliasSampler(camera, 4));
+            canvas = Render(world, camera, new DefaultSampler(camera));
+            //canvas = Render(world, camera, new AntiAliasSampler(camera, 4));
             //canvas = Render(world, camera, new FocalBlurSampler(camera, 1.0, 0.1, 8));
 
             SaveCanvas(canvas, output);
         }
 
-        public static (World, Camera) SetupWorld(int width, int height, double fov)
+        public static (World, Camera) SetupWorld(int width, int height, double fov, string sceneName)
         {
-            var scene = new ClearCubeScene();
+            ObjectHandle handle = Activator.CreateInstance(
+                    "RayTracer.Program",
+                    "RayTracer.Program.Scenes." + sceneName + "Scene");
+            IScene scene = (IScene)handle.Unwrap();
             return scene.Setup(width, height, fov);
         }
 

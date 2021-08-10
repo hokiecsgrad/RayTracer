@@ -4,9 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace RayTracer.Program
+namespace RayTracer.Program.Scenes
 {
-    class TeapotScene
+    class TeapotScene : IScene
     {
         public (World, Camera) Setup(int width, int height, double fov)
         {
@@ -14,13 +14,13 @@ namespace RayTracer.Program
             // the camera
             // ======================================================
 
-            var camera = new Camera(width, height, fov) 
+            var camera = new Camera(width, height, fov)
             {
                 Transform = Transformation.ViewTransform(
                                 new Point(0, 0.5, -2),    // view from
                                 new Point(0, 0, 0),      // view to
                                 new Vector(0, 1, 0)), // vector up
-                
+
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
 
@@ -46,7 +46,7 @@ namespace RayTracer.Program
             parser.Parse();
 
             var teapot = new Group();
-            teapot.Transform = Transformation.Rotation_x(-Math.PI/2);
+            teapot.Transform = Transformation.Rotation_x(-Math.PI / 2);
             var material = new Material()
             {
                 Color = new Color(0.9, 0.9, 1),
@@ -89,8 +89,8 @@ namespace RayTracer.Program
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> {floor, teapot, box};
-            world.Lights = new List<ILight> {light};
+            world.Shapes = new List<Shape> { floor, teapot, box };
+            world.Lights = new List<ILight> { light };
 
             return (world, camera);
         }

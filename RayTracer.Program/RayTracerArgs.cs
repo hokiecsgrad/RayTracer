@@ -16,6 +16,10 @@ namespace RayTracer.Program
         [ArgDescription("The field of view for the scene")]
         public double fov { get; set; }
 
+        [ArgDefaultValue("Cover")]
+        [ArgDescription("The name of the scene file to load")]
+        public string scene { get; set; }
+
         [ArgDefaultValue("output.ppm")]
         [ArgDescription("The filename of the output file")]
         public string filename { get; set; }

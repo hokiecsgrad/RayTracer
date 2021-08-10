@@ -4,9 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace RayTracer.Program
+namespace RayTracer.Program.Scenes
 {
-    class BumpMapScene
+    class BumpMapScene : IScene
     {
         public (World, Camera) Setup(int width, int height, double fov)
         {
@@ -14,13 +14,13 @@ namespace RayTracer.Program
             // the camera
             // ======================================================
 
-            var camera = new Camera(width, height, fov) 
+            var camera = new Camera(width, height, fov)
             {
                 Transform = Transformation.ViewTransform(
                                 new Point(1, 2, -5), // view from
                                 new Point(0, 2, 0),// view to
                                 new Vector(0, 1, 0)),   // vector up
-                
+
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
 
@@ -87,18 +87,18 @@ namespace RayTracer.Program
                 Specular = 0.0,
                 Diffuse = 0.8,
             };
-            
+
             var box = new Cube()
             {
-                Transform = 
+                Transform =
                     Transformation.Translation(0, 2, 0) *
                     Transformation.Rotation_y(1.9),
                 Material = mapCubeMaterial,
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> {floor, box};
-            world.Lights = new List<ILight> {light};
+            world.Shapes = new List<Shape> { floor, box };
+            world.Lights = new List<ILight> { light };
 
             return (world, camera);
         }

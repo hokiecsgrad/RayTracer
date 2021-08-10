@@ -3,22 +3,22 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace RayTracer.Program
+namespace RayTracer.Program.Scenes
 {
-    public class SphereInSphereScene
+    public class SphereInSphereScene : IScene
     {
         public (World, Camera) Setup(int width, int height, double fov)
         {
-            var camera = new Camera(width, height, fov) 
+            var camera = new Camera(width, height, fov)
             {
                 Transform = Transformation.ViewTransform(
                                 new Point(0, 2.5, 0),
                                 new Point(0, 0, 0),
                                 new Vector(-1, 0, 0)),
-                
+
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
- 
+
             var floor = new Plane()
             {
                 Transform = Transformation.Translation(0, -10, 0),
@@ -64,7 +64,7 @@ namespace RayTracer.Program
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> {floor, innerSphere, outerSphere};
+            world.Shapes = new List<Shape> { floor, innerSphere, outerSphere };
             world.Lights = new List<ILight> { new PointLight(new Point(20, 10, 0), new Color(0.7, 0.7, 0.7)) };
 
             return (world, camera);

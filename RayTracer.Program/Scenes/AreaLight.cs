@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace RayTracer.Program
+namespace RayTracer.Program.Scenes
 {
-    class AreaLightScene
+    class AreaLightScene : IScene
     {
         public (World, Camera) Setup(int width, int height, double fov)
         {
@@ -13,13 +13,13 @@ namespace RayTracer.Program
             // the camera
             // ======================================================
 
-            var camera = new Camera(width, height, fov) 
+            var camera = new Camera(width, height, fov)
             {
                 Transform = Transformation.ViewTransform(
                                 new Point(-3, 1, 2.5), // view from
                                 new Point(0, 0.5, 0),// view to
                                 new Vector(0, 1, 0)),   // vector up
-                
+
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
 
@@ -49,7 +49,7 @@ namespace RayTracer.Program
                     Transparency = 1.0,
                     RefractiveIndex = 1.0,
                 },
-                Transform = 
+                Transform =
                     Transformation.Translation(0, 3, 4) *
                     Transformation.Scaling(1, 1, 0.01),
                 HitBy = RayType.Primary | RayType.Reflection | RayType.Refraction,
@@ -68,7 +68,7 @@ namespace RayTracer.Program
 
             var sphere = new Sphere()
             {
-                Transform = 
+                Transform =
                     Transformation.Translation(0.5, 0.5, 0) *
                     Transformation.Scaling(0.5, 0.5, 0.5),
                 Material = new Material()
@@ -97,8 +97,8 @@ namespace RayTracer.Program
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> {cube, plane, sphere, sphere2};
-            world.Lights = new List<ILight> {light};
+            world.Shapes = new List<Shape> { cube, plane, sphere, sphere2 };
+            world.Lights = new List<ILight> { light };
 
             return (world, camera);
         }

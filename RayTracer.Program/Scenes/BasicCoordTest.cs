@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace RayTracer.Program
+namespace RayTracer.Program.Scenes
 {
-    class BasicCoordTestScene
+    class BasicCoordTestScene : IScene
     {
         public (World, Camera) Setup(int width, int height, double fov)
         {
@@ -13,13 +13,13 @@ namespace RayTracer.Program
             // the camera
             // ======================================================
 
-            var camera = new Camera(width, height, fov) 
+            var camera = new Camera(width, height, fov)
             {
                 Transform = Transformation.ViewTransform(
                                 new Point(0, 0, -20), // view from
                                 new Point(0, 0, 0),// view to
                                 new Vector(0, 1, 0)),   // vector up
-                
+
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
 
@@ -136,8 +136,8 @@ namespace RayTracer.Program
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> {mappedCube1, mappedCube2, mappedCube3, mappedCube4, mappedCube5, mappedCube6, mappedCube7, mappedCube8};
-            world.Lights = new List<ILight> {light, light2, light3, light4};
+            world.Shapes = new List<Shape> { mappedCube1, mappedCube2, mappedCube3, mappedCube4, mappedCube5, mappedCube6, mappedCube7, mappedCube8 };
+            world.Lights = new List<ILight> { light, light2, light3, light4 };
 
             return (world, camera);
         }

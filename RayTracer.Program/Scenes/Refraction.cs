@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace RayTracer.Program
+namespace RayTracer.Program.Scenes
 {
-    class RefractionScene
+    class RefractionScene : IScene
     {
         public (World, Camera) Setup(int width, int height, double fov)
         {
@@ -13,13 +13,13 @@ namespace RayTracer.Program
             // the camera
             // ======================================================
 
-            var camera = new Camera(width, height, fov) 
+            var camera = new Camera(width, height, fov)
             {
                 Transform = Transformation.ViewTransform(
                                 new Point(-2.6, 1.5, -3.9), // view from
                                 new Point(-0.6, 1, -0.8),// view to
                                 new Vector(0, 1, 0)),   // vector up
-                
+
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
 
@@ -35,12 +35,12 @@ namespace RayTracer.Program
             var wallMaterial = new Material()
             {
                 Pattern = new Stripe(
-                            new Color(0.45, 0.45, 0.45), 
+                            new Color(0.45, 0.45, 0.45),
                             new Color(0.55, 0.55, 0.55))
-                    {
-                        Transform = Transformation.Rotation_y(Math.PI/2) * 
+                {
+                    Transform = Transformation.Rotation_y(Math.PI / 2) *
                                     Transformation.Scaling(0.25, 0.25, 0.25),
-                    },
+                },
                 Ambient = 0,
                 Diffuse = 0.4,
                 Specular = 0,
@@ -76,8 +76,8 @@ namespace RayTracer.Program
             // west wall
             var westWall = new Plane()
             {
-                Transform = Transformation.Translation(-5, 0, 0) * 
-                            Transformation.Rotation_z(1.5708) * 
+                Transform = Transformation.Translation(-5, 0, 0) *
+                            Transformation.Rotation_z(1.5708) *
                             Transformation.Rotation_y(1.5708),
                 Material = wallMaterial,
             };
@@ -85,8 +85,8 @@ namespace RayTracer.Program
             // east wall
             var eastWall = new Plane()
             {
-                Transform = Transformation.Translation(5, 0, 0) * 
-                            Transformation.Rotation_z(1.5708) * 
+                Transform = Transformation.Translation(5, 0, 0) *
+                            Transformation.Rotation_z(1.5708) *
                             Transformation.Rotation_y(1.5708),
                 Material = wallMaterial,
             };
@@ -94,7 +94,7 @@ namespace RayTracer.Program
             // north wall
             var northWall = new Plane()
             {
-                Transform = Transformation.Translation(0, 0, 5) * 
+                Transform = Transformation.Translation(0, 0, 5) *
                             Transformation.Rotation_x(1.5708),
                 Material = wallMaterial,
             };
@@ -102,7 +102,7 @@ namespace RayTracer.Program
             // south wall
             var southWall = new Plane()
             {
-                Transform = Transformation.Translation(0, 0, -5) * 
+                Transform = Transformation.Translation(0, 0, -5) *
                             Transformation.Rotation_x(1.5708),
                 Material = wallMaterial,
             };
@@ -114,7 +114,7 @@ namespace RayTracer.Program
             var bgGroup1 = new Group();
             var bg1 = new Sphere()
             {
-                Transform = Transformation.Translation(4.6, 0.4, 1) * 
+                Transform = Transformation.Translation(4.6, 0.4, 1) *
                             Transformation.Scaling(0.4, 0.4, 0.4),
                 Material = new Material()
                 {
@@ -126,7 +126,7 @@ namespace RayTracer.Program
 
             var bg2 = new Sphere()
             {
-                Transform = Transformation.Translation(4.7, 0.3, 0.4) * 
+                Transform = Transformation.Translation(4.7, 0.3, 0.4) *
                             Transformation.Scaling(0.3, 0.3, 0.3),
                 Material = new Material()
                 {
@@ -157,7 +157,7 @@ namespace RayTracer.Program
             var bgGroup2 = new Group();
             var bg3 = new Sphere()
             {
-                Transform = Transformation.Translation(-1, 0.5, 4.5) * 
+                Transform = Transformation.Translation(-1, 0.5, 4.5) *
                             Transformation.Scaling(0.5, 0.5, 0.5),
                 Material = new Material()
                 {
@@ -169,7 +169,7 @@ namespace RayTracer.Program
 
             var bg4 = new Sphere()
             {
-                Transform = Transformation.Translation(-1.7, 0.3, 4.7) * 
+                Transform = Transformation.Translation(-1.7, 0.3, 4.7) *
                             Transformation.Scaling(0.3, 0.3, 0.3),
                 Material = new Material()
                 {
@@ -204,7 +204,7 @@ namespace RayTracer.Program
             // blue glass sphere
             var blueGlassSphere = new Sphere()
             {
-                Transform = Transformation.Translation(0.6, 0.7, -0.6) * 
+                Transform = Transformation.Translation(0.6, 0.7, -0.6) *
                             Transformation.Scaling(0.7, 0.7, 0.7),
                 Material = new Material()
                 {
@@ -244,10 +244,10 @@ namespace RayTracer.Program
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> {floor, ceiling, westWall, eastWall, northWall, southWall, bgGroup1, boxGroup1, bgGroup2, boxGroup2, fgGroup, boxFgGroup};
-            world.Lights = new List<ILight> {light};
+            world.Shapes = new List<Shape> { floor, ceiling, westWall, eastWall, northWall, southWall, bgGroup1, boxGroup1, bgGroup2, boxGroup2, fgGroup, boxFgGroup };
+            world.Lights = new List<ILight> { light };
 
             return (world, camera);
-       }
+        }
     }
 }

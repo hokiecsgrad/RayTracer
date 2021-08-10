@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace RayTracer.Program
+namespace RayTracer.Program.Scenes
 {
-    class CoverScene
+    class CoverScene : IScene
     {
         public (World, Camera) Setup(int width, int height, double fov)
         {
@@ -13,13 +13,13 @@ namespace RayTracer.Program
             // the camera
             // ======================================================
 
-            var camera = new Camera(width, height, fov) 
+            var camera = new Camera(width, height, fov)
             {
                 Transform = Transformation.ViewTransform(
                                 new Point(-10, 10, -15),    // view from
                                 new Point(6, 0, 6),      // view to
                                 new Vector(-0.45, 1, 0)), // vector up
-                
+
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
 
@@ -77,19 +77,19 @@ namespace RayTracer.Program
                 Reflective = 0.1,
             };
 
-            var standard_transform = 
+            var standard_transform =
                 Transformation.Scaling(0.5, 0.5, 0.5) *
                 Transformation.Translation(1, -1, 1);
 
-            var large_object = 
+            var large_object =
                 Transformation.Scaling(3.5, 3.5, 3.5) *
                 Transformation.Translation(1, -1, 1);
 
-            var medium_object = 
+            var medium_object =
                 Transformation.Scaling(3, 3, 3) *
                 Transformation.Translation(1, -1, 1);
 
-            var small_object = 
+            var small_object =
                 Transformation.Scaling(2, 2, 2) *
                 Transformation.Translation(1, -1, 1);
 
@@ -105,8 +105,8 @@ namespace RayTracer.Program
                     Diffuse = 0.0,
                     Specular = 0.0,
                 },
-                Transform = 
-                    Transformation.Translation(0, 0, 500) * 
+                Transform =
+                    Transformation.Translation(0, 0, 500) *
                     Transformation.Rotation_x(1.5707963267948966),
             };
 
@@ -126,7 +126,7 @@ namespace RayTracer.Program
                     Transparency = 0.7,
                     RefractiveIndex = 1.5
                 },
-                Transform = 
+                Transform =
                     Transformation.Translation(0, 0, 0) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
@@ -134,7 +134,7 @@ namespace RayTracer.Program
             var obj2 = new Cube()
             {
                 Material = white_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(8, 0, 0) *
                     Transformation.Scaling(3, 3, 3),
             };
@@ -142,7 +142,7 @@ namespace RayTracer.Program
             var obj3 = new Cube()
             {
                 Material = red_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(0, 0, 8) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
@@ -150,7 +150,7 @@ namespace RayTracer.Program
             var obj4 = new Cube()
             {
                 Material = blue_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(16, 1.5, -0.5) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
@@ -158,7 +158,7 @@ namespace RayTracer.Program
             var obj5 = new Cube()
             {
                 Material = white_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(8, 0, 8) *
                     Transformation.Scaling(2, 2, 2),
             };
@@ -166,7 +166,7 @@ namespace RayTracer.Program
             var obj6 = new Cube()
             {
                 Material = purple_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(16, 0, 8) *
                     Transformation.Scaling(3, 3, 3),
             };
@@ -174,7 +174,7 @@ namespace RayTracer.Program
             var obj7 = new Cube()
             {
                 Material = white_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(-0.25, 0.25, 16) *
                     Transformation.Scaling(3, 3, 3),
             };
@@ -182,7 +182,7 @@ namespace RayTracer.Program
             var obj8 = new Cube()
             {
                 Material = blue_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(8, 2, 16) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
@@ -190,7 +190,7 @@ namespace RayTracer.Program
             var obj9 = new Cube()
             {
                 Material = red_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(18, 4, 16) *
                     Transformation.Scaling(3, 3, 3),
             };
@@ -198,7 +198,7 @@ namespace RayTracer.Program
             var obj10 = new Cube()
             {
                 Material = white_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(16, 4, 30) *
                     Transformation.Scaling(2, 2, 2),
             };
@@ -206,7 +206,7 @@ namespace RayTracer.Program
             var obj11 = new Cube()
             {
                 Material = white_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(40, 3, 18) *
                     Transformation.Scaling(2, 2, 2),
             };
@@ -214,7 +214,7 @@ namespace RayTracer.Program
             var obj12 = new Cube()
             {
                 Material = blue_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(-0.5, -9, 0.25) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
@@ -222,7 +222,7 @@ namespace RayTracer.Program
             var obj13 = new Cube()
             {
                 Material = red_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(8, -8, 0) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
@@ -238,7 +238,7 @@ namespace RayTracer.Program
             var obj15 = new Cube()
             {
                 Material = white_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(0, -8, 8) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
@@ -246,7 +246,7 @@ namespace RayTracer.Program
             var obj16 = new Cube()
             {
                 Material = purple_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(-0.5, -8.5, 16) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
@@ -254,7 +254,7 @@ namespace RayTracer.Program
             var obj17 = new Cube()
             {
                 Material = white_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(0, -16, 8) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
@@ -262,14 +262,14 @@ namespace RayTracer.Program
             var obj18 = new Cube()
             {
                 Material = white_material,
-                Transform = 
+                Transform =
                     Transformation.Translation(-1, -17, 16) *
                     Transformation.Scaling(3.5, 3.5, 3.5),
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> {backdrop, obj1, obj2, obj3, obj4, obj5, obj6, obj7, obj8, obj9, obj10, obj11, obj12, obj13, obj14, obj15, obj16, obj17, obj18 };
-            world.Lights = new List<ILight> {light};
+            world.Shapes = new List<Shape> { backdrop, obj1, obj2, obj3, obj4, obj5, obj6, obj7, obj8, obj9, obj10, obj11, obj12, obj13, obj14, obj15, obj16, obj17, obj18 };
+            world.Lights = new List<ILight> { light };
 
             return (world, camera);
         }

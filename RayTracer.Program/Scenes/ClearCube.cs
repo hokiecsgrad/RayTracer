@@ -3,9 +3,9 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace RayTracer.Program
+namespace RayTracer.Program.Scenes
 {
-    public class ClearCubeScene
+    public class ClearCubeScene : IScene
     {
         public (World, Camera) Setup(int width, int height, double fov)
         {

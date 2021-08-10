@@ -4,9 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace RayTracer.Program
+namespace RayTracer.Program.Scenes
 {
-    class TextureMapScene
+    class TextureMapScene : IScene
     {
         public (World, Camera) Setup(int width, int height, double fov)
         {
@@ -14,13 +14,13 @@ namespace RayTracer.Program
             // the camera
             // ======================================================
 
-            var camera = new Camera(width, height, fov) 
+            var camera = new Camera(width, height, fov)
             {
                 Transform = Transformation.ViewTransform(
                                 new Point(1, 2, -7), // view from
                                 new Point(0, 1, 0),// view to
                                 new Vector(0, 1, 0)),   // vector up
-                
+
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
 
@@ -80,8 +80,8 @@ namespace RayTracer.Program
             var earthBumpMap = PpmReader.ReadCanvasFromPpm(reader);
             var earth = new Sphere()
             {
-                Transform = 
-                    Transformation.Translation(0, 1.1, 0) * 
+                Transform =
+                    Transformation.Translation(0, 1.1, 0) *
                     Transformation.Rotation_y(1.9),
                 Material = new Material()
                 {
@@ -110,8 +110,8 @@ namespace RayTracer.Program
             var cloudTexture = PpmReader.ReadCanvasFromPpm(reader);
             var clouds = new Sphere()
             {
-                Transform = 
-                    Transformation.Translation(0, 1.1, 0) * 
+                Transform =
+                    Transformation.Translation(0, 1.1, 0) *
                     Transformation.Scaling(1.1, 1.1, 1.1),
                 Material = new Material()
                 {
@@ -130,8 +130,8 @@ namespace RayTracer.Program
 
 
             World world = new World();
-            world.Shapes = new List<Shape> {floor, pedestal, earth};
-            world.Lights = new List<ILight> {light};
+            world.Shapes = new List<Shape> { floor, pedestal, earth };
+            world.Lights = new List<ILight> { light };
 
             return (world, camera);
         }
