@@ -4,11 +4,11 @@ namespace RayTracer.Program
 {
     public class RayTracerArgs
     {
-        [ArgDefaultValue(800)]
+        [ArgDefaultValue(400)]
         [ArgDescription("The width of the output image")]
         public int width { get; set; }
 
-        [ArgDefaultValue(600)]
+        [ArgDefaultValue(300)]
         [ArgDescription("The height of the output image")]
         public int height { get; set; }
 
