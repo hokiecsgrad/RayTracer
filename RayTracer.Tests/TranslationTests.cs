@@ -18,6 +18,14 @@ namespace RayTracer.Tests
             Matrix.GetEqualityComparer(epsilon);
 
         [Fact]
+        public void MultiplyingByTranslationMatrixFromZero_ShouldWork()
+        {
+            var transform = Transformation.Translation(5, -3, 2);
+            var point = new Point(0, 0, 0);
+            Assert.Equal(new Point(5, -3, 2), (transform * point), PointComparer);
+        }
+
+        [Fact]
         public void MultiplyingByTranslationMatrix_ShouldWork()
         {
             var transform = Transformation.Translation(5, -3, 2);
@@ -81,7 +89,7 @@ namespace RayTracer.Tests
             var point = new Point(0, 1, 0);
             var halfQuarter = Transformation.Rotation_x(Math.PI / 4);
             var fullQuarter = Transformation.Rotation_x(Math.PI / 2);
-            Assert.Equal(new Point(0, Math.Sqrt(2)/2.0, Math.Sqrt(2)/2.0), (halfQuarter * point), PointComparer);
+            Assert.Equal(new Point(0, Math.Sqrt(2) / 2.0, Math.Sqrt(2) / 2.0), (halfQuarter * point), PointComparer);
             Assert.Equal(new Point(0, 0, 1), (fullQuarter * point), PointComparer);
         }
 
@@ -91,7 +99,7 @@ namespace RayTracer.Tests
             var point = new Point(0, 1, 0);
             var halfQuarter = Transformation.Rotation_x(Math.PI / 4);
             var inverse = halfQuarter.Inverse();
-            Assert.Equal(new Point(0, Math.Sqrt(2)/2.0, -Math.Sqrt(2)/2.0), (inverse * point), PointComparer);
+            Assert.Equal(new Point(0, Math.Sqrt(2) / 2.0, -Math.Sqrt(2) / 2.0), (inverse * point), PointComparer);
         }
 
         [Fact]
@@ -100,7 +108,7 @@ namespace RayTracer.Tests
             var point = new Point(0, 0, 1);
             var halfQuarter = Transformation.Rotation_y(Math.PI / 4);
             var fullQuarter = Transformation.Rotation_y(Math.PI / 2);
-            Assert.Equal(new Point(Math.Sqrt(2)/2.0, 0, Math.Sqrt(2)/2.0), (halfQuarter * point), PointComparer);
+            Assert.Equal(new Point(Math.Sqrt(2) / 2.0, 0, Math.Sqrt(2) / 2.0), (halfQuarter * point), PointComparer);
             Assert.Equal(new Point(1, 0, 0), (fullQuarter * point), PointComparer);
         }
 
@@ -110,7 +118,7 @@ namespace RayTracer.Tests
             var point = new Point(0, 1, 0);
             var halfQuarter = Transformation.Rotation_z(Math.PI / 4);
             var fullQuarter = Transformation.Rotation_z(Math.PI / 2);
-            Assert.Equal(new Point(-Math.Sqrt(2)/2.0, Math.Sqrt(2)/2.0, 0), (halfQuarter * point), PointComparer);
+            Assert.Equal(new Point(-Math.Sqrt(2) / 2.0, Math.Sqrt(2) / 2.0, 0), (halfQuarter * point), PointComparer);
             Assert.Equal(new Point(-1, 0, 0), (fullQuarter * point), PointComparer);
         }
 
@@ -136,7 +144,7 @@ namespace RayTracer.Tests
             var transform = Transformation.Shearing(0, 0, 1, 0, 0, 0);
             var point = new Point(2, 3, 4);
             Assert.Equal(new Point(2, 5, 4), (transform * point), PointComparer);
-        }        
+        }
 
         [Fact]
         public void ShearingTransformationOfY_ShouldMoveZProportionately()
@@ -144,7 +152,7 @@ namespace RayTracer.Tests
             var transform = Transformation.Shearing(0, 0, 0, 1, 0, 0);
             var point = new Point(2, 3, 4);
             Assert.Equal(new Point(2, 7, 4), (transform * point), PointComparer);
-        }        
+        }
 
         [Fact]
         public void ShearingTransformationOfZ_ShouldMoveXProportionately()
@@ -152,7 +160,7 @@ namespace RayTracer.Tests
             var transform = Transformation.Shearing(0, 0, 0, 0, 1, 0);
             var point = new Point(2, 3, 4);
             Assert.Equal(new Point(2, 3, 6), (transform * point), PointComparer);
-        }        
+        }
 
         [Fact]
         public void ShearingTransformationOfZ_ShouldMoveYProportionately()
@@ -215,7 +223,7 @@ namespace RayTracer.Tests
         public void ViewTransfomration_ShouldMoveWorldAndNotEye()
         {
             var from = new Point(0, 0, 8);
-            var to = new  Point(0, 0, 0);
+            var to = new Point(0, 0, 0);
             var up = new Vector(0, 1, 0);
             var t = Transformation.ViewTransform(from, to, up);
             Assert.Equal(Transformation.Translation(0, 0, -8), t, MatrixComparer);
@@ -228,7 +236,7 @@ namespace RayTracer.Tests
             var to = new Point(4, -2, 8);
             var up = new Vector(1, 1, 0);
             var t = Transformation.ViewTransform(from, to, up);
-            var expected = new Matrix(new double[,] { 
+            var expected = new Matrix(new double[,] {
                 {-0.50709, 0.50709, 0.67612, -2.36643},
                 {0.76772, 0.60609, 0.12122, -2.82843},
                 {-0.35857, 0.59761, -0.71714, 0.00000},
