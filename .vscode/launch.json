@@ -9,9 +9,9 @@
            "type": "coreclr",
            "request": "launch",
            "preLaunchTask": "build",
-           "program": "${workspaceFolder}/RayTracer.Program/bin/Debug/net5.0/RayTracer.Program.dll",
-           "args": ["-fov", "1.152", "-scene","TwoSpheres"],
-           "cwd": "${workspaceFolder}/RayTracer.Program",
+           "program": "${workspaceFolder}/RayTracer.Cli/bin/Debug/net5.0/RayTracer.Cli.dll",
+           "args": ["-fov", "1.152", "-scene","ThreeSpheres"],
+           "cwd": "${workspaceFolder}/RayTracer.Cli",
            "stopAtEntry": false,
            "console": "internalConsole"
        },
