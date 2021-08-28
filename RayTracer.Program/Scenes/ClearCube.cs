@@ -12,9 +12,10 @@ namespace RayTracer.Program.Scenes
             var camera = new Camera(width, height, fov)
             {
                 Transform = Transformation.ViewTransform(
-                                new Point(-5, 1.6, -5), // view from
-                                new Point(0, 1.6, 0),// view to
-                                new Vector(0, 1, 0)),   // vector up
+                                //new Point(-8.75, 10, -8.75), // view from
+                                new Point(-8.75, 1.75, -8.75), // view from
+                                new Point(0, 1.75, 0), // view to
+                                new Vector(0, 1, 0)),  // vector up
 
                 ProgressMonitor = new ParallelConsoleProgressMonitor(height),
             };
@@ -77,9 +78,9 @@ namespace RayTracer.Program.Scenes
                 },
             };
 
-            var cube = new Cube()
+            var cube1 = new Cube()
             {
-                Transform = Transformation.Translation(0, 1.1, 0),
+                Transform = Transformation.Translation(-4, 1.1, -4) * Transformation.Scaling(0.5, 2, 0.5),
                 Material = new Material()
                 {
                     Ambient = 0.03,
@@ -87,16 +88,67 @@ namespace RayTracer.Program.Scenes
                     Specular = 0.9,
                     Shininess = 300,
                     Reflective = 1,
-                    Transparency = 0.75,
-                    RefractiveIndex = 1.2,
-                    Color = new Color(1, 0, 0),
+                    Transparency = 0.9,
+                    RefractiveIndex = 1.52,
+                    Color = new Color(0, 0, 0),
+                },
+                HitBy = RayType.NoShadows,
+            };
+
+            var cube2 = new Cube()
+            {
+                Transform = Transformation.Translation(-4, 1.1, -2.75) * Transformation.Scaling(0.5, 2, 0.5),
+                Material = new Material()
+                {
+                    Ambient = 0.03,
+                    Diffuse = 0.1,
+                    Specular = 0.9,
+                    Shininess = 300,
+                    Reflective = 1,
+                    Transparency = 0.9,
+                    RefractiveIndex = 1.52,
+                    Color = new Color(0, 0, 0),
+                },
+                HitBy = RayType.NoShadows,
+            };
+
+            var cube3 = new Cube()
+            {
+                Transform = Transformation.Translation(-2.75, 1.1, -3.9) * Transformation.Scaling(0.5, 2, 0.5),
+                Material = new Material()
+                {
+                    Ambient = 0.03,
+                    Diffuse = 0.1,
+                    Specular = 0.9,
+                    Shininess = 300,
+                    Reflective = 1,
+                    Transparency = 0.9,
+                    RefractiveIndex = 1.52,
+                    Color = new Color(0, 0, 0),
+                },
+                HitBy = RayType.NoShadows,
+            };
+
+            var cube4 = new Cube()
+            {
+                Transform = Transformation.Translation(-2.75, 1.1, -2.75) * Transformation.Scaling(0.5, 2, 0.5),
+                Material = new Material()
+                {
+                    Ambient = 0.03,
+                    Diffuse = 0.1,
+                    Specular = 0.9,
+                    Shininess = 300,
+                    Reflective = 1,
+                    Transparency = 0.9,
+                    RefractiveIndex = 1.52,
+                    Color = new Color(0, 0, 0),
                 },
                 HitBy = RayType.NoShadows,
             };
 
             var sphere = new Sphere()
             {
-                Transform = Transformation.Translation(2, 1.1, 0) * Transformation.Scaling(0.8, 0.8, 0.8),
+                Transform = Transformation.Translation(3, 1.5, -3) * Transformation.Scaling(1.25, 1.25, 1.25),
                 Material = new Material()
                 {
                     Ambient = 0.03,
@@ -104,15 +156,32 @@ namespace RayTracer.Program.Scenes
                     Specular = 0.9,
                     Shininess = 300,
                     Reflective = 1,
-                    Transparency = 0.75,
-                    RefractiveIndex = 1.2,
-                    Color = new Color(0, 0, 1),
+                    Transparency = 0.9,
+                    RefractiveIndex = 1.52,
+                    Color = new Color(0, 0, 0),
+                },
+                HitBy = RayType.NoShadows,
+            };
+
+            var sphere2 = new Sphere()
+            {
+                Transform = Transformation.Translation(0, 1.5, -3) * Transformation.Scaling(1.25, 1.25, 1.25),
+                Material = new Material()
+                {
+                    Ambient = 0.03,
+                    Diffuse = 0.1,
+                    Specular = 0.9,
+                    Shininess = 300,
+                    Reflective = 1,
+                    Transparency = 0.9,
+                    RefractiveIndex = 1.52,
+                    Color = new Color(0, 0, 0),
                 },
                 HitBy = RayType.NoShadows,
             };
 
             World world = new World();
-            world.Shapes = new List<Shape> { floor, cube, westWall, eastWall, northWall, sphere };
+            world.Shapes = new List<Shape> { floor, eastWall, northWall, cube1, cube2, cube3, cube4, sphere, sphere2 };
             world.Lights = new List<ILight> { new PointLight(new Point(-3, 4, 3), new Color(0.7, 0.7, 0.7)) };
 
             return (world, camera);
