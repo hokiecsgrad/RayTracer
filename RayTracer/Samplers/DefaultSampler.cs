@@ -34,23 +34,10 @@ namespace RayTracer
         public override Color Sample(int x, int y, World world)
         {
             Color color = Color.Black;
-            int numSamples = 1;
-            int n = (int)Math.Sqrt((double)numSamples);
 
-            for (int p = 0; p < n; p++)
-                for (int q = 0; q < n; q++)
-                {
-                    double currX = this.Camera.PixelSize * (x - 0.5 * this.Camera.HSize + (q + 0.5) / n);
-                    double currY = this.Camera.PixelSize * (y - 0.5 * this.Camera.VSize + (p + 0.5) / n);
-                    Point pixel = this.Camera.TransformInverse * new Point(-currX, -currY, -1);
-                    Point origin = this.Camera.TransformInverse * new Point(0, 0, 0);
-                    Vector direction = (pixel - origin).Normalize();
-                    var ray = new Ray(origin, direction, RayType.Primary);
-                    Interlocked.Increment(ref Stats.PrimaryRays);
-                    color += world.ColorAt(ray);
-                }
-
-            color /= numSamples;
+            var ray = this.RayForPixel(x, y);
+            Interlocked.Increment(ref Stats.PrimaryRays);
+            color += world.ColorAt(ray);
 
             return color;
         }
