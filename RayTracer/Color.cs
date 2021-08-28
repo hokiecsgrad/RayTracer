@@ -56,6 +56,15 @@ namespace RayTracer
 
         public static Color operator /(double divisor, Color a) => a / divisor;
 
+        public static bool operator <(Color a, Color b) =>
+            a.Red < b.Red && 
+            a.Green < b.Green && 
+            a.Blue < b.Blue;
+
+        public static bool operator >(Color a, Color b) =>
+            a.Red > b.Red && 
+            a.Green > b.Green && 
+            a.Blue > b.Blue;
 
         public static IEqualityComparer<Color> GetEqualityComparer(double epsilon = 0.0) =>
             new ApproxColorEqualityComparer(epsilon);

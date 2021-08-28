@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace RayTracer
 {
     public class DefaultSampler : ISampler
     {
-        public DefaultSampler(Camera camera) : 
-            base(camera) {}
+        public DefaultSampler(Camera camera) :
+            base(camera)
+        { }
 
         public Ray RayForPixel(double px, double py)
         {
@@ -32,9 +34,11 @@ namespace RayTracer
         public override Color Sample(int x, int y, World world)
         {
             Color color = Color.Black;
-            Interlocked.Increment(ref Stats.PrimaryRays);
+
             var ray = this.RayForPixel(x, y);
+            Interlocked.Increment(ref Stats.PrimaryRays);
             color += world.ColorAt(ray);
+
             return color;
         }
     }

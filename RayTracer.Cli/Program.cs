@@ -12,6 +12,8 @@ namespace RayTracer.Cli
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
     public class Program
     {
+        private static RayTracerArgs arguments;
+
         [HelpHook]
         [ArgShortcut("-?")]
         [ArgDescription("Shows this help")]
@@ -19,12 +21,13 @@ namespace RayTracer.Cli
 
         public static void Main(string[] args)
         {
-            RayTracerArgs arguments = Args.Parse<RayTracerArgs>(args);
+            arguments = Args.Parse<RayTracerArgs>(args);
 
             string output = GetOutputImagePath() + arguments.filename;
             int width = arguments.width;
             int height = arguments.height;
             double fov = arguments.fov;
+            int numSamples = arguments.n;
             string sceneName = arguments.scene;
 
             World world;
@@ -33,7 +36,8 @@ namespace RayTracer.Cli
 
             (world, camera) = SetupWorld(width, height, fov, sceneName);
             //canvas = Render(world, camera, new SteppedSampler(camera, 5));
-            canvas = Render(world, camera, new DefaultSampler(camera));
+            //canvas = Render(world, camera, new DefaultSampler(camera));
+            canvas = Render(world, camera, new SuperSampler(camera, numSamples));
             //canvas = Render(world, camera, new AntiAliasSampler(camera, 4));
             //canvas = Render(world, camera, new FocalBlurSampler(camera, 1.0, 0.1, 8));
 
@@ -59,11 +63,12 @@ namespace RayTracer.Cli
             var pixels = canvas.Width * canvas.Height;
             Console.WriteLine($"{sw.Elapsed}");
             Console.WriteLine($"{(double)pixels / sw.ElapsedMilliseconds}px/ms");
+            Console.WriteLine($"Canvas size:        {canvas.Width}x{canvas.Height}");
             Console.WriteLine($"Intersection tests: {Stats.Tests}");
             Console.WriteLine($"Primary rays:       {Stats.PrimaryRays}");
             Console.WriteLine($"Secondary rays:     {Stats.SecondaryRays}");
             Console.WriteLine($"Shadow rays:        {Stats.ShadowRays}");
-            //Console.WriteLine($"Super sampling:     {args.N}x");
+            Console.WriteLine($"Super sampling:     {arguments.n}x");
 
             return canvas;
         }

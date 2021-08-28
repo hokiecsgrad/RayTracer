@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer.Tests", "RayTrace
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer.Tests.Smoke", "RayTracer.Tests.Smoke\RayTracer.Tests.Smoke.csproj", "{21E45F80-F381-4BA9-9BD4-4DBEB90746FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer.Program", "RayTracer.Program\RayTracer.Program.csproj", "{532D2EC3-E5A4-4DD4-A29D-F104836836C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer.Cli", "RayTracer.Cli\RayTracer.Cli.csproj", "{532D2EC3-E5A4-4DD4-A29D-F104836836C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
