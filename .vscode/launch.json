@@ -4,13 +4,24 @@
    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
    "version": "0.2.0",
    "configurations": [
+       {
+           "name": ".NET Core Launch (console)",
+           "type": "coreclr",
+           "request": "launch",
+           "preLaunchTask": "build",
+           "program": "${workspaceFolder}/RayTracer.Program/bin/Debug/net5.0/RayTracer.Program.dll",
+           "args": ["-fov", "1.152", "-scene","TwoSpheres"],
+           "cwd": "${workspaceFolder}/RayTracer.Program",
+           "stopAtEntry": false,
+           "console": "internalConsole"
+       },
         {
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/RayTracer.Tests/bin/Debug/netcoreapp2.2/RayTracer.Tests.dll",
+            "program": "${workspaceFolder}/RayTracer.Tests/bin/Debug/net5.0/RayTracer.Tests.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
