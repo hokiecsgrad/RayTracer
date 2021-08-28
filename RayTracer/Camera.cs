@@ -21,10 +21,10 @@ namespace RayTracer
         private Matrix _transform = Matrix.Identity;
         private Matrix _transformInverse = Matrix.Identity;
 
-        public Matrix Transform 
-        { 
-            get { return _transform; } 
-            set 
+        public Matrix Transform
+        {
+            get { return _transform; }
+            set
             {
                 this._transform = value;
                 this._transformInverse = this._transform.Inverse();
@@ -57,8 +57,8 @@ namespace RayTracer
             {
                 this.HalfWidth = halfView;
                 this.HalfHeight = halfView / aspect;
-            } 
-            else 
+            }
+            else
             {
                 this.HalfWidth = halfView * aspect;
                 this.HalfHeight = halfView;
@@ -67,7 +67,7 @@ namespace RayTracer
         }
 
 
-        public Canvas Render(World world) => 
+        public Canvas Render(World world) =>
             Render(world, new DefaultSampler(this));
 
         public Canvas Render(World world, ISampler sampler)
@@ -76,22 +76,41 @@ namespace RayTracer
             this.ProgressMonitor.OnStarted();
             Canvas image = new Canvas(this.HSize, this.VSize);
 
-            Parallel.For(0, this.VSize, y => 
+            if (ShouldRunMultiThreaded())
             {
-                this.ProgressMonitor.OnRowStarted(y);
-
-                for (int x = 0; x < this.HSize; x++)
+                Parallel.For(0, this.VSize, y =>
                 {
-                    var color = sampler.Sample(x, y, world);
-                    image.SetPixel(x, y, color);
-                }
+                    this.ProgressMonitor.OnRowStarted(y);
 
-                this.ProgressMonitor.OnRowFinished(y);
-            });
-            
+                    for (int x = 0; x < this.HSize; x++)
+                    {
+                        var color = sampler.Sample(x, y, world);
+                        image.SetPixel(x, y, color);
+                    }
+
+                    this.ProgressMonitor.OnRowFinished(y);
+                });
+            }
+            else
+            {
+                for (int y = 0; y < this.VSize; y++)
+                {
+                    this.ProgressMonitor.OnRowStarted(y);
+                    for (int x = 0; x < this.HSize; x++)
+                    {
+                        var color = sampler.Sample(x, y, world);
+                        image.SetPixel(x, y, color);
+                    }
+                    this.ProgressMonitor.OnRowFinished(y);
+                }
+            }
+
             this.ProgressMonitor.OnFinished();
 
             return image;
         }
+
+        private bool ShouldRunMultiThreaded()
+            => true;
     }
 }
