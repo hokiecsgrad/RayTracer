@@ -44,32 +44,38 @@ namespace RayTracer.Tests
             Assert.True(Math.Abs(0.01 - c.PixelSize) < 0.000001);
         }
 
-        [Fact(Skip="Moved RayForPixel out of Camera class.")]
+        [Fact]
         public void ConstructingARayThroughTheCenterOfTheCanvas_ShouldWork()
         {
             var c = new Camera(201, 101, Math.PI/2);
-            //var r = c.RayForPixel(100, 50);
-            //Assert.Equal(new Point(0, 0, 0), r.Origin, PointComparer);
-            //Assert.Equal(new Vector(0, 0, -1), r.Direction, VectorComparer);
+            var s = new DefaultSampler(c);
+            var r = s.RayForPixel(100, 50);
+            
+            Assert.Equal(new Point(0, 0, 0), r.Origin, PointComparer);
+            Assert.Equal(new Vector(0, 0, -1), r.Direction, VectorComparer);
         }
         
-        [Fact(Skip="Moved RayForPixel out of Camera class.")]
+        [Fact]
         public void ConstructingARayThroughACornerOfTheCanvas_ShouldWork()
         {
             var c = new Camera(201, 101, Math.PI/2);
-            //var r = c.RayForPixel(0, 0);
-            //Assert.Equal(new Point(0, 0, 0), r.Origin, PointComparer);
-            //Assert.Equal(new Vector(0.66519, 0.33259, -0.66851), r.Direction, VectorComparer);
+            var s = new DefaultSampler(c);
+            var r = s.RayForPixel(0, 0);
+            
+            Assert.Equal(new Point(0, 0, 0), r.Origin, PointComparer);
+            Assert.Equal(new Vector(0.66519, 0.33259, -0.66851), r.Direction, VectorComparer);
         }
         
-        [Fact(Skip="Moved RayForPixel out of Camera class.")]
+        [Fact]
         public void ConstructingARayWhenTheCameraIsTransformed_ShouldWork()
         {
             var c = new Camera(201, 101, Math.PI/2);
             c.Transform = Transformation.Rotation_y(Math.PI/4) * Transformation.Translation(0, -2, 5);
-            //var r = c.RayForPixel(100, 50);
-            //Assert.Equal(new Point(0, 2, -5), r.Origin, PointComparer);
-            //Assert.Equal(new Vector(Math.Sqrt(2)/2, 0, -Math.Sqrt(2)/2), r.Direction, VectorComparer);
+            var s = new DefaultSampler(c);
+            var r = s.RayForPixel(100, 50);
+            
+            Assert.Equal(new Point(0, 2, -5), r.Origin, PointComparer);
+            Assert.Equal(new Vector(Math.Sqrt(2)/2, 0, -Math.Sqrt(2)/2), r.Direction, VectorComparer);
         }
 
         [Fact]
