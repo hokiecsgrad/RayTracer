@@ -12,7 +12,6 @@ namespace RayTracer
 {
     public class AntiAliasSampler : ISampler
     {
-        private static readonly Random rng = new Random();
         private int NumSamples { get; set; }
 
         public AntiAliasSampler(Camera camera, int numSamples) :
@@ -42,8 +41,8 @@ namespace RayTracer
                 var xOffset = (px + 0.5);
                 var yOffset = (py + 0.5);
 
-                var rx = rng.NextDouble();
-                var ry = rng.NextDouble();
+                var rx = RandomGeneratorThreadSafe.NextDouble();
+                var ry = RandomGeneratorThreadSafe.NextDouble();
 
                 xOffset += (0.5 - rx);
                 yOffset += (0.5 - ry);
@@ -70,7 +69,7 @@ namespace RayTracer
                 Interlocked.Increment(ref Stats.PrimaryRays);
                 color += world.ColorAt(ray);
             }
-            return (1.0 / (double)this.NumSamples) * color;
+            return color /= NumSamples;
         }
     }
 }
