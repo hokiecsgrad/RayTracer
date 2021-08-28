@@ -22,7 +22,7 @@ namespace RayTracer
         }
 
         public AntiAliasSampler(Camera camera) :
-            base(camera) 
+            base(camera)
         {
             this.NumSamples = 4;
         }
@@ -70,8 +70,7 @@ namespace RayTracer
                 Interlocked.Increment(ref Stats.PrimaryRays);
                 color += world.ColorAt(ray);
             }
-            color *= 0.25;
-            return color;
+            return (1.0 / (double)this.NumSamples) * color;
         }
     }
 }
