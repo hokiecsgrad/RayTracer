@@ -4,10 +4,9 @@ namespace RayTracer
 {
     public class Transformation
     {
-
         public static Matrix Translation(double x, double y, double z)
         {
-            var transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            var transform = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
             transform[0, 3] = x;
             transform[1, 3] = y;
             transform[2, 3] = z;
@@ -16,7 +15,7 @@ namespace RayTracer
 
         public static Matrix Scaling(double x, double y, double z)
         {
-            var transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            var transform = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
             transform[0, 0] = x;
             transform[1, 1] = y;
             transform[2, 2] = z;
@@ -25,7 +24,7 @@ namespace RayTracer
 
         public static Matrix Rotation_x(double radians)
         {
-            var transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            var transform = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
             transform[1, 1] = Math.Cos(radians);
             transform[1, 2] = -Math.Sin(radians);
             transform[2, 1] = Math.Sin(radians);
@@ -35,7 +34,7 @@ namespace RayTracer
 
         public static Matrix Rotation_y(double radians)
         {
-            var transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            var transform = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
             transform[0, 0] = Math.Cos(radians);
             transform[0, 2] = Math.Sin(radians);
             transform[2, 0] = -Math.Sin(radians);
@@ -45,7 +44,7 @@ namespace RayTracer
 
         public static Matrix Rotation_z(double radians)
         {
-            var transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            var transform = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
             transform[0, 0] = Math.Cos(radians);
             transform[0, 1] = -Math.Sin(radians);
             transform[1, 0] = Math.Sin(radians);
@@ -55,7 +54,7 @@ namespace RayTracer
 
         public static Matrix Shearing(double xy, double xz, double yx, double yz, double zx, double zy)
         {
-            var transform = new Matrix(new double[,] { {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+            var transform = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
             transform[0, 1] = xy;
             transform[0, 2] = xz;
             transform[1, 0] = yx;
@@ -71,7 +70,7 @@ namespace RayTracer
             var upn = up.Normalize();
             var left = forward.Cross(upn);
             var true_up = left.Cross(forward);
-            var orientation = new Matrix(new double[,] { 
+            var orientation = new Matrix(new double[,] {
                 {left.x, left.y, left.z, 0},
                 {true_up.x, true_up.y, true_up.z, 0},
                 {-forward.x, -forward.y, -forward.z, 0},
@@ -81,4 +80,3 @@ namespace RayTracer
         }
     }
 }
-
