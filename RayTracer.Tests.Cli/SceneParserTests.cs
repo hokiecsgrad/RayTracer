@@ -100,7 +100,7 @@ namespace RayTracer.Tests.Cli
         }
 
         [Fact]
-        public void Parse_WholeValidSimpleScene_ShouldCreateOneCameraOneLightOneSphere()
+        public void Parse_WholeValidSimpleSceneFromString_ShouldCreateOneCameraOneLightOneSphere()
         {
             string yamlString = @"
 camera:
@@ -124,6 +124,23 @@ shapes:
       color: [0.8, 0.5, 0.3]
       shininess: 50";
 
+            YamlParser yamlParser = new YamlParser(yamlString);
+            yamlParser.Parse();
+
+            Assert.Equal(400, yamlParser.Camera.HSize);
+            Assert.Equal(400, yamlParser.Camera.VSize);
+            Assert.Equal(1.152, yamlParser.Camera.FieldOfView);
+            Assert.Single(yamlParser.Lights);
+            Assert.Equal(new Color(1, 1, 1), yamlParser.Lights[0].Color);
+            Assert.Single(yamlParser.Shapes);
+            Assert.True(yamlParser.Shapes[0] is Sphere);
+            Assert.Equal(new Color(0.8, 0.5, 0.3), yamlParser.Shapes[0].Material.Color);
+        }
+
+        [Fact]
+        public void Parse_WholeValidSimpleSceneFromFile_ShouldCreateOneCameraOneLightOneSphere()
+        {
+            string yamlString = File.ReadAllText("../../../Sphere.yaml");
             YamlParser yamlParser = new YamlParser(yamlString);
             yamlParser.Parse();
 
