@@ -6,6 +6,7 @@ using PowerArgs;
 using RayTracer;
 using RayTracer.Cli.Scenes;
 using System.Runtime.Remoting;
+using YamlDotNet.RepresentationModel;
 
 namespace RayTracer.Cli
 {
@@ -46,10 +47,21 @@ namespace RayTracer.Cli
 
         public static (World, Camera) SetupWorld(int width, int height, double fov, string sceneName)
         {
-            ObjectHandle handle = Activator.CreateInstance(
-                    "RayTracer.Cli",
-                    "RayTracer.Cli.Scenes." + sceneName + "Scene");
-            IScene scene = (IScene)handle.Unwrap();
+            //ObjectHandle handle = Activator.CreateInstance(
+            //        "RayTracer.Cli",
+            //        "RayTracer.Cli.Scenes." + sceneName + "Scene");
+            //IScene scene = (IScene)handle.Unwrap();
+
+            string fileContents = System.IO.File.ReadAllText(@"/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Cli/Scenes/Sphere.yaml");
+            YamlStream yaml = new YamlStream();
+            yaml.Load(new StringReader(fileContents));
+            var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
+            foreach (var entry in mapping.Children)
+            {
+                Console.WriteLine(entry);
+            }
+
+            IScene scene = new CoverScene();
             return scene.Setup(width, height, fov);
         }
 
