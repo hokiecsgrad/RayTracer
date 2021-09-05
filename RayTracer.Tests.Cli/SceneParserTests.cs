@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text;
 using YamlDotNet.RepresentationModel;
 using RayTracer;
 using RayTracer.Cli;
