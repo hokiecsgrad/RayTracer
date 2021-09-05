@@ -27,7 +27,7 @@ namespace RayTracer.Cli
         {
             CreateMappingNode();
 
-            //ValidateSceneElements();
+            ValidateSceneElements();
 
             Camera = ParseCamera();
             Lights = ParseLights();
@@ -48,7 +48,22 @@ namespace RayTracer.Cli
             }
         }
 
-        private Camera ParseCamera()
+        private void ValidateSceneElements()
+        {
+            if (!_yamlRoot.Children.ContainsKey("camera") &&
+                    _yamlRoot.Children.Count != 6)
+                throw new ArgumentException("Scene must contain a valid camera configuration.");
+
+            if (!_yamlRoot.Children.ContainsKey("lights") &&
+                    _yamlRoot.Children.Count < 1)
+                throw new ArgumentException("Scene must contain at least one light source.");
+
+            if (!_yamlRoot.Children.ContainsKey("shapes") &&
+                    _yamlRoot.Children.Count < 1)
+                throw new ArgumentException("Scene must contain at least one valid shape.");
+        }
+
+        public Camera ParseCamera()
         {
             if (_yamlRoot is null) CreateMappingNode();
             if (!_yamlRoot.Children.ContainsKey("camera")) return null;
@@ -71,7 +86,7 @@ namespace RayTracer.Cli
             };
         }
 
-        private List<ILight> ParseLights()
+        public List<ILight> ParseLights()
         {
             if (_yamlRoot is null) CreateMappingNode();
             if (!_yamlRoot.Children.ContainsKey("lights")) return null;
@@ -93,7 +108,7 @@ namespace RayTracer.Cli
             return lights;
         }
 
-        private List<Shape> ParseShapes()
+        public List<Shape> ParseShapes()
         {
             if (_yamlRoot is null) CreateMappingNode();
             if (!_yamlRoot.Children.ContainsKey("shapes")) return null;

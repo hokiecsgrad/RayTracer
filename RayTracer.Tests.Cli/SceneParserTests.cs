@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using YamlDotNet.RepresentationModel;
 using RayTracer;
 using RayTracer.Cli;
@@ -9,25 +10,6 @@ namespace RayTracer.Tests.Cli
 {
     public class SceneParserTests
     {
-        [Fact]
-        public void Parse_WithCamera_ShouldReturnCameraString()
-        {
-            string yamlString = @"camera:
-  width: 400
-  height: 400
-  field-of-view: 1.152
-  from: [-5.0, 1.5, 0.0]
-  to: [0.0, 0.0, 0.0]
-  up: [0, 1, 0]";
-
-            YamlStream yaml = new YamlStream();
-            yaml.Load(new StringReader(yamlString));
-            var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
-            var entry = mapping.Children[0];
-
-            Assert.Equal("camera", entry.Key);
-        }
-
         [Fact]
         public void Parse_WithCamera_ShouldCreateCamera()
         {
@@ -40,11 +22,11 @@ namespace RayTracer.Tests.Cli
   up: [0, 1, 0]";
 
             YamlParser yamlParser = new YamlParser(yamlString);
-            yamlParser.Parse();
+            Camera camera = yamlParser.ParseCamera();
 
-            Assert.Equal(400, yamlParser.Camera.HSize);
-            Assert.Equal(400, yamlParser.Camera.VSize);
-            Assert.Equal(1.152, yamlParser.Camera.FieldOfView);
+            Assert.Equal(400, camera.HSize);
+            Assert.Equal(400, camera.VSize);
+            Assert.Equal(1.152, camera.FieldOfView);
         }
 
         [Fact]
@@ -55,10 +37,10 @@ namespace RayTracer.Tests.Cli
     intensity: [1, 1, 1]";
 
             YamlParser yamlParser = new YamlParser(yamlString);
-            yamlParser.Parse();
+            List<ILight> lights = yamlParser.ParseLights();
 
-            Assert.Single(yamlParser.Lights);
-            Assert.Equal(new Color(1, 1, 1), yamlParser.Lights[0].Color);
+            Assert.Single(lights);
+            Assert.Equal(new Color(1, 1, 1), lights[0].Color);
         }
 
         [Fact]
@@ -72,11 +54,11 @@ namespace RayTracer.Tests.Cli
     intensity: [0.5, 0.5, 0.5]";
 
             YamlParser yamlParser = new YamlParser(yamlString);
-            yamlParser.Parse();
+            List<ILight> lights = yamlParser.ParseLights();
 
-            Assert.Equal(2, yamlParser.Lights.Count);
-            Assert.Equal(new Color(1, 1, 1), yamlParser.Lights[0].Color);
-            Assert.Equal(new Color(0.5, 0.5, 0.5), yamlParser.Lights[1].Color);
+            Assert.Equal(2, lights.Count);
+            Assert.Equal(new Color(1, 1, 1), lights[0].Color);
+            Assert.Equal(new Color(0.5, 0.5, 0.5), lights[1].Color);
         }
 
         [Fact]
@@ -92,11 +74,11 @@ namespace RayTracer.Tests.Cli
       shininess: 50";
 
             YamlParser yamlParser = new YamlParser(yamlString);
-            yamlParser.Parse();
+            List<Shape> shapes = yamlParser.ParseShapes();
 
-            Assert.Single(yamlParser.Shapes);
-            Assert.True(yamlParser.Shapes[0] is Sphere);
-            Assert.Equal(new Color(0.8, 0.5, 0.3), yamlParser.Shapes[0].Material.Color);
+            Assert.Single(shapes);
+            Assert.True(shapes[0] is Sphere);
+            Assert.Equal(new Color(0.8, 0.5, 0.3), shapes[0].Material.Color);
         }
 
         [Fact]
