@@ -6,9 +6,16 @@ namespace RayTracer
 {
     public class PointLight : ILight
     {
-        public Point Position { get; }
-        public Color Color { get; }
-        public int Samples { get; }
+        public Point Position { get; init; }
+        public Color Color { get; init; }
+        public int Samples { get; init; }
+
+        public PointLight()
+        {
+            this.Position = new Point(0, 0, 0);
+            this.Color = Color.White;
+            this.Samples = 1;
+        }
 
         public PointLight(Point position, Color color)
         {
