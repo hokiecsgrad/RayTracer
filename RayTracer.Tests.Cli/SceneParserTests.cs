@@ -33,24 +33,32 @@ namespace RayTracer.Tests.Cli
         public void Parse_WithSingleLight_ShouldCreateSingleLight()
         {
             string yamlString = @"lights:
-  - at: [-4.9, 4.9, -1]
+  - type: point
+    at: [-4.9, 4.9, -1]
     intensity: [1, 1, 1]";
+
+            const double epsilon = 0.0001;
+            IEqualityComparer<Point> PointComparer =
+                Point.GetEqualityComparer(epsilon);
 
             YamlParser yamlParser = new YamlParser(yamlString);
             List<ILight> lights = yamlParser.ParseLights();
 
             Assert.Single(lights);
             Assert.Equal(new Color(1, 1, 1), lights[0].Color);
+            Assert.Equal(new Point(-4.9, 4.9, -1), ((PointLight)lights[0]).Position, PointComparer);
         }
 
         [Fact]
         public void Parse_WithMultipleLights_ShouldCreateTwoLights()
         {
             string yamlString = @"lights:
-  - at: [-4.9, 4.9, -1]
+  - type: point
+    at: [-4.9, 4.9, -1]
     intensity: [1, 1, 1]
   
-  - at: [0, 0, 0]
+  - type: point
+    at: [0, 0, 0]
     intensity: [0.5, 0.5, 0.5]";
 
             YamlParser yamlParser = new YamlParser(yamlString);
@@ -94,7 +102,8 @@ camera:
   up: [0, 1, 0]
 
 lights:
-  - at: [-4.9, 4.9, -1]
+  - type: point
+    at: [-4.9, 4.9, -1]
     intensity: [1, 1, 1]
 
 shapes:
@@ -127,13 +136,66 @@ shapes:
             yamlParser.Parse();
 
             Assert.Equal(400, yamlParser.Camera.HSize);
-            Assert.Equal(400, yamlParser.Camera.VSize);
+            Assert.Equal(300, yamlParser.Camera.VSize);
             Assert.Equal(1.152, yamlParser.Camera.FieldOfView);
             Assert.Single(yamlParser.Lights);
             Assert.Equal(new Color(1, 1, 1), yamlParser.Lights[0].Color);
             Assert.Single(yamlParser.Shapes);
             Assert.True(yamlParser.Shapes[0] is Sphere);
             Assert.Equal(new Color(0.8, 0.5, 0.3), yamlParser.Shapes[0].Material.Color);
+        }
+
+        [Fact]
+        public void Parse_SphereWithTranslation_ShouldMoveToCorrectPosition()
+        {
+            string yamlString = @"shapes:
+  - type: sphere
+    transform:
+      translate: [ 5, -3, 2 ]
+    material:
+      color: [0.8, 0.5, 0.3]
+      shininess: 50";
+
+            const double epsilon = 0.001;
+            IEqualityComparer<Matrix> MatrixComparer =
+                Matrix.GetEqualityComparer(epsilon);
+
+            YamlParser yamlParser = new YamlParser(yamlString);
+            List<Shape> shapes = yamlParser.ParseShapes();
+
+            Sphere sphere = new Sphere() { Transform = Transformation.Translation(5, -3, 2) };
+            Matrix expected = sphere.Transform;
+
+            Assert.Equal(expected, shapes[0].Transform, MatrixComparer);
+        }
+
+        [Fact]
+        public void Parse_SphereWithTranslationAndScale_ShouldMoveToCorrectPositionAndScale()
+        {
+            string yamlString = @"shapes:
+  - type: sphere
+    transform:
+      scale: [2, 2, 2]
+      translate: [ 5, -3, 2 ]
+    material:
+      color: [0.8, 0.5, 0.3]
+      shininess: 50";
+
+            const double epsilon = 0.001;
+            IEqualityComparer<Matrix> MatrixComparer =
+                Matrix.GetEqualityComparer(epsilon);
+
+            YamlParser yamlParser = new YamlParser(yamlString);
+            List<Shape> shapes = yamlParser.ParseShapes();
+
+            Sphere sphere = new Sphere()
+            {
+                Transform = Transformation.Translation(5, -3, 2) *
+                                Transformation.Scaling(2, 2, 2)
+            };
+            Matrix expected = sphere.Transform;
+
+            Assert.Equal(expected, shapes[0].Transform, MatrixComparer);
         }
     }
 }
