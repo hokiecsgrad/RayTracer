@@ -12,11 +12,11 @@ namespace RayTracer
             new ProgressMonitor();
 
 
-        public int HSize { get; }
+        public int HSize { get; set; }
 
-        public int VSize { get; }
+        public int VSize { get; set; }
 
-        public double FieldOfView { get; }
+        public double FieldOfView { get; set; }
 
         private Matrix _transform = Matrix.Identity;
         private Matrix _transformInverse = Matrix.Identity;
@@ -40,6 +40,15 @@ namespace RayTracer
         public double HalfHeight { get; private set; }
 
 
+        public Camera()
+        {
+            HSize = 400;
+            VSize = 300;
+            FieldOfView = 1.125;
+            Transform = Matrix.Identity;
+            CalculatePixelSize();
+        }
+
         public Camera(int hsize, int vsize, double fov)
         {
             HSize = hsize;
@@ -49,7 +58,7 @@ namespace RayTracer
             CalculatePixelSize();
         }
 
-        private void CalculatePixelSize()
+        public void CalculatePixelSize()
         {
             double halfView = Math.Tan(this.FieldOfView / 2);
             double aspect = (double)this.HSize / (double)this.VSize;
