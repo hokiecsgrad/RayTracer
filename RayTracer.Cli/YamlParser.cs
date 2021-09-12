@@ -48,21 +48,6 @@ namespace RayTracer.Cli
             }
         }
 
-        private void ValidateSceneElements()
-        {
-            if (!_yamlRoot.Children.ContainsKey("camera") &&
-                    _yamlRoot.Children.Count != 6)
-                throw new ArgumentException("Scene must contain a valid camera configuration.");
-
-            if (!_yamlRoot.Children.ContainsKey("lights") &&
-                    _yamlRoot.Children.Count < 1)
-                throw new ArgumentException("Scene must contain at least one light source.");
-
-            if (!_yamlRoot.Children.ContainsKey("shapes") &&
-                    _yamlRoot.Children.Count < 1)
-                throw new ArgumentException("Scene must contain at least one valid shape.");
-        }
-
         public Camera ParseCamera()
         {
             if (_yamlRoot is null) CreateMappingNode();
@@ -70,14 +55,11 @@ namespace RayTracer.Cli
 
             YamlNode cameraData = _yamlRoot.Children[new YamlScalarNode("camera")];
 
-            int height = GetIntFromNode(cameraData["height"]);
-            int width = GetIntFromNode(cameraData["width"]);
-            double fov = GetDoubleFromNode(cameraData["field-of-view"]);
             Point from = GetPointFromNode(cameraData["from"]);
             Point to = GetPointFromNode(cameraData["to"]);
             Vector up = GetVectorFromNode(cameraData["up"]);
 
-            return new Camera(width, height, fov)
+            return new Camera()
             {
                 Transform = Transformation.ViewTransform(
                                                 from,
@@ -89,7 +71,7 @@ namespace RayTracer.Cli
         public List<ILight> ParseLights()
         {
             if (_yamlRoot is null) CreateMappingNode();
-            if (!_yamlRoot.Children.ContainsKey("lights")) return null;
+            ValidateLights();
 
             List<ILight> lights = new();
             YamlSequenceNode lightsNode =
@@ -97,21 +79,29 @@ namespace RayTracer.Cli
 
             foreach (YamlMappingNode light in lightsNode)
             {
+                string type = light.Children[new YamlScalarNode("type")].ToString();
                 Point position =
                     GetPointFromNode(light.Children[new YamlScalarNode("at")]);
                 Color intensity =
                     GetColorFromNode(light.Children[new YamlScalarNode("intensity")]);
 
-                lights.Add(new PointLight(position, intensity));
+                lights.Add(CreateLight(type, position, intensity));
             }
 
             return lights;
         }
 
+        private ILight CreateLight(string type, Point position, Color color)
+            => type switch
+            {
+                "point" => new PointLight(position, color),
+                _ => throw new Exception($"Unsupportd light type, {type}!"),
+            };
+
         public List<Shape> ParseShapes()
         {
             if (_yamlRoot is null) CreateMappingNode();
-            if (!_yamlRoot.Children.ContainsKey("shapes")) return null;
+            ValidateShapes();
 
             List<Shape> shapes = new();
             YamlSequenceNode shapesNode =
@@ -119,11 +109,19 @@ namespace RayTracer.Cli
 
             foreach (YamlMappingNode shape in shapesNode)
             {
+                Matrix transformations = Matrix.Identity;
+                Material material = null;
+
                 string type = shape.Children[new YamlScalarNode("type")].ToString();
-                Matrix transformations =
-                    ParseTransformations((YamlMappingNode)shape.Children[new YamlScalarNode("transform")]);
-                Material material =
-                    ParseMaterial((YamlMappingNode)shape.Children[new YamlScalarNode("material")]);
+
+                if (shape.Children.ContainsKey("transform"))
+                    transformations =
+                        ParseTransformations((YamlMappingNode)shape.Children[new YamlScalarNode("transform")]);
+
+                if (shape.Children.ContainsKey("material"))
+                    material =
+                        ParseMaterial((YamlMappingNode)shape.Children[new YamlScalarNode("material")]);
+
                 shapes.Add(CreateShape(type, transformations, material));
             }
 
@@ -138,22 +136,40 @@ namespace RayTracer.Cli
                 "cube" => new Cube() { Transform = transformation, Material = material },
                 "cylinder" => new Cylinder() { Transform = transformation, Material = material },
                 "cone" => new Cone() { Transform = transformation, Material = material },
-                _ => throw (new Exception("Invalid shape!!")),
+                _ => throw (new Exception($"Unsupported shape, {type}!")),
             };
 
         private Matrix ParseTransformations(YamlMappingNode transformNode)
         {
             Matrix transformation = Matrix.Identity;
 
-            if (transformNode.Children.ContainsKey("scale"))
+            if (transformNode.Children.ContainsKey("translate"))
                 transformation *=
                     GetTranslationsTransform(
-                        transformNode.Children[new YamlScalarNode("scale")]);
+                        transformNode.Children[new YamlScalarNode("translate")]);
 
-            if (transformNode.Children.ContainsKey("translate"))
+            if (transformNode.Children.ContainsKey("scale"))
                 transformation *=
                     GetScaleTransform(
                         transformNode.Children[new YamlScalarNode("scale")]);
+
+            if (transformNode.Children.ContainsKey("rotate-x"))
+                transformation *= Transformation.Rotation_x(
+                    GetDoubleFromNode(
+                        transformNode.Children[new YamlScalarNode("rotate-x")])
+                );
+
+            if (transformNode.Children.ContainsKey("rotate-y"))
+                transformation *= Transformation.Rotation_y(
+                    GetDoubleFromNode(
+                        transformNode.Children[new YamlScalarNode("rotate-y")])
+                );
+
+            if (transformNode.Children.ContainsKey("rotate-z"))
+                transformation *= Transformation.Rotation_z(
+                    GetDoubleFromNode(
+                        transformNode.Children[new YamlScalarNode("rotate-z")])
+                );
 
             return transformation;
         }
@@ -161,16 +177,93 @@ namespace RayTracer.Cli
         private Material ParseMaterial(YamlMappingNode materialNode)
         {
             Color color = Color.Black;
+            double ambient = 0.0;
+            double diffuse = 0.0;
+            double specular = 0.0;
             int shiny = 0;
+            double reflective = 0.0;
+            double transparency = 0.0;
+            double refractive = 0.0;
             if (materialNode.Children.ContainsKey("color"))
                 color = GetColorFromNode(materialNode.Children[new YamlScalarNode("color")]);
+            if (materialNode.Children.ContainsKey("ambient"))
+                ambient = GetDoubleFromNode(materialNode.Children[new YamlScalarNode("ambient")]);
+            if (materialNode.Children.ContainsKey("diffuse"))
+                diffuse = GetDoubleFromNode(materialNode.Children[new YamlScalarNode("diffuse")]);
+            if (materialNode.Children.ContainsKey("specular"))
+                specular = GetDoubleFromNode(materialNode.Children[new YamlScalarNode("specular")]);
             if (materialNode.Children.ContainsKey("shininess"))
                 shiny = GetIntFromNode(materialNode.Children[new YamlScalarNode("shininess")]);
+            if (materialNode.Children.ContainsKey("reflective"))
+                reflective = GetDoubleFromNode(materialNode.Children[new YamlScalarNode("reflective")]);
+            if (materialNode.Children.ContainsKey("transparency"))
+                transparency = GetDoubleFromNode(materialNode.Children[new YamlScalarNode("transparency")]);
+            if (materialNode.Children.ContainsKey("refractive-index"))
+                refractive = GetDoubleFromNode(materialNode.Children[new YamlScalarNode("refractive-index")]);
             return new Material()
             {
                 Color = color,
+                Ambient = ambient,
+                Diffuse = diffuse,
+                Specular = specular,
                 Shininess = shiny,
+                Reflective = reflective,
+                Transparency = transparency,
+                RefractiveIndex = refractive,
             };
+        }
+
+        private void ValidateSceneElements()
+        {
+            if (!_yamlRoot.Children.ContainsKey("camera") &&
+                    _yamlRoot.Children.Count != 6)
+                throw new ArgumentException("Scene must contain a valid camera configuration.");
+
+            if (!_yamlRoot.Children.ContainsKey("lights"))
+                throw new ArgumentException("Scene must contain a section for lights.");
+
+            if (!_yamlRoot.Children.ContainsKey("shapes"))
+                throw new ArgumentException("Scene must contain a section for shapes.");
+        }
+
+        private void ValidateShapes()
+        {
+            if (_yamlRoot.Children.Count < 1)
+                throw new ArgumentException("Scene must contain at least one shape.");
+
+            YamlSequenceNode shapesNode =
+                (YamlSequenceNode)_yamlRoot.Children[new YamlScalarNode("shapes")];
+
+            foreach (YamlMappingNode shape in shapesNode)
+            {
+                if (!shape.Children.ContainsKey("type"))
+                    throw new ArgumentException("Shape definition is missing a type.");
+
+                string type = shape.Children[new YamlScalarNode("type")].ToString();
+            }
+        }
+
+        private void ValidateLights()
+        {
+            if (_yamlRoot.Children.Count < 1)
+                throw new ArgumentException("Scene must contain at least one light source.");
+
+            YamlSequenceNode lightsNode =
+                (YamlSequenceNode)_yamlRoot.Children[new YamlScalarNode("lights")];
+
+            foreach (YamlMappingNode light in lightsNode)
+            {
+                if (!light.Children.ContainsKey("type"))
+                    throw new ArgumentException("Light definition is missing a type.");
+
+                string type = light.Children[new YamlScalarNode("type")].ToString();
+
+                if (!light.Children.ContainsKey("at"))
+                    throw new ArgumentException($"Light, {type}, is missing a position.");
+
+                if (!light.Children.ContainsKey("intensity"))
+                    throw new ArgumentException($"Light, {type}, is missing a color definition.");
+            }
         }
 
         private Matrix GetTranslationsTransform(YamlNode node)
