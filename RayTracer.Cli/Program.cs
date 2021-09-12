@@ -35,33 +35,42 @@ namespace RayTracer.Cli
             Camera camera;
             Canvas canvas;
 
-            (world, camera) = SetupWorld(width, height, fov, sceneName);
+            (world, camera) = SetupWorldFromYaml(width, height, fov, sceneName);
+            //(world, camera) = SetupWorldFromScene(width, height, fov, sceneName);
+            camera.ProgressMonitor = new ParallelConsoleProgressMonitor(height);
             //canvas = Render(world, camera, new SteppedSampler(camera, 5));
-            //canvas = Render(world, camera, new DefaultSampler(camera));
-            canvas = Render(world, camera, new SuperSampler(camera, numSamples));
+            canvas = Render(world, camera, new DefaultSampler(camera));
+            //canvas = Render(world, camera, new SuperSampler(camera, numSamples));
             //canvas = Render(world, camera, new AntiAliasSampler(camera, 4));
             //canvas = Render(world, camera, new FocalBlurSampler(camera, 1.0, 0.1, 8));
 
             SaveCanvas(canvas, output);
         }
 
-        public static (World, Camera) SetupWorld(int width, int height, double fov, string sceneName)
+        public static (World, Camera) SetupWorldFromYaml(int width, int height, double fov, string sceneName)
         {
-            //ObjectHandle handle = Activator.CreateInstance(
-            //        "RayTracer.Cli",
-            //        "RayTracer.Cli.Scenes." + sceneName + "Scene");
-            //IScene scene = (IScene)handle.Unwrap();
+            string yamlString = File.ReadAllText($"../RayTracer.Cli/Scenes/{sceneName}.yaml");
+            //string yamlString = File.ReadAllText($"../RayTracer.Tests.Cli/{sceneName}.yaml");
+            YamlParser yamlParser = new YamlParser(yamlString);
+            yamlParser.Parse();
 
-            string fileContents = System.IO.File.ReadAllText(@"/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Cli/Scenes/Sphere.yaml");
-            YamlStream yaml = new YamlStream();
-            yaml.Load(new StringReader(fileContents));
-            var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
-            foreach (var entry in mapping.Children)
-            {
-                Console.WriteLine(entry);
-            }
+            World world = new World();
+            world.Shapes = yamlParser.Shapes;
+            world.Lights = yamlParser.Lights;
+            yamlParser.Camera.HSize = width;
+            yamlParser.Camera.VSize = height;
+            yamlParser.Camera.FieldOfView = fov;
+            yamlParser.Camera.CalculatePixelSize();
 
-            IScene scene = new CoverScene();
+            return (world, yamlParser.Camera);
+        }
+
+        public static (World, Camera) SetupWorldFromScene(int width, int height, double fov, string sceneName)
+        {
+            ObjectHandle handle = Activator.CreateInstance(
+                    "RayTracer.Cli",
+                    "RayTracer.Cli.Scenes." + sceneName + "Scene");
+            IScene scene = (IScene)handle.Unwrap();
             return scene.Setup(width, height, fov);
         }
 
