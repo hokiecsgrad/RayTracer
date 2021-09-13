@@ -49,8 +49,8 @@ namespace RayTracer.Cli
 
         public static (World, Camera) SetupWorldFromYaml(int width, int height, double fov, string sceneName)
         {
-            string yamlString = File.ReadAllText($"../RayTracer.Cli/Scenes/{sceneName}.yaml");
-            //string yamlString = File.ReadAllText($"../RayTracer.Tests.Cli/{sceneName}.yaml");
+            //string yamlString = File.ReadAllText($"../RayTracer.Cli/Scenes/{sceneName}.yaml");
+            string yamlString = File.ReadAllText($"../RayTracer.Tests.Cli/{sceneName}.yaml");
             YamlParser yamlParser = new YamlParser(yamlString);
             yamlParser.Parse();
 

@@ -78,7 +78,7 @@ namespace RayTracer.Tests.Cli
       scale: [ 1.0, 1.0, 1.0 ]
       translate: [ 0.0, 0.0, 0.0 ]
     material:
-      color: [0.8, 0.5, 0.3]
+      color: [ 0.8, 0.5, 0.3 ]
       shininess: 50";
 
             YamlParser yamlParser = new YamlParser(yamlString);
@@ -87,6 +87,31 @@ namespace RayTracer.Tests.Cli
             Assert.Single(shapes);
             Assert.True(shapes[0] is Sphere);
             Assert.Equal(new Color(0.8, 0.5, 0.3), shapes[0].Material.Color);
+        }
+
+        [Fact]
+        public void Parse_MaterialWithPattern_ShouldReturnPattern()
+        {
+            string yamlString = @"materials:
+  - name: wall-material
+    pattern:
+      type: stripes
+      colors:
+        - [0.45, 0.45, 0.45]
+        - [0.55, 0.55, 0.55]
+    transform:
+      scale: [ 0.25, 0.25, 0.25 ]
+      rotate-y: [ 1.5708 ]
+    ambient: 0
+    diffuse: 0.4
+    specular: 0
+    reflective: 0.3";
+
+            YamlParser yamlParser = new YamlParser(yamlString);
+            List<Material> materials = yamlParser.ParseMaterials();
+
+            Assert.Equal(new Color(0.45, 0.45, 0.45), ((Stripe)materials[0].Pattern).a);
+            Assert.Equal(new Color(0.55, 0.55, 0.55), ((Stripe)materials[0].Pattern).b);
         }
 
         [Fact]

@@ -13,6 +13,7 @@ namespace RayTracer.Cli
 
         public Camera Camera { get; private set; }
         public List<ILight> Lights { get; private set; }
+        public List<Material> Materials { get; private set; }
         public List<Shape> Shapes { get; private set; }
 
         public YamlParser(string yaml)
@@ -31,6 +32,7 @@ namespace RayTracer.Cli
 
             Camera = ParseCamera();
             Lights = ParseLights();
+            Materials = ParseMaterials();
             Shapes = ParseShapes();
         }
 
@@ -97,6 +99,28 @@ namespace RayTracer.Cli
                 "point" => new PointLight(position, color),
                 _ => throw new Exception($"Unsupportd light type, {type}!"),
             };
+
+
+        public List<Material> ParseMaterials()
+        {
+            if (!_yamlRoot.Children.ContainsKey("materials")) return null;
+
+            if (_yamlRoot is null) CreateMappingNode();
+            ValidateMaterials();
+
+            List<Material> materials = new();
+            YamlSequenceNode materialsNode =
+                (YamlSequenceNode)_yamlRoot.Children[new YamlScalarNode("materials")];
+
+            foreach (YamlMappingNode material in materialsNode)
+            {
+                Material currMaterial = ParseMaterial(material);
+                materials.Add(currMaterial);
+            }
+
+            return materials;
+        }
+
 
         public List<Shape> ParseShapes()
         {
@@ -176,6 +200,7 @@ namespace RayTracer.Cli
 
         private Material ParseMaterial(YamlMappingNode materialNode)
         {
+            Pattern pattern = null;
             Color color = Color.Black;
             double ambient = 0.0;
             double diffuse = 0.0;
@@ -184,6 +209,9 @@ namespace RayTracer.Cli
             double reflective = 0.0;
             double transparency = 0.0;
             double refractive = 0.0;
+
+            if (materialNode.Children.ContainsKey("pattern"))
+                pattern = ParsePatternFromNode((YamlMappingNode)materialNode.Children[new YamlScalarNode("pattern")]);
             if (materialNode.Children.ContainsKey("color"))
                 color = GetColorFromNode(materialNode.Children[new YamlScalarNode("color")]);
             if (materialNode.Children.ContainsKey("ambient"))
@@ -200,7 +228,8 @@ namespace RayTracer.Cli
                 transparency = GetDoubleFromNode(materialNode.Children[new YamlScalarNode("transparency")]);
             if (materialNode.Children.ContainsKey("refractive-index"))
                 refractive = GetDoubleFromNode(materialNode.Children[new YamlScalarNode("refractive-index")]);
-            return new Material()
+
+            Material material = new Material()
             {
                 Color = color,
                 Ambient = ambient,
@@ -211,6 +240,30 @@ namespace RayTracer.Cli
                 Transparency = transparency,
                 RefractiveIndex = refractive,
             };
+
+            if (pattern != null)
+                material.Pattern = pattern;
+
+            return material;
+        }
+
+        private Pattern ParsePatternFromNode(YamlMappingNode patternNode)
+        {
+            string type = patternNode.Children[new YamlScalarNode("type")].ToString();
+
+            Color colorOne = GetColorFromNode(patternNode.Children[new YamlScalarNode("colors")][0]);
+            Color colorTwo = GetColorFromNode(patternNode.Children[new YamlScalarNode("colors")][1]);
+
+            Pattern pattern = type switch
+            {
+                "gradient" => new Gradient(colorOne, colorTwo),
+                "stripes" => new Stripe(colorOne, colorTwo),
+                "ring" => new Ring(colorOne, colorTwo),
+                "checkers" => new Checkers(colorOne, colorTwo),
+                _ => throw (new Exception($"Unsupported pattern, {type}!")),
+            };
+
+            return pattern;
         }
 
         private void ValidateSceneElements()
@@ -224,6 +277,20 @@ namespace RayTracer.Cli
 
             if (!_yamlRoot.Children.ContainsKey("shapes"))
                 throw new ArgumentException("Scene must contain a section for shapes.");
+        }
+
+        private void ValidateMaterials()
+        {
+            if (!_yamlRoot.Children.ContainsKey("materials")) return;
+
+            YamlSequenceNode materialsNode =
+                (YamlSequenceNode)_yamlRoot.Children[new YamlScalarNode("materials")];
+
+            foreach (YamlMappingNode shape in materialsNode)
+            {
+                if (!shape.Children.ContainsKey("name"))
+                    throw new ArgumentException("Materials defintion is missing a required name.");
+            }
         }
 
         private void ValidateShapes()

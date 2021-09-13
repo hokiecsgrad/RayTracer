@@ -55,17 +55,19 @@ shapes:
     transform:
       rotate-y: 0.31415
     material:
-      specular: 0
-      reflective: 0.4
+      name: wall-material
+      transform:
+        translate: [ 0, 0.01, 0 ]
 
 # the ceiling
   - type: plane
     transform:
       translate: [ 0, 5, 0 ]
     material:
-      color: [0.8, 0.8, 0.8]
+      color: [ 0.8, 0.8, 0.8 ]
       ambient: 0.3
       specular: 0
+      
 
 # west wall
   - type: plane
@@ -73,12 +75,8 @@ shapes:
       translate: [ -5, 0, 0 ]
       rotate-z: 1.5708 # rotate to vertical
       rotate-y: 1.5708 # orient texture
-    #material: wall-material
-    material:
-      ambient: 0
-      diffuse: 0.4
-      specular: 0
-      reflective: 0.3
+    material: 
+      name: wall-material
 
 # east wall
   - type: plane
@@ -86,36 +84,24 @@ shapes:
       translate: [ 5, 0, 0 ]
       rotate-z: 1.5708 # rotate to vertical
       rotate-y: 1.5708 # orient texture
-    #material: wall-material
-    material:
-      ambient: 0
-      diffuse: 0.4
-      specular: 0
-      reflective: 0.3
+    material: 
+      name: wall-material
 
 # north wall
   - type: plane
     transform:
       translate: [ 0, 0, 5 ]
       rotate-x: 1.5708 # rotate to vertical
-    #material: wall-material
-    material:
-      ambient: 0
-      diffuse: 0.4
-      specular: 0
-      reflective: 0.3
+    material: 
+      name: wall-material
 
 # south wall
   - type: plane
     transform:
       translate: [ 0, 0, -5 ]
       rotate-x: 1.5708 # rotate to vertical
-    #material: wall-material
-    material:
-      ambient: 0
-      diffuse: 0.4
-      specular: 0
-      reflective: 0.3
+    material: 
+      name: wall-material
 
 # ----------------------
 # background balls
