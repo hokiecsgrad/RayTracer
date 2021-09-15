@@ -14,9 +14,6 @@ namespace RayTracer.Tests.Cli
         public void Parse_WithCamera_ShouldCreateCamera()
         {
             string yamlString = @"camera:
-  width: 400
-  height: 400
-  field-of-view: 1.152
   from: [-5.0, 1.5, 0.0]
   to: [0.0, 0.0, 0.0]
   up: [0, 1, 0]";
@@ -24,9 +21,7 @@ namespace RayTracer.Tests.Cli
             YamlParser yamlParser = new YamlParser(yamlString);
             Camera camera = yamlParser.ParseCamera();
 
-            Assert.Equal(400, camera.HSize);
-            Assert.Equal(400, camera.VSize);
-            Assert.Equal(1.152, camera.FieldOfView);
+            Assert.IsType<Camera>(camera);
         }
 
         [Fact]
@@ -108,10 +103,10 @@ namespace RayTracer.Tests.Cli
     reflective: 0.3";
 
             YamlParser yamlParser = new YamlParser(yamlString);
-            List<Material> materials = yamlParser.ParseMaterials();
+            Dictionary<string, Material> materials = yamlParser.ParseMaterials();
 
-            Assert.Equal(new Color(0.45, 0.45, 0.45), ((Stripe)materials[0].Pattern).a);
-            Assert.Equal(new Color(0.55, 0.55, 0.55), ((Stripe)materials[0].Pattern).b);
+            Assert.Equal(new Color(0.45, 0.45, 0.45), ((Stripe)materials["wall-material"].Pattern).a);
+            Assert.Equal(new Color(0.55, 0.55, 0.55), ((Stripe)materials["wall-material"].Pattern).b);
         }
 
         [Fact]
@@ -119,9 +114,6 @@ namespace RayTracer.Tests.Cli
         {
             string yamlString = @"
 camera:
-  width: 400
-  height: 400
-  field-of-view: 1.152
   from: [-5.0, 1.5, 0.0]
   to: [0.0, 0.0, 0.0]
   up: [0, 1, 0]
@@ -137,20 +129,23 @@ shapes:
       scale: [ 1.0, 1.0, 1.0 ]
       translate: [ 0.0, 0.0, 0.0 ]
     material:
-      color: [0.8, 0.5, 0.3]
+      pattern:
+        type: stripes
+        colors:
+          - [1, 1, 1]
+          - [0, 0, 0]
+      ambient: 0.2
+      diffuse: 0.4
+      specular: 0.9
       shininess: 50";
 
             YamlParser yamlParser = new YamlParser(yamlString);
             yamlParser.Parse();
 
-            Assert.Equal(400, yamlParser.Camera.HSize);
-            Assert.Equal(400, yamlParser.Camera.VSize);
-            Assert.Equal(1.152, yamlParser.Camera.FieldOfView);
             Assert.Single(yamlParser.Lights);
-            Assert.Equal(new Color(1, 1, 1), yamlParser.Lights[0].Color);
             Assert.Single(yamlParser.Shapes);
             Assert.True(yamlParser.Shapes[0] is Sphere);
-            Assert.Equal(new Color(0.8, 0.5, 0.3), yamlParser.Shapes[0].Material.Color);
+            Assert.IsType<Stripe>(yamlParser.Shapes[0].Material.Pattern);
         }
 
         [Fact]
@@ -160,14 +155,10 @@ shapes:
             YamlParser yamlParser = new YamlParser(yamlString);
             yamlParser.Parse();
 
-            Assert.Equal(400, yamlParser.Camera.HSize);
-            Assert.Equal(300, yamlParser.Camera.VSize);
-            Assert.Equal(1.152, yamlParser.Camera.FieldOfView);
             Assert.Single(yamlParser.Lights);
-            Assert.Equal(new Color(1, 1, 1), yamlParser.Lights[0].Color);
             Assert.Single(yamlParser.Shapes);
             Assert.True(yamlParser.Shapes[0] is Sphere);
-            Assert.Equal(new Color(0.8, 0.5, 0.3), yamlParser.Shapes[0].Material.Color);
+            Assert.IsType<Stripe>(yamlParser.Shapes[0].Material.Pattern);
         }
 
         [Fact]

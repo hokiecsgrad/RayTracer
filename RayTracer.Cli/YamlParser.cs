@@ -13,7 +13,7 @@ namespace RayTracer.Cli
 
         public Camera Camera { get; private set; }
         public List<ILight> Lights { get; private set; }
-        public List<Material> Materials { get; private set; }
+        public Dictionary<string, Material> Materials { get; private set; }
         public List<Shape> Shapes { get; private set; }
 
         public YamlParser(string yaml)
@@ -100,27 +100,27 @@ namespace RayTracer.Cli
                 _ => throw new Exception($"Unsupportd light type, {type}!"),
             };
 
-
-        public List<Material> ParseMaterials()
+        public Dictionary<string, Material> ParseMaterials()
         {
-            if (!_yamlRoot.Children.ContainsKey("materials")) return null;
-
             if (_yamlRoot is null) CreateMappingNode();
             ValidateMaterials();
 
-            List<Material> materials = new();
+            if (!_yamlRoot.Children.ContainsKey("materials")) return null;
+
+            Dictionary<string, Material> materials = new();
             YamlSequenceNode materialsNode =
                 (YamlSequenceNode)_yamlRoot.Children[new YamlScalarNode("materials")];
+            string name = String.Empty;
 
             foreach (YamlMappingNode material in materialsNode)
             {
+                name = material.Children[new YamlScalarNode("name")].ToString();
                 Material currMaterial = ParseMaterial(material);
-                materials.Add(currMaterial);
+                materials.Add(name, currMaterial);
             }
 
             return materials;
         }
-
 
         public List<Shape> ParseShapes()
         {
@@ -143,8 +143,18 @@ namespace RayTracer.Cli
                         ParseTransformations((YamlMappingNode)shape.Children[new YamlScalarNode("transform")]);
 
                 if (shape.Children.ContainsKey("material"))
-                    material =
-                        ParseMaterial((YamlMappingNode)shape.Children[new YamlScalarNode("material")]);
+                {
+                    YamlMappingNode materialNode = (YamlMappingNode)shape.Children[new YamlScalarNode("material")];
+                    if (materialNode.Children.ContainsKey("name"))
+                    {
+                        material = Materials[materialNode.Children[new YamlScalarNode("name")].ToString()];
+                    }
+                    else
+                    {
+                        material =
+                            ParseMaterial((YamlMappingNode)shape.Children[new YamlScalarNode("material")]);
+                    }
+                }
 
                 shapes.Add(CreateShape(type, transformations, material));
             }
@@ -200,15 +210,16 @@ namespace RayTracer.Cli
 
         private Material ParseMaterial(YamlMappingNode materialNode)
         {
+            Material material = new Material();
             Pattern pattern = null;
-            Color color = Color.Black;
-            double ambient = 0.0;
-            double diffuse = 0.0;
-            double specular = 0.0;
-            int shiny = 0;
-            double reflective = 0.0;
-            double transparency = 0.0;
-            double refractive = 0.0;
+            Color color = material.Color;
+            double ambient = material.Ambient;
+            double diffuse = material.Diffuse;
+            double specular = material.Specular;
+            double shiny = material.Shininess;
+            double reflective = material.Reflective;
+            double transparency = material.Transparency;
+            double refractive = material.RefractiveIndex;
 
             if (materialNode.Children.ContainsKey("pattern"))
                 pattern = ParsePatternFromNode((YamlMappingNode)materialNode.Children[new YamlScalarNode("pattern")]);
@@ -229,7 +240,7 @@ namespace RayTracer.Cli
             if (materialNode.Children.ContainsKey("refractive-index"))
                 refractive = GetDoubleFromNode(materialNode.Children[new YamlScalarNode("refractive-index")]);
 
-            Material material = new Material()
+            material = new Material()
             {
                 Color = color,
                 Ambient = ambient,
@@ -249,17 +260,22 @@ namespace RayTracer.Cli
 
         private Pattern ParsePatternFromNode(YamlMappingNode patternNode)
         {
+            Matrix transformations = Matrix.Identity;
             string type = patternNode.Children[new YamlScalarNode("type")].ToString();
 
             Color colorOne = GetColorFromNode(patternNode.Children[new YamlScalarNode("colors")][0]);
             Color colorTwo = GetColorFromNode(patternNode.Children[new YamlScalarNode("colors")][1]);
 
+            if (patternNode.Children.ContainsKey("transform"))
+                transformations =
+                    ParseTransformations((YamlMappingNode)patternNode.Children[new YamlScalarNode("transform")]);
+
             Pattern pattern = type switch
             {
-                "gradient" => new Gradient(colorOne, colorTwo),
-                "stripes" => new Stripe(colorOne, colorTwo),
-                "ring" => new Ring(colorOne, colorTwo),
-                "checkers" => new Checkers(colorOne, colorTwo),
+                "gradient" => new Gradient(colorOne, colorTwo) { Transform = transformations },
+                "stripes" => new Stripe(colorOne, colorTwo) { Transform = transformations },
+                "ring" => new Ring(colorOne, colorTwo) { Transform = transformations },
+                "checkers" => new Checkers(colorOne, colorTwo) { Transform = transformations },
                 _ => throw (new Exception($"Unsupported pattern, {type}!")),
             };
 

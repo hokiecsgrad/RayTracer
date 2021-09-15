@@ -234,7 +234,8 @@ namespace RayTracer.Cli.Scenes
             // green glass sphere
             var greenGlassSphere = new Sphere()
             {
-                Transform = Transformation.Translation(-0.7, 0.5, -0.8) * Transformation.Scaling(0.5, 0.5, 0.5),
+                Transform = Transformation.Translation(-0.7, 0.5, -0.8) *
+                            Transformation.Scaling(0.5, 0.5, 0.5),
                 Material = new Material()
                 {
                     Color = new Color(0, 0.2, 0),

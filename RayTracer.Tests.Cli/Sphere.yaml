@@ -27,7 +27,7 @@ shapes:
       translate: [ 0.0, 0.0, 0.0 ]
     material:
       pattern:
-        type: checkers
+        type: stripes
         colors:
           - [1,1,1]
           - [0,0,0]

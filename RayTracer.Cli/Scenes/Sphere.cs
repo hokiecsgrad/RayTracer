@@ -26,7 +26,11 @@ namespace RayTracer.Cli.Scenes
 
                 Material = new Material()
                 {
-                    Color = new Color(0.8, 0.5, 0.3),
+                    Pattern = new Checkers(Color.White, Color.Black)
+                    {
+                        Transform = Transformation.Translation(0, 0.01, 0) *
+                                    Transformation.Scaling(0.25, 0.25, 0.25),
+                    },
                     Ambient = 0.2,
                     Diffuse = 0.4,
                     Specular = 0.9,

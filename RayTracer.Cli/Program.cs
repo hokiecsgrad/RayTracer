@@ -38,19 +38,19 @@ namespace RayTracer.Cli
             (world, camera) = SetupWorldFromYaml(width, height, fov, sceneName);
             //(world, camera) = SetupWorldFromScene(width, height, fov, sceneName);
             camera.ProgressMonitor = new ParallelConsoleProgressMonitor(height);
-            //canvas = Render(world, camera, new SteppedSampler(camera, 5));
             canvas = Render(world, camera, new DefaultSampler(camera));
             //canvas = Render(world, camera, new SuperSampler(camera, numSamples));
             //canvas = Render(world, camera, new AntiAliasSampler(camera, 4));
             //canvas = Render(world, camera, new FocalBlurSampler(camera, 1.0, 0.1, 8));
+            //canvas = Render(world, camera, new SteppedSampler(camera, 5));
 
             SaveCanvas(canvas, output);
         }
 
         public static (World, Camera) SetupWorldFromYaml(int width, int height, double fov, string sceneName)
         {
-            //string yamlString = File.ReadAllText($"../RayTracer.Cli/Scenes/{sceneName}.yaml");
-            string yamlString = File.ReadAllText($"../RayTracer.Tests.Cli/{sceneName}.yaml");
+            string yamlString = File.ReadAllText($"../RayTracer.Cli/Scenes/{sceneName}.yaml");
+            //string yamlString = File.ReadAllText($"../RayTracer.Tests.Cli/{sceneName}.yaml");
             YamlParser yamlParser = new YamlParser(yamlString);
             yamlParser.Parse();
 
