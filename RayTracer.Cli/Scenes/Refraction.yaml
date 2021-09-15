@@ -83,29 +83,29 @@ shapes:
       name: wall-material
 
 # east wall
-#  - type: plane
-#    transform:
-#      translate: [ 5, 0, 0 ]
-#      rotate-z: 1.5708 # rotate to vertical
-#      rotate-y: 1.5708 # orient texture
-#    material: 
-#      name: wall-material
+  - type: plane
+    transform:
+      translate: [ 5, 0, 0 ]
+      rotate-z: 1.5708 # rotate to vertical
+      rotate-y: 1.5708 # orient texture
+    material: 
+      name: wall-material
 
 # north wall
-#  - type: plane
-#    transform:
-#      translate: [ 0, 0, 5 ]
-#      rotate-x: 1.5708 # rotate to vertical
-#    material: 
-#      name: wall-material
+  - type: plane
+    transform:
+      translate: [ 0, 0, 5 ]
+      rotate-x: 1.5708 # rotate to vertical
+    material: 
+      name: wall-material
 
 # south wall
-# - type: plane
-#   transform:
-#     translate: [ 0, 0, -5 ]
-#     rotate-x: 1.5708 # rotate to vertical
-#   material: 
-#     name: wall-material
+  - type: plane
+    transform:
+      translate: [ 0, 0, -5 ]
+      rotate-x: 1.5708 # rotate to vertical
+    material: 
+      name: wall-material
 
 # ----------------------
 # background balls

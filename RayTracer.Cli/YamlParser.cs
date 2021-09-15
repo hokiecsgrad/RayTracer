@@ -145,15 +145,13 @@ namespace RayTracer.Cli
                 if (shape.Children.ContainsKey("material"))
                 {
                     YamlMappingNode materialNode = (YamlMappingNode)shape.Children[new YamlScalarNode("material")];
+
                     if (materialNode.Children.ContainsKey("name"))
-                    {
                         material = Materials[materialNode.Children[new YamlScalarNode("name")].ToString()];
-                    }
+
                     else
-                    {
                         material =
                             ParseMaterial((YamlMappingNode)shape.Children[new YamlScalarNode("material")]);
-                    }
                 }
 
                 shapes.Add(CreateShape(type, transformations, material));
@@ -187,10 +185,10 @@ namespace RayTracer.Cli
                     GetScaleTransform(
                         transformNode.Children[new YamlScalarNode("scale")]);
 
-            if (transformNode.Children.ContainsKey("rotate-x"))
-                transformation *= Transformation.Rotation_x(
+            if (transformNode.Children.ContainsKey("rotate-z"))
+                transformation *= Transformation.Rotation_z(
                     GetDoubleFromNode(
-                        transformNode.Children[new YamlScalarNode("rotate-x")])
+                        transformNode.Children[new YamlScalarNode("rotate-z")])
                 );
 
             if (transformNode.Children.ContainsKey("rotate-y"))
@@ -199,10 +197,10 @@ namespace RayTracer.Cli
                         transformNode.Children[new YamlScalarNode("rotate-y")])
                 );
 
-            if (transformNode.Children.ContainsKey("rotate-z"))
-                transformation *= Transformation.Rotation_z(
+            if (transformNode.Children.ContainsKey("rotate-x"))
+                transformation *= Transformation.Rotation_x(
                     GetDoubleFromNode(
-                        transformNode.Children[new YamlScalarNode("rotate-z")])
+                        transformNode.Children[new YamlScalarNode("rotate-x")])
                 );
 
             return transformation;
