@@ -29,7 +29,7 @@ namespace RayTracer.Tests.Cli
         {
             string yamlString = @"lights:
   - type: point
-    point: [-4.9, 4.9, -1]
+    position: [-4.9, 4.9, -1]
     color: [1, 1, 1]";
 
             const double epsilon = 0.0001;
@@ -49,11 +49,11 @@ namespace RayTracer.Tests.Cli
         {
             string yamlString = @"lights:
   - type: point
-    point: [-4.9, 4.9, -1]
+    position: [-4.9, 4.9, -1]
     color: [1, 1, 1]
   
   - type: point
-    point: [0, 0, 0]
+    position: [0, 0, 0]
     color: [0.5, 0.5, 0.5]";
 
             YamlParser yamlParser = new YamlParser(yamlString);
@@ -120,7 +120,7 @@ camera:
 
 lights:
   - type: point
-    point: [-4.9, 4.9, -1]
+    position: [-4.9, 4.9, -1]
     color: [1, 1, 1]
 
 shapes:
