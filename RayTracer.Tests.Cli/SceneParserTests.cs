@@ -29,8 +29,8 @@ namespace RayTracer.Tests.Cli
         {
             string yamlString = @"lights:
   - type: point
-    at: [-4.9, 4.9, -1]
-    intensity: [1, 1, 1]";
+    point: [-4.9, 4.9, -1]
+    color: [1, 1, 1]";
 
             const double epsilon = 0.0001;
             IEqualityComparer<Point> PointComparer =
@@ -49,12 +49,12 @@ namespace RayTracer.Tests.Cli
         {
             string yamlString = @"lights:
   - type: point
-    at: [-4.9, 4.9, -1]
-    intensity: [1, 1, 1]
+    point: [-4.9, 4.9, -1]
+    color: [1, 1, 1]
   
   - type: point
-    at: [0, 0, 0]
-    intensity: [0.5, 0.5, 0.5]";
+    point: [0, 0, 0]
+    color: [0.5, 0.5, 0.5]";
 
             YamlParser yamlParser = new YamlParser(yamlString);
             List<ILight> lights = yamlParser.ParseLights();
@@ -120,8 +120,8 @@ camera:
 
 lights:
   - type: point
-    at: [-4.9, 4.9, -1]
-    intensity: [1, 1, 1]
+    point: [-4.9, 4.9, -1]
+    color: [1, 1, 1]
 
 shapes:
   - type: sphere

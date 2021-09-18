@@ -23,8 +23,8 @@ camera:
 
 lights:
   - type: point
-    at: [-4.9, 4.9, -1]
-    intensity: [1, 1, 1]
+    position: [-4.9, 4.9, -1]
+    color: [1, 1, 1]
 
 # ======================================================
 # define constants to avoid duplication

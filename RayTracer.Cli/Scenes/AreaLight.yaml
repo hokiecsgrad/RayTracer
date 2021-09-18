@@ -1,0 +1,74 @@
+# ======================================================
+#
+# This file describes the scene for testing Area Lights.
+#
+# by Ryan Hagan
+# ======================================================
+
+# ======================================================
+# the camera
+# ======================================================
+
+camera:
+  from: [ -3.0, 1.0, 2.5 ]
+  to: [ 0.0, 0.5, 0.0 ]
+  up: [ 0, 1, 0 ]
+
+# ======================================================
+# light sources
+# ======================================================
+
+lights:
+  - type: area
+    position: [ -1, 2, 4 ]
+    uvec: [ 2.0, 0.0, 0.0 ] 
+    usteps: 10
+    vvec: [ 0.0, 2.0, 0.0 ]
+    vsteps: 10
+    color: [ 1, 1, 1 ]
+
+# ======================================================
+# describe the elements of the scene
+# ======================================================
+
+shapes:
+  - type: cube
+    transform:
+      translate: [ 0, 3, 4 ]
+      scale: [ 1, 1, 0.01 ]
+    material:
+      color: [ 1, 1, 1 ]
+      ambient: 1.0
+      diffuse: 0.0
+      specular: 0.0
+      transparency: 1.0
+      refractive-index: 1.0
+
+  - type: plane
+    material:
+      color: [ 1, 1, 1 ]
+      ambient: 0.025
+      diffuse: 0.67
+      specular: 0
+
+  - type: sphere
+    transform:
+      translate: [ 0.5, 0.5, 0.0 ]
+      scale: [ 0.5, 0.5, 0.5 ]
+    material:
+      color: [ 1, 0, 0 ]
+      ambient: 0.1
+      diffuse: 0.6
+      specular: 0.0
+      reflective: 0.3
+
+  - type: sphere
+    transform:
+      translate: [ -0.25, 0.33, 0 ]
+      scale: [ 0.33, 0.33, 0.33 ]
+    material:
+      color: [ 0.5, 0.5, 1 ]
+      ambient: 0.1
+      diffuse: 0.6
+      specular: 0.0
+      reflective: 0.3

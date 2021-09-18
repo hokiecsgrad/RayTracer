@@ -13,8 +13,8 @@ camera:
 
 lights:
   - type: point
-    at: [-1.0, 5.0, 0.0]
-    intensity: [1, 1, 1]
+    point: [-1.0, 5.0, 0.0]
+    color: [1, 1, 1]
 
 # ======================================================
 # describe the elements of the scene

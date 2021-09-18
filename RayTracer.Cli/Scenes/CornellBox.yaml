@@ -1,0 +1,142 @@
+# ======================================================
+#
+# This file describes the scene of a Cornell Box
+#
+# by Ryan Hagan
+# ======================================================
+
+# ======================================================
+# the camera
+# ======================================================
+
+camera:
+  from: [ -8.0, 2.0, 0.0 ]
+  to: [ 0.0, 2.0, 0.0 ]
+  up: [ 0, 1, 0 ]
+
+# ======================================================
+# light sources
+# ======================================================
+
+lights:
+# - type: point
+#   position: [ -1.375, 4.2, 0 ]
+#   color: [ 1, 1, 1 ]
+
+  - type: area
+    position: [ -1, 4.2, 0.375 ]
+    uvec: [ 0.75, 0.0, 0.0 ] 
+    usteps: 10
+    vvec: [ 0.0, 0.0, -0.75 ]
+    vsteps: 10
+    color: [ 1, 1, 1 ]
+
+# ======================================================
+# describe the elements of the scene
+# ======================================================
+
+shapes:
+  # the light cover
+  - type: cube
+    transform:
+      translate: [ -1.375, 4.25, 0 ]
+      scale: [ 0.75, 0.01, 0.75 ]
+    material:
+      color: [ 1, 1, 1 ]
+      ambient: 1.0
+      diffuse: 0.0
+      specular: 0.0
+      transparency: 1.0
+      refractive-index: 1.0
+
+  # the floor
+  - type: plane
+    transform:
+      rotate-y: 0.31415
+    material:
+      color: [ 1, 1, 1 ]
+      ambient: 0.3
+      diffuse: 0.6
+      specular: 0.0
+      shininess: 0
+      reflective: 0.0
+
+
+  # the ceiling
+  - type: plane
+    transform:
+      translate: [ 0, 4.3, 0 ]
+    material:
+      color: [ 1, 1, 1 ]
+      ambient: 0.3
+      diffuse: 0.6
+      specular: 0.0
+      shininess: 0
+      reflective: 0.0
+ 
+  # back wall
+  - type: plane
+    transform:
+      translate: [ 2, 0, 0 ]
+      rotate-z: 1.5708
+    material: 
+      color: [ 1, 1, 1 ]
+      ambient: 0.3
+      diffuse: 0.6
+      specular: 0.0
+      shininess: 0
+ 
+  # right wall
+  - type: plane
+    transform:
+      translate: [ 0, 0, -2 ]
+      rotate-x: 1.5708
+    material: 
+      color: [ 0, 1, 0 ]
+      ambient: 0.3
+      diffuse: 0.6
+      specular: 0.0
+      shininess: 0
+
+  # left wall
+  - type: plane
+    transform:
+      translate: [ 0, 0, 2 ]
+      rotate-x: 1.5708 # rotate to vertical
+    material: 
+      color: [ 1, 0, 0 ]
+      ambient: 0.3
+      diffuse: 0.6
+      specular: 0.0
+      shininess: 0
+
+# ----------------------
+# scene objects
+# ----------------------
+  # tall cube
+  - type: cube
+    transform:
+      translate: [ 0.25, 1.4, 0.5 ]
+      scale: [ 0.6, 1.4, 0.6 ]
+      rotate-y: -0.39269875
+    material:
+      color: [ 1, 1, 1 ]
+      ambient: 0.2
+      diffuse: 0.9
+      specular: 0.0
+      shininess: 50
+      reflective: 0.0
+ 
+  # short cube
+  - type: cube
+    transform:
+      translate: [ -0.75, 0.6, -0.6 ]
+      scale: [ 0.6, 0.6, 0.6 ]
+      rotate-y: 0.39269875
+    material:
+      color: [ 1, 1, 1 ]
+      ambient: 0.2
+      diffuse: 0.9
+      specular: 0.0
+      shininess: 50
+      reflective: 0.0

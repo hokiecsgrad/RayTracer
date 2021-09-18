@@ -10,7 +10,7 @@
            "request": "launch",
            "preLaunchTask": "build",
            "program": "${workspaceFolder}/RayTracer.Cli/bin/Debug/net5.0/RayTracer.Cli.dll",
-           "args": ["-fov", "1.152", "-scene", "Refraction", "-filename", "debug.ppm"],
+           "args": ["-fov", "1.152", "-scene", "Refraction", "-filename", "refraction.ppm"],
            "cwd": "${workspaceFolder}/RayTracer.Cli",
            "stopAtEntry": false,
            "console": "internalConsole"

@@ -81,22 +81,39 @@ namespace RayTracer.Cli
 
             foreach (YamlMappingNode light in lightsNode)
             {
-                string type = light.Children[new YamlScalarNode("type")].ToString();
-                Point position =
-                    GetPointFromNode(light.Children[new YamlScalarNode("at")]);
-                Color intensity =
-                    GetColorFromNode(light.Children[new YamlScalarNode("intensity")]);
+                Point position = new Point(0, 0, 0);
+                Vector uvec = new Vector();
+                int uvecSteps = 0;
+                Vector vvec = new Vector();
+                int vvecSteps = 0;
+                Color color = new Color();
 
-                lights.Add(CreateLight(type, position, intensity));
+                string type = light.Children[new YamlScalarNode("type")].ToString();
+
+                position =
+                    GetPointFromNode(light.Children[new YamlScalarNode("position")]);
+                if (light.Children.ContainsKey("uvec"))
+                    uvec = GetVectorFromNode(light.Children[new YamlScalarNode("uvec")]);
+                if (light.Children.ContainsKey("usteps"))
+                    uvecSteps = GetIntFromNode(light.Children[new YamlScalarNode("usteps")]);
+                if (light.Children.ContainsKey("vvec"))
+                    vvec = GetVectorFromNode(light.Children[new YamlScalarNode("vvec")]);
+                if (light.Children.ContainsKey("vsteps"))
+                    vvecSteps = GetIntFromNode(light.Children[new YamlScalarNode("vsteps")]);
+                color =
+                    GetColorFromNode(light.Children[new YamlScalarNode("color")]);
+
+                lights.Add(CreateLight(type, position, uvec, uvecSteps, vvec, vvecSteps, color));
             }
 
             return lights;
         }
 
-        private ILight CreateLight(string type, Point position, Color color)
+        private ILight CreateLight(string type, Point position, Vector uvec, int uvecSteps, Vector vvec, int vvecSteps, Color color)
             => type switch
             {
                 "point" => new PointLight(position, color),
+                "area" => new AreaLight(position, uvec, uvecSteps, vvec, vvecSteps, color),
                 _ => throw new Exception($"Unsupportd light type, {type}!"),
             };
 
@@ -339,10 +356,10 @@ namespace RayTracer.Cli
 
                 string type = light.Children[new YamlScalarNode("type")].ToString();
 
-                if (!light.Children.ContainsKey("at"))
+                if (!light.Children.ContainsKey("position"))
                     throw new ArgumentException($"Light, {type}, is missing a position.");
 
-                if (!light.Children.ContainsKey("intensity"))
+                if (!light.Children.ContainsKey("color"))
                     throw new ArgumentException($"Light, {type}, is missing a color definition.");
             }
         }
