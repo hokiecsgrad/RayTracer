@@ -5,6 +5,7 @@ namespace RayTracer
     public static class RandomGeneratorThreadSafe
     {
         private static Random _global = new Random();
+
         [ThreadStatic]
         private static Random _local;
 

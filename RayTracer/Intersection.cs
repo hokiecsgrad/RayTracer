@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -46,7 +45,7 @@ namespace RayTracer
             if (n1 > n2)
             {
                 var n = n1 / n2;
-                var sin2_t = n*n * (1.0 - cos*cos);
+                var sin2_t = n * n * (1.0 - cos * cos);
                 if (sin2_t > 1.0)
                     return 1.0;
 
@@ -83,7 +82,7 @@ namespace RayTracer
             this.v = v;
         }
 
-        public Comps PrepareComputations(Ray ray, List<Intersection> xs)
+        public Comps PrepareComputations(Ray ray, List<Intersection> intersections)
         {
             Comps comps;
             comps.n1 = 0.0;
@@ -92,10 +91,10 @@ namespace RayTracer
             comps.Object = this.Object;
             comps.Point = ray.Position(comps.Time);
             comps.Eye = -ray.Direction;
-            if (!xs.Any())
+            if (!intersections.Any())
                 comps.Normal = comps.Object.NormalAt(comps.Point);
             else
-                comps.Normal = comps.Object.NormalAt(comps.Point, xs[0]);
+                comps.Normal = comps.Object.NormalAt(comps.Point, intersections[0]);
 
             if (comps.Normal.Dot(comps.Eye) < 0)
             {
@@ -108,21 +107,23 @@ namespace RayTracer
             comps.Reflect = ray.Direction.Reflect(comps.Normal);
 
             var containers = new List<Shape>();
-            foreach (var i in xs)
+            foreach (var i in intersections)
             {
-                if (i == this) {
+                if (i == this)
+                {
                     if (containers.Count == 0)
                         comps.n1 = 1.0;
                     else
                         comps.n1 = containers.Last().Material.RefractiveIndex;
                 }
 
-                if ( containers.Contains(i.Object) )
+                if (containers.Contains(i.Object))
                     containers.Remove(i.Object);
                 else
                     containers.Add(i.Object);
-                
-                if (i == this) {
+
+                if (i == this)
+                {
                     if (containers.Count == 0)
                         comps.n2 = 1.0;
                     else

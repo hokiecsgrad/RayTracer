@@ -69,13 +69,13 @@ namespace RayTracer.Cli.Scenes
                 },
             };
 
-            FileStream stream = File.OpenRead("/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Textures/earthmap1k.ppm");
+            FileStream stream = File.OpenRead("/workspaces/RayTracer/RayTracer.Cli/Scenes/Textures/earthmap1k.ppm");
             StreamReader reader = new StreamReader(stream);
             var earthTexture = PpmReader.ReadCanvasFromPpm(reader);
-            stream = File.OpenRead("/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Textures/earthspec1k.ppm");
+            stream = File.OpenRead("/workspaces/RayTracer/RayTracer.Cli/Scenes/Textures/earthspec1k.ppm");
             reader = new StreamReader(stream);
             var earthSpecMap = PpmReader.ReadCanvasFromPpm(reader);
-            stream = File.OpenRead("/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Textures/earthbump1k.ppm");
+            stream = File.OpenRead("/workspaces/RayTracer/RayTracer.Cli/Scenes/Textures/earthbump1k.ppm");
             reader = new StreamReader(stream);
             var earthBumpMap = PpmReader.ReadCanvasFromPpm(reader);
             var earth = new Sphere()
@@ -105,7 +105,7 @@ namespace RayTracer.Cli.Scenes
                 },
             };
 
-            stream = File.OpenRead("/Users/rhagan/VSCode Projects/RayTracer/RayTracer.Program/Scenes/Textures/earthcloudmap.ppm");
+            stream = File.OpenRead("/workspaces/RayTracer/RayTracer.Cli/Scenes/Textures/earthcloudmap.ppm");
             reader = new StreamReader(stream);
             var cloudTexture = PpmReader.ReadCanvasFromPpm(reader);
             var clouds = new Sphere()

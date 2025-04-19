@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,8 +21,8 @@ namespace RayTracer
 
         private bool IsDirty { get; set; } = true;
 
-        public ObjParser(string obj) 
-        { 
+        public ObjParser(string obj)
+        {
             data = obj;
         }
 
@@ -36,19 +35,19 @@ namespace RayTracer
                 if (normals.Count > index)
                 {
                     tri = new SmoothTriangle(
-                            vertices[0], 
-                            vertices[index], 
-                            vertices[index+1], 
-                            normals[0], 
-                            normals[index], 
-                            normals[index+1]);
+                            vertices[0],
+                            vertices[index],
+                            vertices[index + 1],
+                            normals[0],
+                            normals[index],
+                            normals[index + 1]);
                 }
                 else
                 {
                     tri = new Triangle(
-                            vertices[0], 
-                            vertices[index], 
-                            vertices[index+1]);
+                            vertices[0],
+                            vertices[index],
+                            vertices[index + 1]);
                 }
                 triangles.Add(tri);
             }
@@ -66,22 +65,23 @@ namespace RayTracer
                 {
                     if (line == string.Empty) continue;
 
-                    string[] commands = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+                    string[] commands =
+                        line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
 
                     switch (commands[0])
                     {
-                        case "v" : 
+                        case "v":
                             var px = double.Parse(commands[1]);
                             var py = double.Parse(commands[2]);
                             var pz = double.Parse(commands[3]);
 
-                            this.Vertices.Add(new Point(px, py, pz)); 
+                            this.Vertices.Add(new Point(px, py, pz));
 
                             this.IsDirty = true;
 
                             break;
 
-                        case "vn" :
+                        case "vn":
                             var vx = double.Parse(commands[1]);
                             var vy = double.Parse(commands[2]);
                             var vz = double.Parse(commands[3]);
@@ -89,15 +89,15 @@ namespace RayTracer
                             this.Normals.Add(new Vector(vx, vy, vz));
 
                             break;
-                            
-                        case "f" :
+
+                        case "f":
                             this.CalculateMinAndMax();
                             this.Normalize();
 
                             var vertices = new List<Point>();
                             var normals = new List<Vector>();
 
-                            if (currentGroup == null) 
+                            if (currentGroup == null)
                             {
                                 currentGroup = new Group("Default");
                                 this.Groups.Add(currentGroup);
@@ -112,19 +112,19 @@ namespace RayTracer
                                 {
                                     vertNum = int.Parse(commands[i].Split('/')[0]);
                                     normNum = int.Parse(commands[i].Split('/')[2]);
-                                    normals.Add( this.Normals[normNum - 1] );
-                                } 
+                                    normals.Add(this.Normals[normNum - 1]);
+                                }
                                 else
                                     vertNum = int.Parse(commands[i]);
 
-                                vertices.Add( this.Vertices[vertNum - 1] );
+                                vertices.Add(this.Vertices[vertNum - 1]);
                             }
 
                             currentGroup.AddShapes(FanTriangulation(vertices, normals));
 
                             break;
 
-                        case "g" :
+                        case "g":
                             var group = new Group();
                             group.Name = commands[1];
                             this.Groups.Add(group);
@@ -132,7 +132,7 @@ namespace RayTracer
 
                             break;
 
-                        default : 
+                        default:
                             break;
                     }
                 }
@@ -159,7 +159,7 @@ namespace RayTracer
 
         public void Normalize()
         {
-            if (! this.IsDirty) return;
+            if (!this.IsDirty) return;
 
             var sx = this.Max.x - this.Min.x;
             var sy = this.Max.y - this.Min.y;

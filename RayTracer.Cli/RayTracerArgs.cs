@@ -20,6 +20,10 @@ namespace RayTracer.Cli
         [ArgDescription("The number of samples to take for each pixel")]
         public int n { get; set; }
 
+        [ArgDefaultValue("default")]
+        [ArgDescription("Which camera should we use, 'default', 'aa', 'blur'?")]
+        public string sampler { get; set; }
+
         [ArgDefaultValue("Cover")]
         [ArgDescription("The name of the scene file to load")]
         public string scene { get; set; }

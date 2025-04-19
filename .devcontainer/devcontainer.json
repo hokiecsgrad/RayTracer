@@ -1,0 +1,24 @@
+{
+    "name": "C# Development",
+    "dockerFile": "../Dockerfile",
+    "context": "..",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "omnisharp.useModernNet": true,
+        "omnisharp.path": "latest"
+    },
+    "extensions": [
+        "ms-dotnettools.csharp",
+        "formulahendry.dotnet-test-explorer",
+        "ms-vscode.vscode-node-azure-pack",
+        "editorconfig.editorconfig"
+    ],
+    "remoteUser": "vscode",
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+    ],
+    "remoteEnv": {
+        "DOTNET_ENVIRONMENT": "Development"
+    },
+    "appPort": []
+}

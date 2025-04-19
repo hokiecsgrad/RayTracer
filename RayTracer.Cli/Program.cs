@@ -29,6 +29,7 @@ namespace RayTracer.Cli
             int height = arguments.height;
             double fov = arguments.fov;
             int numSamples = arguments.n;
+            string sampler = arguments.sampler;
             string sceneName = arguments.scene;
 
             World world;
@@ -36,14 +37,31 @@ namespace RayTracer.Cli
             Canvas canvas;
 
             (world, camera) = SetupWorldFromYaml(width, height, fov, sceneName);
+            //TODO: I'm working on a Yaml based scene definition file so that I can 
+            // change the scene easily without having to rebuild the entire app.
             //(world, camera) = SetupWorldFromScene(width, height, fov, sceneName);
             camera.ProgressMonitor = new ParallelConsoleProgressMonitor(height);
 
-            canvas = Render(world, camera, new DefaultSampler(camera));
-            //canvas = Render(world, camera, new SuperSampler(camera, numSamples));
-            //canvas = Render(world, camera, new AntiAliasSampler(camera, 8));
-            //canvas = Render(world, camera, new FocalBlurSampler(camera, 1.0, 0.1, 8));
-            //canvas = Render(world, camera, new SteppedSampler(camera, 5));
+            switch (sampler) 
+            {
+                case "aa":
+                    numSamples = 8;
+                    canvas = Render(world, camera, new AntiAliasSampler(camera, numSamples));
+                    break;
+                case "blur":
+                    canvas = Render(world, camera, new FocalBlurSampler(camera, 1.0, 0.1, 8));
+                    break;
+                case "debug": 
+                    if (numSamples == 1) numSamples = 5;
+                    canvas = Render(world, camera, new SteppedSampler(camera, numSamples));
+                    break;
+                default:
+                    if (numSamples == 1)
+                        canvas = Render(world, camera, new DefaultSampler(camera));
+                    else
+                        canvas = Render(world, camera, new SuperSampler(camera, numSamples));
+                    break;
+            }
 
             SaveCanvas(canvas, output);
         }
@@ -51,7 +69,6 @@ namespace RayTracer.Cli
         public static (World, Camera) SetupWorldFromYaml(int width, int height, double fov, string sceneName)
         {
             string yamlString = File.ReadAllText($"../RayTracer.Cli/Scenes/{sceneName}.yaml");
-            //string yamlString = File.ReadAllText($"../RayTracer.Tests.Cli/{sceneName}.yaml");
             YamlParser yamlParser = new YamlParser(yamlString);
             yamlParser.Parse();
 
