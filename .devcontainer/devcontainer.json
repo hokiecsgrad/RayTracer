@@ -2,20 +2,29 @@
     "name": "C# Development",
     "dockerFile": "../Dockerfile",
     "context": "..",
-    "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash",
-        "omnisharp.useModernNet": true,
-        "omnisharp.path": "latest"
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "omnisharp.useModernNet": true,
+                "omnisharp.path": "latest",
+                "dev.containers.ssh.useLocalAgent": true
+            },
+            "extensions": [
+                "ms-dotnettools.csharp",
+                "formulahendry.dotnet-test-explorer",
+                "ms-vscode.vscode-node-azure-pack",
+                "editorconfig.editorconfig"
+            ]
+        }
     },
-    "extensions": [
-        "ms-dotnettools.csharp",
-        "formulahendry.dotnet-test-explorer",
-        "ms-vscode.vscode-node-azure-pack",
-        "editorconfig.editorconfig"
-    ],
     "remoteUser": "vscode",
     "mounts": [
-        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.ssh/id_ed25519,target=/home/vscode/.ssh/id_ed25519,type=bind,readonly",
+        "source=${localEnv:HOME}/.ssh/id_ed25519.pub,target=/home/vscode/.ssh/id_ed25519.pub,type=bind,readonly",
+        "source=${localEnv:HOME}/.ssh/config.container,target=/home/vscode/.ssh/config,type=bind,readonly",
+        "source=${localEnv:HOME}/.ssh/known_hosts,target=/home/vscode/.ssh/known_hosts,type=bind"
     ],
     "remoteEnv": {
         "DOTNET_ENVIRONMENT": "Development"
