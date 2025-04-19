@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     procps \
     unzip \
     zip \
+    openssh-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Install global .NET tools
